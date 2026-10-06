@@ -68,7 +68,10 @@ class Project extends Model
 
     public function documentations()
     {
-        return $this->hasMany(Documentation::class);
+        return $this->hasMany(
+            Documentation::class,
+            'project_area_id'
+        );
     }
 
     public function messages()

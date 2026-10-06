@@ -113,4 +113,28 @@ Route::middleware('auth')->group(function () {
         '/client/projects/{project}/schedule',
         [ClientProjectController::class, 'schedule']
     )->name('client.projects.schedule');
+
+    // =========================
+    // CLIENT - PROGRESS
+    // =========================
+
+    Route::get(
+        '/client/progress',
+        [ClientProjectController::class, 'allProgress']
+    )->name('client.progress');
+
+
+    Route::get(
+        '/client/projects/{project}/progress',
+        [ClientProjectController::class, 'progress']
+    )->name('client.projects.progress');
+
+    // =========================
+    // CLIENT - DOKUMENTASI
+    // =========================
+
+    Route::get(
+        '/client/documentation',
+        [ClientProjectController::class, 'documentation']
+    )->name('client.documentation');
 });

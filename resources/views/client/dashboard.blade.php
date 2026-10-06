@@ -737,8 +737,6 @@
 
             </div>
 
-
-
             <a
                 href="{{ route('client.dashboard') }}"
                 class="menu-item active">
@@ -776,7 +774,8 @@
 
             </a>
 
-            <a href="#"
+            <a
+                href="{{ route('client.progress') }}"
                 class="menu-item">
 
                 <span class="menu-icon">
@@ -788,7 +787,8 @@
             </a>
 
 
-            <a href="#"
+            <a
+                href="{{ route('client.documentation') }}"
                 class="menu-item">
 
                 <span class="menu-icon">
@@ -798,7 +798,6 @@
                 Dokumentasi
 
             </a>
-
 
             <a href="#"
                 class="menu-item">
@@ -1151,7 +1150,7 @@
 
                     <!-- PROGRESS -->
                     <a
-                        href="#"
+                        href="{{ route('client.progress') }}"
                         class="quick-card">
 
                         <div class="quick-icon green">
@@ -1165,8 +1164,7 @@
                             </div>
 
                             <div class="quick-description">
-                                Pantau perkembangan
-                                proyek
+                                Pantau perkembangan proyek
                             </div>
 
                         </div>
@@ -1176,7 +1174,7 @@
 
                     <!-- DOKUMENTASI -->
                     <a
-                        href="#"
+                        href="{{ route('client.documentation') }}"
                         class="quick-card">
 
                         <div class="quick-icon orange">
@@ -1190,8 +1188,7 @@
                             </div>
 
                             <div class="quick-description">
-                                Lihat foto
-                                perkembangan proyek
+                                Lihat foto perkembangan proyek
                             </div>
 
                         </div>

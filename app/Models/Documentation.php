@@ -8,8 +8,10 @@ class Documentation extends Model
 {
     protected $fillable = [
         'project_id',
+        'project_area_id',
         'uploaded_by',
         'category',
+        'media_type',
         'title',
         'description',
         'file_path',
@@ -30,5 +32,10 @@ class Documentation extends Model
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function projectArea()
+    {
+        return $this->belongsTo(ProjectArea::class, 'project_area_id');
     }
 }

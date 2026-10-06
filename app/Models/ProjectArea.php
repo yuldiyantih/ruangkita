@@ -11,6 +11,7 @@ class ProjectArea extends Model
         'area_name',
         'description',
         'photo',
+        'progress_percentage',
     ];
 
     public function project()
@@ -21,5 +22,12 @@ class ProjectArea extends Model
     public function arDesigns()
     {
         return $this->hasMany(ArDesign::class);
+    }
+    public function documentations()
+    {
+        return $this->hasMany(
+            Documentation::class,
+            'project_area_id'
+        );
     }
 }

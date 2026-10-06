@@ -495,12 +495,12 @@
                 Jadwal
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="{{ route('client.progress') }}" class="menu-item">
                 <span class="menu-icon">↗</span>
                 Progress
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="{{ route('client.documentation') }}" class="menu-item">
                 <span class="menu-icon">▧</span>
                 Dokumentasi
             </a>
@@ -720,13 +720,14 @@
                         </a>
 
                         <a
-                            href="#"
+                            href="{{ route('client.projects.progress', $project) }}"
                             class="tab-link">
+
                             Progress
                         </a>
 
                         <a
-                            href="#"
+                            href="{{ route('client.documentation', ['project' => $project->id]) }}"
                             class="tab-link">
                             Dokumentasi
                         </a>

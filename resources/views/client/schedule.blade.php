@@ -762,7 +762,9 @@
             </a>
 
 
-            <a href="#" class="menu-item">
+            <a
+                href="{{ route('client.progress') }}"
+                class="menu-item">
 
                 <span class="menu-icon">
                     ↗
@@ -773,7 +775,9 @@
             </a>
 
 
-            <a href="#" class="menu-item">
+            <a
+                href="{{ route('client.documentation') }}"
+                class="menu-item">
 
                 <span class="menu-icon">
                     ▧
@@ -782,7 +786,6 @@
                 Dokumentasi
 
             </a>
-
 
             <a href="#" class="menu-item">
 

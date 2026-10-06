@@ -558,12 +558,20 @@
                 Jadwal
             </a>
 
-            <a href="#" class="menu-item">
-                <span class="menu-icon">↗</span>
+            <a
+                href="{{ route('client.projects.progress', $project) }}"
+                class="menu-item">
+                <span class="menu-icon">
+                    ↗
+                </span>
+
                 Progress
+
             </a>
 
-            <a href="#" class="menu-item">
+            <a
+                href="{{ route('client.documentation', ['project' => $project->id]) }}"
+                class="menu-item">
                 <span class="menu-icon">▧</span>
                 Dokumentasi
             </a>
