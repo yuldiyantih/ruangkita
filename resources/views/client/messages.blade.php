@@ -1,2110 +1,1727 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.client')
 
-<head>
 
-    <meta charset="UTF-8">
+@php
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+$messageLang = auth()->user()->language ?? 'id';
 
-    <title>
-        Pesan - RuangKita
-    </title>
+$messageTranslations = [
 
+'id' => [
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+'home' => 'Beranda',
+'title' => 'Pesan',
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+'description' =>
+'Komunikasi langsung dengan tim proyek untuk update dan informasi terbaru.',
 
+'conversations' => 'Percakapan',
 
-        body {
-            background: #f4f8fc;
-            color: #17334c;
-        }
+'search_placeholder' =>
+'Cari pesan atau nama...',
 
+'no_message' =>
+'Belum ada pesan',
 
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
+'no_team_member' =>
+'Belum ada anggota Tim Proyek.',
 
+'project_team' =>
+'Tim Proyek',
 
-        /* =========================================
-           SIDEBAR
-        ========================================= */
+'online' =>
+'Online',
 
-        .sidebar {
+'attachment' =>
+'Lampiran Pesan',
 
-            width: 230px;
+'open_attachment' =>
+'Klik untuk membuka',
 
-            position: fixed;
+'no_chat' =>
+'Belum ada pesan.',
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+'start_chat' =>
+'Mulai percakapan dengan Tim Proyek.',
 
-            z-index: 1000;
+'message_placeholder' =>
+'Tulis pesan...',
 
-            padding:
-                20px 14px;
+'no_project_team' =>
+'Belum ada Tim Proyek yang tersedia.',
 
-            color: white;
+],
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
-        }
 
+'en' => [
 
-        .brand {
+'home' => 'Home',
+'title' => 'Messages',
 
-            padding:
-                5px 9px 24px;
+'description' =>
+'Communicate directly with the project team for the latest updates and information.',
 
-            display: flex;
+'conversations' =>
+'Conversations',
 
-            align-items: center;
+'search_placeholder' =>
+'Search messages or names...',
 
-            gap: 10px;
-        }
+'no_message' =>
+'No messages yet',
 
+'no_team_member' =>
+'No project team members available.',
 
-        .brand-name {
+'project_team' =>
+'Project Team',
 
-            font-size: 18px;
+'online' =>
+'Online',
 
-            font-weight: 700;
-        }
+'attachment' =>
+'Message Attachment',
 
+'open_attachment' =>
+'Click to open',
 
-        .ruangkita-logo {
+'no_chat' =>
+'No messages yet.',
 
-            width: 31px;
-            height: 31px;
+'start_chat' =>
+'Start a conversation with the Project Team.',
 
-            position: relative;
-        }
+'message_placeholder' =>
+'Type a message...',
 
+'no_project_team' =>
+'No Project Team is currently available.',
 
-        .ruangkita-logo .roof {
+],
 
-            width: 20px;
-            height: 20px;
+];
 
-            position: absolute;
 
-            left: 5px;
-            top: 2px;
+$mt =
+$messageTranslations[$messageLang]
+??
+$messageTranslations['id'];
 
-            border-left:
-                4px solid white;
+@endphp
 
-            border-top:
-                4px solid white;
 
-            transform:
-                rotate(45deg);
-        }
+@section(
+'title',
+$mt['title'] . ' - RuangKita'
+)
 
 
-        .ruangkita-logo .house {
+@push('styles')
 
-            width: 19px;
-            height: 17px;
+<style>
+    /* =====================================================
+       MESSAGING BOX
+    ===================================================== */
 
-            position: absolute;
+    .messaging {
 
-            left: 6px;
-            bottom: 2px;
+        height: 680px;
 
-            border-left:
-                4px solid white;
+        display: grid;
 
-            border-right:
-                4px solid white;
+        grid-template-columns:
+            340px minmax(0, 1fr);
 
-            border-bottom:
-                4px solid white;
-        }
+        overflow: hidden;
 
+        border:
+            1px solid var(--border);
 
-        .ruangkita-logo .door {
+        border-radius: 13px;
 
-            width: 6px;
-            height: 9px;
+        background:
+            var(--card-bg);
 
-            position: absolute;
+        box-shadow:
+            var(--shadow);
+    }
 
-            left: 50%;
-            bottom: -1px;
 
-            transform:
-                translateX(-50%);
+    /* =====================================================
+       CONVERSATION PANEL
+    ===================================================== */
 
-            border:
-                2px solid white;
+    .conversation-panel {
 
-            border-bottom: none;
-        }
+        min-width: 0;
 
+        border-right:
+            1px solid var(--border);
 
-        .menu-item {
+        background:
+            var(--card-bg);
+    }
 
-            min-height:
-                42px;
 
-            padding:
-                0 13px;
+    .conversation-title {
 
-            margin-bottom:
-                3px;
+        padding:
+            20px 20px 13px;
 
-            border-radius:
-                8px;
+        color:
+            var(--text-heading);
 
-            display:
-                flex;
+        font-size: 16px;
 
-            align-items:
-                center;
+        font-weight: 700;
+    }
 
-            gap:
-                11px;
 
-            text-decoration:
-                none;
+    /* =====================================================
+       SEARCH
+    ===================================================== */
 
-            color:
-                #d6e6f5;
+    .search-box {
 
-            font-size:
-                13px;
-        }
+        height: 43px;
 
+        margin:
+            0 20px 14px;
 
-        .menu-item:hover {
+        padding:
+            0 13px;
 
-            background:
-                rgba(255,
-                    255,
-                    255,
-                    .08);
-        }
+        border:
+            1px solid var(--border);
 
+        border-radius: 10px;
 
-        .menu-item.active {
+        display: flex;
 
-            color:
-                white;
+        align-items: center;
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+        gap: 10px;
 
+        background:
+            var(--input-bg);
+    }
 
-        .menu-icon {
 
-            width:
-                19px;
+    .search-box span {
 
-            text-align:
-                center;
-        }
+        color:
+            var(--text-muted);
+    }
 
 
-        /* =========================================
-           MAIN
-        ========================================= */
+    .search-box input {
 
-        .main {
+        flex: 1;
 
-            position:
-                relative;
+        border: none;
 
-            z-index:
-                1;
+        outline: none;
 
-            width:
-                calc(100% - 230px);
+        background: transparent;
 
-            margin-left:
-                230px;
-        }
+        color:
+            var(--text-main);
 
+        font-size: 12px;
+    }
 
-        .topbar {
 
-            height:
-                66px;
+    /* =====================================================
+       CONVERSATION LIST
+    ===================================================== */
 
-            padding:
-                0 28px;
+    .conversation-list {
 
-            background:
-                white;
+        height:
+            calc(100% - 108px);
 
-            border-bottom:
-                1px solid #e5edf3;
+        overflow-y: auto;
+    }
 
-            display:
-                flex;
 
-            align-items:
-                center;
+    .conversation-item {
 
-            justify-content:
-                space-between;
-        }
+        min-height: 85px;
 
+        padding:
+            15px 20px;
 
-        .hamburger {
+        position: relative;
 
-            color:
-                #41627e;
+        display: grid;
 
-            font-size:
-                20px;
-        }
+        grid-template-columns:
+            48px minmax(0, 1fr) auto;
 
+        gap: 12px;
 
-        .user-area {
+        align-items: center;
 
-            display:
-                flex;
+        border-bottom:
+            1px solid var(--border);
 
-            align-items:
-                center;
+        color: inherit;
 
-            gap:
-                10px;
+        text-decoration: none;
 
-            font-size:
-                13px;
+        transition: .2s;
+    }
 
-            font-weight:
-                600;
-        }
 
+    .conversation-item:hover {
 
-        .avatar {
+        background:
+            rgba(8,
+                123,
+                221,
+                .05);
+    }
 
-            width:
-                34px;
 
-            height:
-                34px;
+    .conversation-item.active {
 
-            display:
-                flex;
+        background: #e7f3ff;
+    }
 
-            align-items:
-                center;
 
-            justify-content:
-                center;
+    body.dark-mode .conversation-item.active {
 
-            border-radius:
-                50%;
+        background: #19364d;
+    }
 
-            background:
-                #e3edf5;
-        }
 
+    .conversation-item.active::before {
 
-        /* =========================================
-           CONTENT
-        ========================================= */
+        content: "";
 
-        .content {
+        position: absolute;
 
-            padding:
-                27px 30px 38px;
-        }
+        top: 0;
+        bottom: 0;
+        left: 0;
 
+        width: 4px;
 
-        .breadcrumb {
+        background:
+            var(--primary);
+    }
 
-            color:
-                #71869a;
 
-            font-size:
-                11px;
+    /* =====================================================
+       CONVERSATION AVATAR
+    ===================================================== */
 
-            margin-bottom:
-                15px;
-        }
+    .conversation-avatar {
 
+        width: 44px;
+        height: 44px;
 
-        .breadcrumb a {
+        border-radius: 50%;
 
-            text-decoration:
-                none;
+        display: flex;
 
-            color:
-                #56728b;
-        }
+        align-items: center;
+        justify-content: center;
 
+        background: #e8f1f8;
 
-        .page-title {
+        color: #1669ab;
 
-            margin-bottom:
-                23px;
-        }
+        font-size: 15px;
 
+        font-weight: 700;
+    }
 
-        .page-title h1 {
 
-            color:
-                #102e49;
+    body.dark-mode .conversation-avatar {
 
-            font-size:
-                28px;
+        background: #21394c;
 
-            margin-bottom:
-                5px;
-        }
+        color: #72bdf5;
+    }
 
 
-        .page-title p {
+    .conversation-name {
 
-            color:
-                #6f8498;
+        margin-bottom: 5px;
 
-            font-size:
-                13px;
-        }
+        color:
+            var(--text-heading);
 
+        font-size: 12px;
 
-        /* =========================================
-           MESSAGING BOX
-        ========================================= */
+        font-weight: 700;
+    }
+
+
+    .conversation-preview {
+
+        overflow: hidden;
+
+        white-space: nowrap;
+
+        text-overflow: ellipsis;
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    .conversation-meta {
+
+        align-self: stretch;
+
+        padding-top: 2px;
+
+        text-align: right;
+    }
+
+
+    .conversation-time {
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+
+        white-space: nowrap;
+    }
+
+
+    .unread {
+
+        width: 20px;
+        height: 20px;
+
+        margin:
+            9px 0 0 auto;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: white;
+
+        background:
+            var(--primary);
+
+        font-size: 9px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       CHAT PANEL
+    ===================================================== */
+
+    .chat-panel {
+
+        min-width: 0;
+
+        display: grid;
+
+        grid-template-rows:
+            78px minmax(0, 1fr) 76px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    /* =====================================================
+       CHAT HEADER
+    ===================================================== */
+
+    .chat-header {
+
+        padding:
+            0 24px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+
+        border-bottom:
+            1px solid var(--border);
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .chat-user {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+    }
+
+
+    .chat-avatar {
+
+        width: 47px;
+        height: 47px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #dceaf5;
+
+        color: #126ab1;
+
+        font-weight: 700;
+    }
+
+
+    body.dark-mode .chat-avatar {
+
+        background: #21394c;
+
+        color: #72bdf5;
+    }
+
+
+    .chat-name {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 16px;
+
+        font-weight: 700;
+    }
+
+
+    .chat-status {
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    .online {
+
+        color: #15965f;
+
+        font-weight: 600;
+    }
+
+
+    .chat-menu {
+
+        color:
+            var(--text-muted);
+
+        font-size: 23px;
+    }
+
+
+    /* =====================================================
+       CHAT BODY
+    ===================================================== */
+
+    .chat-body {
+
+        padding:
+            23px 28px;
+
+        overflow-y: auto;
+
+        background:
+            var(--input-bg);
+    }
+
+
+    .message-row {
+
+        display: flex;
+
+        margin-bottom: 16px;
+    }
+
+
+    .message-row.me {
+
+        justify-content:
+            flex-end;
+    }
+
+
+    .message-row.them {
+
+        justify-content:
+            flex-start;
+    }
+
+
+    .bubble-wrapper {
+
+        max-width: 64%;
+    }
+
+
+    .bubble {
+
+        padding:
+            12px 15px;
+
+        border-radius: 14px;
+
+        font-size: 12px;
+
+        line-height: 1.55;
+    }
+
+
+    .them .bubble {
+
+        color:
+            var(--text-main);
+
+        background: #eaf1f7;
+
+        border-top-left-radius: 4px;
+    }
+
+
+    body.dark-mode .them .bubble {
+
+        background: #24394a;
+    }
+
+
+    .me .bubble {
+
+        color: white;
+
+        background:
+            linear-gradient(135deg,
+                #0677da,
+                #078ae3);
+
+        border-top-right-radius: 4px;
+    }
+
+
+    .message-meta {
+
+        margin-top: 5px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+    }
+
+
+    .me .message-meta {
+
+        text-align: right;
+    }
+
+
+    .read-check {
+
+        margin-right: 4px;
+
+        color:
+            var(--primary);
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       ATTACHMENT
+    ===================================================== */
+
+    .attachment-card {
+
+        margin-top: 8px;
+
+        padding:
+            10px 12px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 10px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        background:
+            var(--card-bg);
+
+        color:
+            var(--text-main);
+
+        text-decoration: none;
+    }
+
+
+    .attachment-icon {
+
+        width: 35px;
+        height: 35px;
+
+        border-radius: 8px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #e7f3ff;
+
+        color:
+            var(--primary);
+    }
+
+
+    body.dark-mode .attachment-icon {
+
+        background: #19364d;
+    }
+
+
+    .attachment-name {
+
+        font-size: 10px;
+
+        font-weight: 700;
+    }
+
+
+    .attachment-description {
+
+        margin-top: 3px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+    }
+
+
+    /* =====================================================
+       CHAT FORM
+    ===================================================== */
+
+    .chat-form {
+
+        padding:
+            13px 20px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        border-top:
+            1px solid var(--border);
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .attachment-label {
+
+        width: 42px;
+        height: 42px;
+
+        flex-shrink: 0;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color:
+            var(--text-muted);
+
+        cursor: pointer;
+
+        font-size: 18px;
+    }
+
+
+    .attachment-label input {
+
+        display: none;
+    }
+
+
+    .message-input {
+
+        flex: 1;
+
+        height: 44px;
+
+        padding:
+            0 16px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 22px;
+
+        outline: none;
+
+        background:
+            var(--input-bg);
+
+        color:
+            var(--text-main);
+
+        font-size: 12px;
+    }
+
+
+    .send-button {
+
+        width: 45px;
+        height: 45px;
+
+        flex-shrink: 0;
+
+        border: none;
+
+        border-radius: 12px;
+
+        color: white;
+
+        background:
+            linear-gradient(135deg,
+                #087bd8,
+                #078eea);
+
+        cursor: pointer;
+
+        font-size: 18px;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-chat {
+
+        height: 100%;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+    }
+
+
+    .empty-chat-icon {
+
+        margin-bottom: 12px;
+
+        font-size: 40px;
+    }
+
+
+    .empty-conversation {
+
+        padding: 30px;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 950px) {
 
         .messaging {
 
-            height:
-                680px;
-
-            display:
-                grid;
-
             grid-template-columns:
-                340px minmax(0,
-                    1fr);
-
-            background:
-                white;
-
-            border:
-                1px solid #dfe8ef;
-
-            border-radius:
-                13px;
-
-            overflow:
-                hidden;
+                280px 1fr;
         }
 
+    }
 
-        /* =========================================
-           CONVERSATIONS
-        ========================================= */
+
+    @media(max-width: 650px) {
+
+        .messaging {
+
+            height: auto;
+
+            grid-template-columns:
+                1fr;
+        }
+
 
         .conversation-panel {
 
-            border-right:
-                1px solid #dfe8ef;
+            border-right: none;
 
-            min-width: 0;
-        }
-
-
-        .conversation-title {
-
-            padding:
-                20px 20px 13px;
-
-            font-size:
-                16px;
-
-            font-weight:
-                700;
-
-            color:
-                #17354e;
-        }
-
-
-        .search-box {
-
-            margin:
-                0 20px 14px;
-
-            height:
-                43px;
-
-            padding:
-                0 13px;
-
-            border:
-                1px solid #dce6ee;
-
-            border-radius:
-                10px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
-            background:
-                #f9fbfd;
-        }
-
-
-        .search-box input {
-
-            flex:
-                1;
-
-            border:
-                none;
-
-            outline:
-                none;
-
-            background:
-                transparent;
-
-            color:
-                #37536a;
-
-            font-size:
-                12px;
+            border-bottom:
+                1px solid var(--border);
         }
 
 
         .conversation-list {
 
-            overflow-y:
-                auto;
+            height: auto;
 
-            height:
-                calc(100% - 108px);
+            max-height: 280px;
         }
 
-
-        .conversation-item {
-
-            min-height:
-                85px;
-
-            padding:
-                15px 20px;
-
-            display:
-                grid;
-
-            grid-template-columns:
-                48px minmax(0,
-                    1fr) auto;
-
-            gap:
-                12px;
-
-            align-items:
-                center;
-
-            text-decoration:
-                none;
-
-            border-bottom:
-                1px solid #edf2f6;
-
-            color:
-                inherit;
-
-            position:
-                relative;
-        }
-
-
-        .conversation-item:hover {
-
-            background:
-                #f5f9fd;
-        }
-
-
-        .conversation-item.active {
-
-            background:
-                #e7f3ff;
-        }
-
-
-        .conversation-item.active::before {
-
-            content:
-                "";
-
-            position:
-                absolute;
-
-            top: 0;
-            bottom: 0;
-            left: 0;
-
-            width:
-                4px;
-
-            background:
-                #087bdd;
-        }
-
-
-        .conversation-avatar {
-
-            width:
-                44px;
-
-            height:
-                44px;
-
-            border-radius:
-                50%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            font-size:
-                15px;
-
-            font-weight:
-                700;
-
-            background:
-                #e8f1f8;
-
-            color:
-                #1669ab;
-        }
-
-
-        .conversation-name {
-
-            margin-bottom:
-                5px;
-
-            color:
-                #15344e;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-        }
-
-
-        .conversation-preview {
-
-            color:
-                #72869a;
-
-            font-size:
-                10px;
-
-            overflow:
-                hidden;
-
-            white-space:
-                nowrap;
-
-            text-overflow:
-                ellipsis;
-        }
-
-
-        .conversation-meta {
-
-            text-align:
-                right;
-
-            align-self:
-                stretch;
-
-            padding-top:
-                2px;
-        }
-
-
-        .conversation-time {
-
-            color:
-                #607a91;
-
-            font-size:
-                9px;
-
-            white-space:
-                nowrap;
-        }
-
-
-        .unread {
-
-            width:
-                20px;
-
-            height:
-                20px;
-
-            margin:
-                9px 0 0 auto;
-
-            border-radius:
-                50%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            color:
-                white;
-
-            background:
-                #087add;
-
-            font-size:
-                9px;
-
-            font-weight:
-                700;
-        }
-
-
-        /* =========================================
-           CHAT PANEL
-        ========================================= */
 
         .chat-panel {
 
-            min-width:
-                0;
-
-            display:
-                grid;
-
-            grid-template-rows:
-                78px minmax(0,
-                    1fr) 76px;
-        }
-
-
-        .chat-header {
-
-            padding:
-                0 24px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-            border-bottom:
-                1px solid #dfe8ef;
-        }
-
-
-        .chat-user {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                12px;
-        }
-
-
-        .chat-avatar {
-
-            width:
-                47px;
-
-            height:
-                47px;
-
-            border-radius:
-                50%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            background:
-                #dceaf5;
-
-            color:
-                #126ab1;
-
-            font-weight:
-                700;
-        }
-
-
-        .chat-name {
-
-            color:
-                #18354e;
-
-            font-size:
-                16px;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                4px;
-        }
-
-
-        .chat-status {
-
-            color:
-                #73879a;
-
-            font-size:
-                10px;
-        }
-
-
-        .online {
-
-            color:
-                #15965f;
-
-            font-weight:
-                600;
-        }
-
-
-        .chat-menu {
-
-            color:
-                #385b78;
-
-            font-size:
-                23px;
-        }
-
-
-        /* =========================================
-           CHAT BODY
-        ========================================= */
-
-        .chat-body {
-
-            padding:
-                23px 28px;
-
-            overflow-y:
-                auto;
-
-            background:
-                #fbfdff;
-        }
-
-
-        .message-row {
-
-            display:
-                flex;
-
-            margin-bottom:
-                16px;
-        }
-
-
-        .message-row.me {
-
-            justify-content:
-                flex-end;
-        }
-
-
-        .message-row.them {
-
-            justify-content:
-                flex-start;
+            min-height: 570px;
         }
 
 
         .bubble-wrapper {
 
-            max-width:
-                64%;
+            max-width: 83%;
         }
 
+    }
+</style>
 
-        .bubble {
+@endpush
 
-            padding:
-                12px 15px;
 
-            border-radius:
-                14px;
 
-            font-size:
-                12px;
+@section('content')
 
-            line-height:
-                1.55;
-        }
 
+{{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
 
-        .them .bubble {
+<div class="breadcrumb">
 
-            color:
-                #233f56;
+    <a
+        href="{{ route('client.dashboard') }}">
 
-            background:
-                #eaf1f7;
+        {{ $mt['home'] }}
 
-            border-top-left-radius:
-                4px;
-        }
+    </a>
 
+    &nbsp;›&nbsp;
 
-        .me .bubble {
+    {{ $mt['title'] }}
 
-            color:
-                white;
+</div>
 
-            background:
-                linear-gradient(135deg,
-                    #0677da,
-                    #078ae3);
 
-            border-top-right-radius:
-                4px;
-        }
 
+{{-- =====================================================
+         PAGE TITLE
+    ====================================================== --}}
 
-        .message-meta {
+<div class="page-title">
 
-            margin-top:
-                5px;
+    <h1>
 
-            color:
-                #71869a;
+        {{ $mt['title'] }}
 
-            font-size:
-                9px;
-        }
+    </h1>
 
+    <p>
 
-        .me .message-meta {
+        {{ $mt['description'] }}
 
-            text-align:
-                right;
-        }
+    </p>
 
+</div>
 
-        .read-check {
 
-            color:
-                #087ce0;
 
-            font-weight:
-                700;
+{{-- =====================================================
+         MESSAGING
+    ====================================================== --}}
 
-            margin-right:
-                4px;
-        }
+<div class="messaging">
 
 
-        /* =========================================
-           ATTACHMENT
-        ========================================= */
+    {{-- =================================================
+             CONVERSATION LIST
+        ================================================== --}}
 
-        .attachment-card {
+    <aside class="conversation-panel">
 
-            margin-top:
-                8px;
 
-            padding:
-                10px 12px;
+        <div class="conversation-title">
 
-            border-radius:
-                10px;
+            {{ $mt['conversations'] }}
 
-            display:
-                flex;
+        </div>
 
-            align-items:
-                center;
 
-            gap:
-                10px;
 
-            text-decoration:
-                none;
+        <div class="search-box">
 
-            border:
-                1px solid #dce6ee;
+            <span>
+                ⌕
+            </span>
 
-            background:
-                white;
+            <input
 
-            color:
-                #29465e;
-        }
+                type="text"
 
+                id="conversationSearch"
 
-        .attachment-icon {
+                placeholder="{{
+                        $mt[
+                            'search_placeholder'
+                        ]
+                    }}">
 
-            width:
-                35px;
+        </div>
 
-            height:
-                35px;
 
-            border-radius:
-                8px;
 
-            display:
-                flex;
+        <div class="conversation-list">
 
-            align-items:
-                center;
 
-            justify-content:
-                center;
-
-            background:
-                #e7f3ff;
-
-            color:
-                #0875d0;
-        }
-
-
-        .attachment-name {
-
-            font-size:
-                10px;
-
-            font-weight:
-                700;
-        }
-
-
-        /* =========================================
-           CHAT FORM
-        ========================================= */
-
-        .chat-form {
-
-            padding:
-                13px 20px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
-            border-top:
-                1px solid #dfe8ef;
-
-            background:
-                white;
-        }
-
-
-        .attachment-label {
-
-            width:
-                42px;
-
-            height:
-                42px;
-
-            border:
-                1px solid #dce6ee;
-
-            border-radius:
-                50%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            cursor:
-                pointer;
-
-            color:
-                #436b8b;
-
-            font-size:
-                18px;
-        }
-
-
-        .attachment-label input {
-
-            display:
-                none;
-        }
-
-
-        .message-input {
-
-            flex:
-                1;
-
-            height:
-                44px;
-
-            padding:
-                0 16px;
-
-            border:
-                1px solid #dce6ee;
-
-            border-radius:
-                22px;
-
-            outline:
-                none;
-
-            color:
-                #2a475e;
-
-            font-size:
-                12px;
-        }
-
-
-        .send-button {
-
-            width:
-                45px;
-
-            height:
-                45px;
-
-            border:
-                none;
-
-            border-radius:
-                12px;
-
-            cursor:
-                pointer;
-
-            color:
-                white;
-
-            background:
-                linear-gradient(135deg,
-                    #087bd8,
-                    #078eea);
-
-            font-size:
-                18px;
-        }
-
-
-        /* =========================================
-           EMPTY
-        ========================================= */
-
-        .empty-chat {
-
-            height:
-                100%;
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            color:
-                #7e92a4;
-
-            text-align:
-                center;
-        }
-
-
-        .empty-chat-icon {
-
-            font-size:
-                40px;
-
-            margin-bottom:
-                12px;
-        }
-
-
-        /* =========================================
-           MOBILE
-        ========================================= */
-
-        @media(max-width: 950px) {
-
-            .messaging {
-
-                grid-template-columns:
-                    280px 1fr;
-            }
-        }
-
-
-        @media(max-width: 850px) {
-
-            .sidebar {
-
-                display:
-                    none;
-            }
-
-
-            .main {
-
-                width:
-                    100%;
-
-                margin-left:
-                    0;
-            }
-        }
-
-
-        @media(max-width: 650px) {
-
-            .content {
-
-                padding:
-                    20px 12px;
-            }
-
-
-            .messaging {
-
-                height:
-                    auto;
-
-                grid-template-columns:
-                    1fr;
-            }
-
-
-            .conversation-panel {
-
-                border-right:
-                    none;
-
-                border-bottom:
-                    1px solid #dfe8ef;
-            }
-
-
-            .conversation-list {
-
-                max-height:
-                    280px;
-            }
-
-
-            .chat-panel {
-
-                min-height:
-                    570px;
-            }
-
-
-            .bubble-wrapper {
-
-                max-width:
-                    83%;
-            }
-        }
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <div class="app">
-
-
-        <!-- =========================================
-         SIDEBAR
-    ========================================== -->
-
-        <aside class="sidebar">
-
-
-            <div class="brand">
-
-
-                <div class="ruangkita-logo">
-
-                    <div class="roof"></div>
-
-                    <div class="house">
-
-                        <div class="door"></div>
-
-                    </div>
+            @forelse($conversations as $conversation)
+
+
+            @php
+
+            $member =
+            $conversation[
+            'user'
+            ];
+
+            $last =
+            $conversation[
+            'last_message'
+            ];
+
+            @endphp
+
+
+
+            <a
+
+                href="{{
+                            route(
+                                'client.messages',
+                                [
+                                    'user'
+                                    =>
+                                    $member->id
+                                ]
+                            )
+                        }}"
+
+                class="
+                            conversation-item
+                            {{
+                                $selectedUser
+                                &&
+                                $selectedUser->id
+                                ===
+                                $member->id
+                                ?
+                                'active'
+                                :
+                                ''
+                            }}
+                        "
+
+                data-name="{{
+                            strtolower(
+                                $member->name
+                            )
+                        }}">
+
+
+                <div class="conversation-avatar">
+
+                    {{
+                                strtoupper(
+                                    substr(
+                                        $member->name,
+                                        0,
+                                        2
+                                    )
+                                )
+                            }}
 
                 </div>
 
 
-                <span class="brand-name">
 
-                    RuangKita
+                <div>
 
-                </span>
+
+                    <div class="conversation-name">
+
+                        {{ $member->name }}
+
+                    </div>
+
+
+                    <div class="conversation-preview">
+
+                        @if($last)
+
+                        {{
+                                        $last->message_text
+                                        ??
+                                        $mt['attachment']
+                                    }}
+
+                        @else
+
+                        {{ $mt['no_message'] }}
+
+                        @endif
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="conversation-meta">
+
+
+                    @if($last)
+
+                    <div class="conversation-time">
+
+                        @if($last->sent_at)
+
+                        {{
+                                            $last
+                                                ->sent_at
+                                                ->format('H:i')
+                                        }}
+
+                        @endif
+
+                    </div>
+
+                    @endif
+
+
+
+                    @if($conversation['unread'] > 0)
+
+                    <div class="unread">
+
+                        {{
+                                        $conversation[
+                                            'unread'
+                                        ]
+                                    }}
+
+                    </div>
+
+                    @endif
+
+
+                </div>
+
+
+            </a>
+
+
+            @empty
+
+
+            <div class="empty-conversation">
+
+                {{
+                            $mt[
+                                'no_team_member'
+                            ]
+                        }}
+
+            </div>
+
+
+            @endforelse
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    {{-- =================================================
+             CHAT
+        ================================================== --}}
+
+    <section class="chat-panel">
+
+
+        @if($selectedUser)
+
+
+        {{-- =========================================
+                     CHAT HEADER
+                ========================================== --}}
+
+        <div class="chat-header">
+
+
+            <div class="chat-user">
+
+
+                <div class="chat-avatar">
+
+                    {{
+                                strtoupper(
+                                    substr(
+                                        $selectedUser->name,
+                                        0,
+                                        2
+                                    )
+                                )
+                            }}
+
+                </div>
+
+
+
+                <div>
+
+
+                    <div class="chat-name">
+
+                        {{
+                                    $selectedUser->name
+                                }}
+
+                    </div>
+
+
+                    <div class="chat-status">
+
+                        {{
+                                    $mt[
+                                        'project_team'
+                                    ]
+                                }}
+
+                        <span class="online">
+
+                            •
+                            {{
+                                        $mt[
+                                            'online'
+                                        ]
+                                    }}
+
+                        </span>
+
+                    </div>
+
+
+                </div>
 
 
             </div>
 
 
 
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
+            <div class="chat-menu">
 
-                <span class="menu-icon">⌂</span>
+                ⋮
 
-                Dashboard
-
-            </a>
+            </div>
 
 
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▣</span>
-
-                Proyek Saya
-
-            </a>
-
-
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▦</span>
-
-                Jadwal
-
-            </a>
-
-
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item">
-
-                <span class="menu-icon">↗</span>
-
-                Progress
-
-            </a>
-
-
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▧</span>
-
-                Dokumentasi
-
-            </a>
-
-
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▤</span>
-
-                Informasi Biaya
-
-            </a>
-
-
-            <a
-                href="{{ route('client.messages') }}"
-                class="menu-item active">
-
-                <span class="menu-icon">✉</span>
-
-                Pesan
-
-            </a>
-
-
-            <a
-                href="{{ route('client.ar') }}"
-                class="menu-item">
-
-                <span class="menu-icon">◇</span>
-
-                Augmented Reality
-
-            </a>
-
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-
-        </aside>
+        </div>
 
 
 
-        <!-- =========================================
-         MAIN
-    ========================================== -->
+        {{-- =========================================
+                     CHAT BODY
+                ========================================== --}}
 
-        <main class="main">
-
-
-            <header class="topbar">
-
-
-                <div class="hamburger">
-
-                    ☰
-
-                </div>
+        <div
+            class="chat-body"
+            id="chatBody">
 
 
-                <div class="user-area">
+            @forelse($chatMessages as $message)
 
-                    <span>♧</span>
 
-                    <div class="avatar">
+            @php
 
-                        👤
+            $mine =
+            $message->sender_id
+            ===
+            auth()->id();
+
+            @endphp
+
+
+
+            <div
+                class="
+                                message-row
+                                {{
+                                    $mine
+                                    ?
+                                    'me'
+                                    :
+                                    'them'
+                                }}
+                            ">
+
+
+                <div class="bubble-wrapper">
+
+
+                    {{-- MESSAGE TEXT --}}
+
+                    @if($message->message_text)
+
+                    <div class="bubble">
+
+                        {{
+                                            $message
+                                                ->message_text
+                                        }}
 
                     </div>
 
-                    <span>
-
-                        {{ auth()->user()->name }}
-
-                    </span>
-
-                    <span>▾</span>
-
-                </div>
-
-
-            </header>
+                    @endif
 
 
 
-            <section class="content">
+                    {{-- ATTACHMENT --}}
+
+                    @if($message->attachment_path)
+
+                    <a
+
+                        href="{{
+                                            asset(
+                                                'storage/' .
+                                                $message
+                                                    ->attachment_path
+                                            )
+                                        }}"
+
+                        target="_blank"
+
+                        class="attachment-card">
 
 
-                <div class="breadcrumb">
+                        <div class="attachment-icon">
 
-                    <a href="{{ route('client.dashboard') }}">
+                            📎
 
-                        Beranda
+                        </div>
+
+
+                        <div>
+
+
+                            <div class="attachment-name">
+
+                                {{
+                                                    $mt[
+                                                        'attachment'
+                                                    ]
+                                                }}
+
+                            </div>
+
+
+                            <div
+                                class="
+                                                    attachment-description
+                                                ">
+
+                                {{
+                                                    $mt[
+                                                        'open_attachment'
+                                                    ]
+                                                }}
+
+                            </div>
+
+
+                        </div>
+
 
                     </a>
 
-                    &nbsp;›&nbsp;
+                    @endif
 
-                    Pesan
 
-                </div>
 
+                    {{-- META --}}
 
+                    <div class="message-meta">
 
-                <div class="page-title">
 
+                        @if($mine)
 
-                    <h1>
+                        <span class="read-check">
 
-                        Pesan
-
-                    </h1>
-
-
-                    <p>
-
-                        Komunikasi langsung dengan tim proyek
-                        untuk update dan informasi terbaru.
-
-                    </p>
-
-
-                </div>
-
-
-
-                <div class="messaging">
-
-
-                    <!-- =========================================
-                     CONVERSATION LIST
-                ========================================== -->
-
-                    <aside class="conversation-panel">
-
-
-                        <div class="conversation-title">
-
-                            Percakapan
-
-                        </div>
-
-
-                        <div class="search-box">
-
-                            <span>⌕</span>
-
-                            <input
-                                type="text"
-                                id="conversationSearch"
-                                placeholder="Cari pesan atau nama...">
-
-                        </div>
-
-
-
-                        <div class="conversation-list">
-
-
-                            @forelse(
-                            $conversations
-                            as $conversation
-                            )
-
-
-                            @php
-
-                            $member =
-                            $conversation['user'];
-
-                            $last =
-                            $conversation['last_message'];
-
-                            @endphp
-
-
-                            <a
-                                href="{{
-                                    route(
-                                        'client.messages',
-                                        [
-                                            'user'
-                                            =>
-                                            $member->id
-                                        ]
-                                    )
-                                }}"
-                                class="
-                                    conversation-item
-                                    {{
-                                        $selectedUser
-                                        &&
-                                        $selectedUser->id
-                                        ===
-                                        $member->id
-                                        ?
-                                        'active'
-                                        :
-                                        ''
-                                    }}
-                                "
-                                data-name="{{
-                                    strtolower(
-                                        $member->name
-                                    )
-                                }}">
-
-
-                                <div class="conversation-avatar">
-
-                                    {{
-                                        strtoupper(
-                                            substr(
-                                                $member->name,
-                                                0,
-                                                2
-                                            )
-                                        )
-                                    }}
-
-                                </div>
-
-
-
-                                <div>
-
-
-                                    <div class="conversation-name">
-
-                                        {{ $member->name }}
-
-                                    </div>
-
-
-                                    <div class="conversation-preview">
-
-
-                                        @if($last)
-
-
-                                        {{ $last->message_text ?? 'Lampiran file' }}
-
-
-                                        @else
-
-                                        Belum ada pesan
-
-                                        @endif
-
-
-                                    </div>
-
-
-                                </div>
-
-
-
-                                <div class="conversation-meta">
-
-
-                                    @if($last)
-
-                                    <div class="conversation-time">
-
-                                        @if($last->sent_at)
-
-                                        {{ $last->sent_at->format('H:i') }}
-
-                                        @endif
-
-                                    </div>
-
-                                    @endif
-
-
-
-                                    @if(
-                                    $conversation['unread']
-                                    >
-                                    0
-                                    )
-
-                                    <div class="unread">
-
-                                        {{
-                                                $conversation[
-                                                    'unread'
-                                                ]
+                            {{
+                                                $message
+                                                    ->is_read
+                                                ?
+                                                '✓✓'
+                                                :
+                                                '✓'
                                             }}
 
-                                    </div>
+                        </span>
 
-                                    @endif
-
-
-                                </div>
+                        @endif
 
 
-                            </a>
+
+                        @if($message->sent_at)
+
+                        {{
+                                            $message
+                                                ->sent_at
+                                                ->format('H:i')
+                                        }}
+
+                        @else
+
+                        -
+
+                        @endif
 
 
-                            @empty
+                    </div>
 
 
-                            <div
-                                style="
-                                    padding:30px;
-                                    text-align:center;
-                                    color:#8395a6;
-                                    font-size:12px;
+                </div>
+
+
+            </div>
+
+
+            @empty
+
+
+            <div class="empty-chat">
+
+
+                <div class="empty-chat-icon">
+
+                    💬
+
+                </div>
+
+
+                <div>
+
+                    {{
+                                    $mt[
+                                        'no_chat'
+                                    ]
+                                }}
+
+                </div>
+
+
+                <div
+                    style="
+                                    font-size:11px;
+                                    margin-top:5px;
                                 ">
 
-                                Belum ada anggota
-                                Tim Proyek.
-
-                            </div>
-
-
-                            @endforelse
-
-
-                        </div>
-
-
-                    </aside>
-
-
-
-                    <!-- =========================================
-                     CHAT
-                ========================================== -->
-
-                    <section class="chat-panel">
-
-
-                        @if($selectedUser)
-
-
-                        <!-- HEADER -->
-
-
-                        <div class="chat-header">
-
-
-                            <div class="chat-user">
-
-
-                                <div class="chat-avatar">
-
-                                    {{
-                                        strtoupper(
-                                            substr(
-                                                $selectedUser->name,
-                                                0,
-                                                2
-                                            )
-                                        )
-                                    }}
-
-                                </div>
-
-
-                                <div>
-
-
-                                    <div class="chat-name">
-
-                                        {{
-                                            $selectedUser->name
-                                        }}
-
-                                    </div>
-
-
-                                    <div class="chat-status">
-
-                                        Tim Proyek
-
-                                        <span class="online">
-
-                                            • Online
-
-                                        </span>
-
-                                    </div>
-
-
-                                </div>
-
-
-                            </div>
-
-
-                            <div class="chat-menu">
-
-                                ⋮
-
-                            </div>
-
-
-                        </div>
-
-
-
-                        <!-- CHAT BODY -->
-
-
-                        <div
-                            class="chat-body"
-                            id="chatBody">
-
-
-                            @forelse(
-                            $chatMessages
-                            as $message
-                            )
-
-
-                            @php
-
-                            $mine =
-                            $message
-                            ->sender_id
-                            ===
-                            auth()->id();
-
-                            @endphp
-
-
-                            <div
-                                class="
-                                        message-row
-                                        {{
-                                            $mine
-                                            ?
-                                            'me'
-                                            :
-                                            'them'
-                                        }}
-                                    ">
-
-
-
-                                <div class="bubble-wrapper">
-
-                                    {{-- PESAN TEKS --}}
-                                    @if($message->message_text)
-
-                                    <div class="bubble">
-
-                                        {{ $message->message_text }}
-
-                                    </div>
-
-                                    @endif
-
-
-                                    {{-- LAMPIRAN --}}
-                                    @if($message->attachment_path)
-
-                                    <a
-                                        href="{{ asset('storage/' . $message->attachment_path) }}"
-                                        target="_blank"
-                                        class="attachment-card">
-
-                                        <div class="attachment-icon">
-                                            📎
-                                        </div>
-
-                                        <div>
-
-                                            <div class="attachment-name">
-                                                Lampiran Pesan
-                                            </div>
-
-                                            <div style="
-                                             font-size: 9px;
-                                                color: #7a8ea0;
-                                                margin-top: 3px;
-                                            ">
-                                                Klik untuk membuka
-                                            </div>
-
-                                        </div>
-
-                                    </a>
-
-                                    @endif
-
-
-                                    {{-- META PESAN --}}
-                                    <div class="message-meta">
-
-                                        @if($mine)
-
-                                        <span class="read-check">
-
-                                            {{
-                                                $message->is_read
-                                                ? '✓✓'
-                                                : '✓'
-                                            }}
-
-                                        </span>
-
-                                        @endif
-
-
-                                        @if($message->sent_at)
-
-                                        {{ $message->sent_at->format('H:i') }}
-
-                                        @else
-
-                                        -
-
-                                        @endif
-
-                                    </div>
-
-                                </div>
-
-
-                                {{-- PESAN KOSONG --}}
-                                @empty
-
-                                <div class="empty-chat">
-
-                                    <div class="empty-chat-icon">
-                                        💬
-                                    </div>
-
-                                    <div>
-                                        Belum ada pesan.
-                                    </div>
-
-                                    <div style="
-            font-size: 11px;
-            margin-top: 5px;
-        ">
-                                        Mulai percakapan
-                                        dengan Tim Proyek.
-                                    </div>
-
-                                </div>
-
-                                @endforelse
-
-                            </div>
-
-                            {{-- INPUT CHAT --}}
-                            <form
-                                action="{{ route('client.messages.send') }}"
-                                method="POST"
-                                enctype="multipart/form-data"
-                                class="chat-form">
-
-                                @csrf
-
-
-                                {{-- RECEIVER --}}
-                                <input
-                                    type="hidden"
-                                    name="receiver_id"
-                                    value="{{ $selectedUser->id }}">
-
-
-                                {{-- PROJECT --}}
-                                @if($projects->count() > 0)
-
-                                <input
-                                    type="hidden"
-                                    name="project_id"
-                                    value="{{ $projects->first()->id }}">
-
-                                @endif
-
-
-                                {{-- ATTACHMENT --}}
-                                <label class="attachment-label">
-
-                                    📎
-
-                                    <input
-                                        type="file"
-                                        name="attachment">
-
-                                </label>
-
-
-                                {{-- MESSAGE --}}
-                                <input
-                                    type="text"
-                                    name="message_text"
-                                    class="message-input"
-                                    placeholder="Tulis pesan..."
-                                    autocomplete="off">
-
-
-                                {{-- SEND --}}
-                                <button
-                                    type="submit"
-                                    class="send-button">
-
-                                    ➤
-
-                                </button>
-
-                            </form>
-
-
-                            @else
-
-                            {{-- TIDAK ADA TIM PROYEK --}}
-                            <div class="empty-chat">
-
-                                <div class="empty-chat-icon">
-                                    💬
-                                </div>
-
-                                <div>
-                                    Belum ada Tim Proyek
-                                    yang tersedia.
-                                </div>
-
-                            </div>
-
-                            @endif
-
-
-                    </section>
-
+                    {{
+                                    $mt[
+                                        'start_chat'
+                                    ]
+                                }}
 
                 </div>
 
 
-            </section>
+            </div>
 
 
-        </main>
+            @endforelse
 
 
-    </div>
+        </div>
 
 
-    <script>
-        /*
-|--------------------------------------------------------------------------
-| AUTO SCROLL CHAT KE PESAN TERBARU
-|--------------------------------------------------------------------------
-*/
 
-        const chatBody =
-            document.getElementById('chatBody');
+        {{-- =========================================
+                     CHAT FORM
+                ========================================== --}}
 
+        <form
 
-        if (chatBody) {
-
-            chatBody.scrollTop =
-                chatBody.scrollHeight;
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SEARCH CONVERSATION
-        |--------------------------------------------------------------------------
-        */
-
-        const search =
-            document.getElementById(
-                'conversationSearch'
-            );
-
-
-        if (search) {
-
-            search.addEventListener(
-                'input',
-                function() {
-
-                    const keyword =
-                        this.value
-                        .toLowerCase()
-                        .trim();
-
-
-                    document
-                        .querySelectorAll(
-                            '.conversation-item'
+            action="{{
+                        route(
+                            'client.messages.send'
                         )
-                        .forEach(
-                            function(item) {
+                    }}"
 
-                                const name =
-                                    item.dataset.name || '';
+            method="POST"
 
+            enctype="multipart/form-data"
 
-                                item.style.display =
-                                    name.includes(keyword) ?
-                                    'grid' :
-                                    'none';
+            class="chat-form">
 
-                            }
-                        );
-
-                }
-            );
-
-        }
-    </script>
+            @csrf
 
 
-</body>
 
-</html>
-```
+            <input
+
+                type="hidden"
+
+                name="receiver_id"
+
+                value="{{
+                            $selectedUser->id
+                        }}">
+
+
+
+            @if($projects->count() > 0)
+
+            <input
+
+                type="hidden"
+
+                name="project_id"
+
+                value="{{
+                                $projects
+                                    ->first()
+                                    ->id
+                            }}">
+
+            @endif
+
+
+
+            <label class="attachment-label">
+
+                📎
+
+                <input
+
+                    type="file"
+
+                    name="attachment">
+
+            </label>
+
+
+
+            <input
+
+                type="text"
+
+                name="message_text"
+
+                class="message-input"
+
+                placeholder="{{
+                            $mt[
+                                'message_placeholder'
+                            ]
+                        }}"
+
+                autocomplete="off">
+
+
+
+            <button
+
+                type="submit"
+
+                class="send-button">
+
+                ➤
+
+            </button>
+
+
+        </form>
+
+
+        @else
+
+
+        <div class="empty-chat">
+
+
+            <div class="empty-chat-icon">
+
+                💬
+
+            </div>
+
+
+            <div>
+
+                {{
+                            $mt[
+                                'no_project_team'
+                            ]
+                        }}
+
+            </div>
+
+
+        </div>
+
+
+        @endif
+
+
+    </section>
+
+
+</div>
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO SCROLL CHAT
+    |--------------------------------------------------------------------------
+    */
+
+    const chatBody =
+        document.getElementById(
+            'chatBody'
+        );
+
+
+    if (chatBody) {
+
+        chatBody.scrollTop =
+            chatBody.scrollHeight;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEARCH CONVERSATION
+    |--------------------------------------------------------------------------
+    */
+
+    const search =
+        document.getElementById(
+            'conversationSearch'
+        );
+
+
+    if (search) {
+
+        search.addEventListener(
+            'input',
+            function() {
+
+                const keyword =
+                    this
+                    .value
+                    .toLowerCase()
+                    .trim();
+
+
+                document
+                    .querySelectorAll(
+                        '.conversation-item'
+                    )
+                    .forEach(
+                        function(item) {
+
+                            const name =
+                                item
+                                .dataset
+                                .name ||
+                                '';
+
+
+                            item.style.display =
+                                name.includes(
+                                    keyword
+                                ) ?
+                                'grid' :
+                                'none';
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+</script>
+
+@endpush

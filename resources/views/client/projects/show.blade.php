@@ -1,800 +1,1006 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.client')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Detail Proyek - RuangKita
-    </title>
+@php
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+$projectDetailLang = auth()->user()->language ?? 'id';
 
-        body {
-            background: #f4f8fc;
-            color: #17334c;
-        }
+$projectDetailTranslations = [
 
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
+'id' => [
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+'projects' => 'Proyek Saya',
+'title' => 'Detail Proyek',
 
-        .sidebar {
-            width: 230px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
+'client' => 'Client',
+'location' => 'Lokasi',
+'start_date' => 'Tanggal Mulai',
+'target_end' => 'Target Selesai',
+'status' => 'Status',
 
-            padding: 20px 14px;
+'ongoing' => 'Berjalan',
+'completed' => 'Selesai',
+'paused' => 'Ditunda',
+'planning' => 'Perencanaan',
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'progress' => 'Progress',
 
-            color: white;
-        }
+'summary' => 'Ringkasan',
+'schedule' => 'Jadwal',
+'documentation' => 'Dokumentasi',
+'costs' => 'Informasi Biaya',
 
-        .brand {
-            padding: 5px 9px 24px;
+'project_description' => 'Deskripsi Proyek',
 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+'no_description' =>
+'Belum ada deskripsi proyek.',
 
-        .brand-name {
-            font-size: 18px;
-            font-weight: 700;
-        }
+],
 
-        .ruangkita-logo {
-            position: relative;
-            width: 31px;
-            height: 31px;
-        }
 
-        .ruangkita-logo .roof {
-            position: absolute;
+'en' => [
 
-            width: 20px;
-            height: 20px;
+'projects' => 'My Projects',
+'title' => 'Project Detail',
 
-            left: 5px;
-            top: 2px;
+'client' => 'Client',
+'location' => 'Location',
+'start_date' => 'Start Date',
+'target_end' => 'Target Completion',
+'status' => 'Status',
 
-            border-left: 4px solid white;
-            border-top: 4px solid white;
+'ongoing' => 'Ongoing',
+'completed' => 'Completed',
+'paused' => 'Paused',
+'planning' => 'Planning',
 
-            transform: rotate(45deg);
-        }
+'progress' => 'Progress',
 
-        .ruangkita-logo .house {
-            position: absolute;
+'summary' => 'Summary',
+'schedule' => 'Schedule',
+'documentation' => 'Documentation',
+'costs' => 'Cost Information',
 
-            width: 19px;
-            height: 17px;
+'project_description' => 'Project Description',
 
-            left: 6px;
-            bottom: 2px;
+'no_description' =>
+'No project description available.',
 
-            border-left: 4px solid white;
-            border-right: 4px solid white;
-            border-bottom: 4px solid white;
-        }
+],
 
-        .ruangkita-logo .door {
-            position: absolute;
+];
 
-            width: 6px;
-            height: 9px;
 
-            left: 50%;
-            bottom: -1px;
+$pdt =
+$projectDetailTranslations[$projectDetailLang]
+??
+$projectDetailTranslations['id'];
 
-            transform: translateX(-50%);
 
-            border: 2px solid white;
-            border-bottom: none;
-        }
+$projectStatus =
+$project->status
+??
+'planning';
 
-        .menu-item {
-            min-height: 42px;
 
-            padding: 0 13px;
-            margin-bottom: 3px;
+$projectStatusLabel =
+match ($projectStatus) {
 
-            border-radius: 8px;
+'ongoing' =>
+$pdt['ongoing'],
 
-            display: flex;
-            align-items: center;
+'completed' =>
+$pdt['completed'],
 
-            gap: 11px;
+'paused' =>
+$pdt['paused'],
 
-            text-decoration: none;
+default =>
+$pdt['planning'],
 
-            color: #d6e6f5;
+};
 
-            font-size: 13px;
-        }
+@endphp
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, .08);
-        }
 
-        .menu-item.active {
-            color: white;
+@section(
+'title',
+$pdt['title'] . ' - RuangKita'
+)
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
 
-        .menu-icon {
-            width: 19px;
-            text-align: center;
-        }
+@push('styles')
 
-        /* =========================
-           MAIN
-        ========================= */
+<style>
+    /* =====================================================
+       PAGE TITLE
+    ===================================================== */
 
-        .main {
-            margin-left: 230px;
-            width: calc(100% - 230px);
-        }
+    .project-detail-title {
 
-        .topbar {
-            height: 66px;
+        margin-bottom: 20px;
 
-            background: white;
+        color:
+            var(--text-heading);
 
-            border-bottom:
-                1px solid #e7edf3;
+        font-size: 27px;
+    }
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
 
-            padding: 0 28px;
-        }
+    /* =====================================================
+       PROJECT CARD
+    ===================================================== */
 
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+    .project-detail-card {
 
-            font-size: 13px;
-            font-weight: 600;
-        }
+        margin-bottom: 20px;
 
-        .avatar {
-            width: 33px;
-            height: 33px;
+        padding: 18px;
 
-            border-radius: 50%;
+        display: grid;
 
-            background: #e4eef7;
+        grid-template-columns:
+            300px 1fr;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        gap: 22px;
 
-        /* =========================
-           CONTENT
-        ========================= */
+        border:
+            1px solid var(--border);
 
-        .content {
-            padding: 28px 30px 40px;
-        }
+        border-radius: 13px;
 
-        .breadcrumb {
-            color: #8092a3;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
+        background:
+            var(--card-bg);
 
-        .breadcrumb a {
-            color: #0874c9;
-            text-decoration: none;
-        }
+        box-shadow:
+            var(--shadow);
+    }
 
-        .page-title {
-            font-size: 27px;
-            color: #14304a;
-            margin-bottom: 20px;
-        }
 
-        /* =========================
-           PROJECT SUMMARY
-        ========================= */
+    .project-detail-image {
 
-        .project-card {
-            background: white;
+        width: 100%;
+        height: 205px;
 
-            border: 1px solid #e6edf3;
-            border-radius: 13px;
+        border-radius: 11px;
 
-            padding: 18px;
+        object-fit: cover;
 
-            display: grid;
+        background: #e2edf5;
+    }
+
+
+    body.dark-mode .project-detail-image {
+
+        background: #263b4b;
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .project-detail-header {
+
+        margin-bottom: 15px;
+
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        align-items:
+            flex-start;
+
+        gap: 10px;
+    }
+
+
+    .project-detail-name {
+
+        color:
+            var(--text-heading);
+
+        font-size: 20px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    .project-status {
+
+        padding:
+            5px 10px;
+
+        border-radius: 20px;
+
+        font-size: 10px;
+
+        font-weight: 600;
+    }
+
+
+    .project-status.ongoing {
+
+        background: #ddf8eb;
+
+        color: #158158;
+    }
+
+
+    .project-status.completed {
+
+        background: #e4f1ff;
+
+        color: #126bb6;
+    }
+
+
+    .project-status.paused {
+
+        background: #ffeadc;
+
+        color: #b35b1e;
+    }
+
+
+    .project-status.planning {
+
+        background: #fff3d3;
+
+        color: #986500;
+    }
+
+
+    body.dark-mode .project-status.ongoing {
+
+        background: #173d31;
+
+        color: #79ddb0;
+    }
+
+
+    body.dark-mode .project-status.completed {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    body.dark-mode .project-status.paused {
+
+        background: #49301f;
+
+        color: #f2ad78;
+    }
+
+
+    body.dark-mode .project-status.planning {
+
+        background: #433a20;
+
+        color: #f4cf78;
+    }
+
+
+    /* =====================================================
+       DETAIL GRID
+    ===================================================== */
+
+    .detail-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            135px 1fr;
+
+        row-gap: 8px;
+
+        font-size: 12px;
+    }
+
+
+    .detail-label {
+
+        color:
+            var(--text-muted);
+    }
+
+
+    .detail-value {
+
+        color:
+            var(--text-main);
+
+        font-weight: 500;
+    }
+
+
+    /* =====================================================
+       PROGRESS
+    ===================================================== */
+
+    .progress-area {
+
+        margin-top: 18px;
+    }
+
+
+    .progress-label {
+
+        margin-bottom: 7px;
+
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        color:
+            var(--text-muted);
+
+        font-size: 12px;
+    }
+
+
+    .progress-label strong {
+
+        color:
+            var(--primary);
+    }
+
+
+    .progress-track {
+
+        height: 8px;
+
+        overflow: hidden;
+
+        border-radius: 30px;
+
+        background: #e3eaf0;
+    }
+
+
+    body.dark-mode .progress-track {
+
+        background: #304352;
+    }
+
+
+    .progress-fill {
+
+        width: 0;
+
+        height: 100%;
+
+        border-radius: 30px;
+
+        background:
+            linear-gradient(90deg,
+                #1484df,
+                #21a3ec);
+    }
+
+
+    /* =====================================================
+       TABS
+    ===================================================== */
+
+    .tabs {
+
+        overflow: hidden;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 13px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .tab-menu {
+
+        display: flex;
+
+        overflow-x: auto;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .tab-link {
+
+        min-width: 120px;
+
+        padding:
+            15px 18px;
+
+        border-bottom:
+            3px solid transparent;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        transition: .2s;
+    }
+
+
+    .tab-link:hover {
+
+        color:
+            var(--primary);
+    }
+
+
+    .tab-link.active {
+
+        color:
+            var(--primary);
+
+        border-bottom-color:
+            var(--primary);
+    }
+
+
+    .tab-content {
+
+        padding: 20px;
+    }
+
+
+    .tab-content h3 {
+
+        margin-bottom: 10px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 15px;
+    }
+
+
+    .tab-content p {
+
+        color:
+            var(--text-muted);
+
+        font-size: 13px;
+
+        line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 900px) {
+
+        .project-detail-card {
 
             grid-template-columns:
-                300px 1fr;
-
-            gap: 22px;
-
-            margin-bottom: 20px;
+                1fr;
         }
 
-        .project-image {
-            width: 100%;
-            height: 205px;
+    }
 
-            border-radius: 11px;
 
-            object-fit: cover;
+    @media(max-width: 600px) {
 
-            background: #e2edf5;
+        .project-detail-image {
+
+            height: 190px;
         }
 
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-
-            gap: 10px;
-
-            margin-bottom: 15px;
-        }
-
-        .project-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #18344e;
-        }
-
-        .status {
-            padding: 5px 10px;
-
-            border-radius: 20px;
-
-            font-size: 10px;
-            font-weight: 600;
-
-            background: #ddf8eb;
-            color: #158158;
-        }
 
         .detail-grid {
-            display: grid;
 
             grid-template-columns:
-                135px 1fr;
-
-            row-gap: 8px;
-
-            font-size: 12px;
+                110px 1fr;
         }
 
-        .detail-label {
-            color: #7b8d9f;
-        }
+    }
+</style>
 
-        .detail-value {
-            color: #2b455d;
-            font-weight: 500;
-        }
+@endpush
 
-        .progress-area {
-            margin-top: 18px;
-        }
 
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
 
-            margin-bottom: 7px;
+@section('content')
 
-            font-size: 12px;
 
-            color: #62788c;
-        }
+{{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
 
-        .progress-track {
-            height: 8px;
+<div class="breadcrumb">
 
-            background: #e3eaf0;
+    <a
+        href="{{ route('client.projects.index') }}">
 
-            border-radius: 30px;
+        {{ $pdt['projects'] }}
 
-            overflow: hidden;
-        }
+    </a>
 
-        .progress-fill {
-            height: 100%;
+    &nbsp;›&nbsp;
 
-            background:
-                linear-gradient(90deg,
-                    #1484df,
-                    #21a3ec);
+    {{ $pdt['title'] }}
 
-            border-radius: 30px;
-        }
+</div>
 
-        /* =========================
-           TABS
-        ========================= */
 
-        .tabs {
-            background: white;
 
-            border: 1px solid #e6edf3;
+{{-- =====================================================
+         TITLE
+    ====================================================== --}}
 
-            border-radius: 13px;
+<h1 class="project-detail-title">
 
-            overflow: hidden;
-        }
+    {{ $pdt['title'] }}
 
-        .tab-menu {
-            display: flex;
+</h1>
 
-            border-bottom:
-                1px solid #e8eef4;
 
-            overflow-x: auto;
-        }
 
-        .tab-link {
-            min-width: 120px;
+{{-- =====================================================
+         PROJECT DETAIL
+    ====================================================== --}}
 
-            padding: 15px 18px;
+<div class="project-detail-card">
 
-            text-align: center;
 
-            text-decoration: none;
+    <div>
 
-            color: #77899b;
 
-            font-size: 12px;
+        @if($project->cover_image)
 
-            font-weight: 600;
+        <img
 
-            border-bottom:
-                3px solid transparent;
-        }
+            src="{{
+                        asset(
+                            'storage/' .
+                            $project->cover_image
+                        )
+                    }}"
 
-        .tab-link.active {
-            color: #0874ca;
+            alt="{{
+                        $project->project_name
+                    }}"
 
-            border-bottom-color:
-                #0874ca;
-        }
+            class="
+                        project-detail-image
+                    ">
 
-        .tab-content {
-            padding: 20px;
-        }
+        @else
 
-        .tab-content h3 {
-            font-size: 15px;
+        <div
+            class="
+                        project-detail-image
+                    "></div>
 
-            margin-bottom: 10px;
-        }
+        @endif
 
-        .tab-content p {
-            color: #718497;
-
-            font-size: 13px;
-
-            line-height: 1.7;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media(max-width: 900px) {
-
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .project-card {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media(max-width: 600px) {
-
-            .content {
-                padding: 20px 14px;
-            }
-
-            .topbar {
-                padding: 0 17px;
-            }
-
-            .project-image {
-                height: 190px;
-            }
-
-            .detail-grid {
-                grid-template-columns:
-                    110px 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="app">
-
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-
-            <div class="brand">
-
-                <div class="ruangkita-logo">
-
-                    <div class="roof"></div>
-
-                    <div class="house">
-                        <div class="door"></div>
-                    </div>
-
-                </div>
-
-                <span class="brand-name">
-                    RuangKita
-                </span>
-
-            </div>
-
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⌂</span>
-
-                Dashboard
-            </a>
-
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item active">
-
-                <span class="menu-icon">▣</span>
-
-                Proyek Saya
-            </a>
-
-            <a href="{{ route('client.schedule') }}"
-                class="menu-item">
-                <span class="menu-icon">▦</span>
-                Jadwal
-            </a>
-
-            <a href="{{ route('client.progress') }}" class="menu-item">
-                <span class="menu-icon">↗</span>
-                Progress
-            </a>
-
-            <a href="{{ route('client.documentation') }}" class="menu-item">
-                <span class="menu-icon">▧</span>
-                Dokumentasi
-            </a>
-
-            <a href="{{ route('client.costs') }}" class="menu-item">
-                <span class="menu-icon">◉</span>
-                Informasi Biaya
-            </a>
-
-            <a href="{{ route('client.messages') }}" class="menu-item">
-                <span class="menu-icon">✉</span>
-                Pesan
-            </a>
-
-            <a
-                href="{{ route('client.ar', ['project' => $project->id]) }}"
-                class="menu-item">
-
-                <span class="menu-icon">◇</span>
-
-                Augmented Reality
-            </a>
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-        </aside>
-
-        <!-- MAIN -->
-        <main class="main">
-
-            <header class="topbar">
-
-                <div>
-                    ☰
-                </div>
-
-                <div class="user-area">
-
-                    <span>♧</span>
-
-                    <div class="avatar">
-                        👤
-                    </div>
-
-                    <span>
-                        {{ auth()->user()->name }}
-                    </span>
-
-                    <span>▾</span>
-
-                </div>
-
-            </header>
-
-            <section class="content">
-
-                <div class="breadcrumb">
-
-                    <a href="{{ route('client.projects.index') }}">
-                        Proyek Saya
-                    </a>
-
-                    &nbsp;›&nbsp;
-
-                    Detail Proyek
-
-                </div>
-
-                <h1 class="page-title">
-                    Detail Proyek
-                </h1>
-
-                <div class="project-card">
-
-                    <div>
-
-                        @if($project->cover_image)
-
-                        <img
-                            src="{{ asset('storage/' . $project->cover_image) }}"
-                            alt="{{ $project->project_name }}"
-                            class="project-image">
-
-                        @else
-
-                        <div class="project-image"></div>
-
-                        @endif
-
-                    </div>
-
-                    <div>
-
-                        <div class="project-header">
-
-                            <div class="project-name">
-                                {{ $project->project_name }}
-                            </div>
-
-                            @if($project->status === 'ongoing')
-
-                            <span class="status">
-                                Berjalan
-                            </span>
-
-                            @endif
-
-                        </div>
-
-                        <div class="detail-grid">
-
-                            <div class="detail-label">
-                                Client
-                            </div>
-
-                            <div class="detail-value">
-                                {{ optional(optional($project->client)->user)->name ?? '-' }}
-                            </div>
-
-                            <div class="detail-label">
-                                Lokasi
-                            </div>
-
-                            <div class="detail-value">
-                                {{ $project->location }}
-                            </div>
-
-                            <div class="detail-label">
-                                Tanggal Mulai
-                            </div>
-
-                            <div class="detail-value">
-
-                                @if($project->start_date)
-
-                                {{ \Carbon\Carbon::parse($project->start_date)->format('d M Y') }}
-
-                                @else
-
-                                -
-
-                                @endif
-
-                            </div>
-
-                            <div class="detail-label">
-                                Target Selesai
-                            </div>
-
-                            <div class="detail-value">
-
-                                @if($project->target_end_date)
-
-                                {{ \Carbon\Carbon::parse($project->target_end_date)->format('d M Y') }}
-
-                                @else
-
-                                -
-
-                                @endif
-
-                            </div>
-
-                            <div class="detail-label">
-                                Status
-                            </div>
-
-                            <div class="detail-value">
-                                {{ ucfirst($project->status) }}
-                            </div>
-
-                        </div>
-
-                        <div class="progress-area">
-
-                            <div class="progress-label">
-
-                                <span>
-                                    Progress
-                                </span>
-
-                                <strong>
-                                    {{ $project->progress_percentage }}%
-                                </strong>
-
-                            </div>
-
-                            <div class="progress-track">
-
-                                <div
-                                    class="progress-fill"
-                                    data-progress="{{ $project->progress_percentage }}">
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- TABS -->
-                <div class="tabs">
-
-                    <div class="tab-menu">
-
-                        <a
-                            href="#"
-                            class="tab-link active">
-                            Ringkasan
-                        </a>
-
-                        <a
-                            href="{{ route('client.projects.schedule', ['project' => $project->id]) }}"
-                            class="tab-link">
-                            Jadwal
-                        </a>
-
-                        <a
-                            href="{{ route('client.projects.progress', $project) }}"
-                            class="tab-link">
-
-                            Progress
-                        </a>
-
-                        <a
-                            href="{{ route('client.documentation', ['project' => $project->id]) }}"
-                            class="tab-link">
-                            Dokumentasi
-                        </a>
-
-                        <a
-                            href="{{ route('client.costs', ['project' => $project->id]) }}"
-                            class="tab-link">
-
-                            Informasi Biaya
-
-                        </a>
-
-                    </div>
-
-                    <div class="tab-content">
-
-                        <h3>
-                            Deskripsi Proyek
-                        </h3>
-
-                        <p>
-                            {{ $project->description ?: 'Belum ada deskripsi proyek.' }}
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </main>
 
     </div>
 
-    <script>
-        document
-            .querySelectorAll('.progress-fill')
-            .forEach(function(bar) {
 
-                let value =
+
+    <div>
+
+
+        <div class="project-detail-header">
+
+
+            <div class="project-detail-name">
+
+                {{
+                        $project
+                            ->project_name
+                    }}
+
+            </div>
+
+
+            <span
+                class="
+                        project-status
+                        {{
+                            $projectStatus
+                        }}
+                    ">
+
+                {{
+                        $projectStatusLabel
+                    }}
+
+            </span>
+
+
+        </div>
+
+
+
+        {{-- =============================================
+                 DETAIL
+            ============================================== --}}
+
+        <div class="detail-grid">
+
+
+            <div class="detail-label">
+
+                {{ $pdt['client'] }}
+
+            </div>
+
+
+            <div class="detail-value">
+
+                {{
+                        optional(
+                            optional(
+                                $project->client
+                            )->user
+                        )->name
+                        ??
+                        '-'
+                    }}
+
+            </div>
+
+
+
+            <div class="detail-label">
+
+                {{ $pdt['location'] }}
+
+            </div>
+
+
+            <div class="detail-value">
+
+                {{
+                        $project->location
+                        ??
+                        '-'
+                    }}
+
+            </div>
+
+
+
+            <div class="detail-label">
+
+                {{ $pdt['start_date'] }}
+
+            </div>
+
+
+            <div class="detail-value">
+
+                @if($project->start_date)
+
+                {{
+                            \Carbon\Carbon
+                                ::parse(
+                                    $project
+                                        ->start_date
+                                )
+                                ->format(
+                                    'd M Y'
+                                )
+                        }}
+
+                @else
+
+                -
+
+                @endif
+
+            </div>
+
+
+
+            <div class="detail-label">
+
+                {{ $pdt['target_end'] }}
+
+            </div>
+
+
+            <div class="detail-value">
+
+                @if($project->target_end_date)
+
+                {{
+                            \Carbon\Carbon
+                                ::parse(
+                                    $project
+                                        ->target_end_date
+                                )
+                                ->format(
+                                    'd M Y'
+                                )
+                        }}
+
+                @else
+
+                -
+
+                @endif
+
+            </div>
+
+
+
+            <div class="detail-label">
+
+                {{ $pdt['status'] }}
+
+            </div>
+
+
+            <div class="detail-value">
+
+                {{
+                        $projectStatusLabel
+                    }}
+
+            </div>
+
+
+        </div>
+
+
+
+        {{-- =============================================
+                 PROGRESS
+            ============================================== --}}
+
+        <div class="progress-area">
+
+
+            <div class="progress-label">
+
+                <span>
+
+                    {{ $pdt['progress'] }}
+
+                </span>
+
+
+                <strong>
+
+                    {{
+                            $project
+                                ->progress_percentage
+                            ??
+                            0
+                        }}%
+
+                </strong>
+
+            </div>
+
+
+
+            <div class="progress-track">
+
+                <div
+
+                    class="progress-fill"
+
+                    data-progress="{{
+                            $project
+                                ->progress_percentage
+                            ??
+                            0
+                        }}"></div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =====================================================
+         TABS
+    ====================================================== --}}
+
+<div class="tabs">
+
+
+    <div class="tab-menu">
+
+
+        <a
+
+            href="{{
+                    route(
+                        'client.projects.show',
+                        $project
+                    )
+                }}"
+
+            class="tab-link active">
+
+            {{ $pdt['summary'] }}
+
+        </a>
+
+
+
+        <a
+
+            href="{{
+                    route(
+                        'client.projects.schedule',
+                        $project
+                    )
+                }}"
+
+            class="tab-link">
+
+            {{ $pdt['schedule'] }}
+
+        </a>
+
+
+
+        <a
+
+            href="{{
+                    route(
+                        'client.projects.progress',
+                        $project
+                    )
+                }}"
+
+            class="tab-link">
+
+            {{ $pdt['progress'] }}
+
+        </a>
+
+
+
+        <a
+
+            href="{{
+                    route(
+                        'client.documentation',
+                        [
+                            'project'
+                            =>
+                            $project->id
+                        ]
+                    )
+                }}"
+
+            class="tab-link">
+
+            {{ $pdt['documentation'] }}
+
+        </a>
+
+
+
+        <a
+
+            href="{{
+                    route(
+                        'client.costs',
+                        [
+                            'project'
+                            =>
+                            $project->id
+                        ]
+                    )
+                }}"
+
+            class="tab-link">
+
+            {{ $pdt['costs'] }}
+
+        </a>
+
+
+    </div>
+
+
+
+    <div class="tab-content">
+
+
+        <h3>
+
+            {{
+                    $pdt[
+                        'project_description'
+                    ]
+                }}
+
+        </h3>
+
+
+        <p>
+
+            {{
+                    $project->description
+                    ?:
+                    $pdt[
+                        'no_description'
+                    ]
+                }}
+
+        </p>
+
+
+    </div>
+
+
+</div>
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    document
+        .querySelectorAll(
+            '.progress-fill'
+        )
+        .forEach(
+            function(bar) {
+
+                let progress =
                     parseInt(
-                        bar.dataset.progress || '0'
+                        bar.dataset.progress ||
+                        '0'
                     );
 
-                value =
+
+                progress =
                     Math.max(
                         0,
                         Math.min(
                             100,
-                            value
+                            progress
                         )
                     );
 
+
                 bar.style.width =
-                    value + '%';
+                    progress + '%';
 
-            });
-    </script>
+            }
+        );
+</script>
 
-</body>
-
-</html>
+@endpush

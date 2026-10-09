@@ -1,717 +1,982 @@
-<!DOCTYPE html>
-<html lang="{{ $lang }}">
+@extends('layouts.client')
 
-<head>
 
-    <meta charset="UTF-8">
+@php
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+/*
+|--------------------------------------------------------------------------
+| TRANSLATION KHUSUS HALAMAN SETTINGS
+|--------------------------------------------------------------------------
+*/
 
-    <title>Pengaturan - RuangKita</title>
+$settingsTranslations = [
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+'id' => [
 
-        body {
-            background: #f4f8fc;
-            color: #17334c;
-        }
+'title' => 'Pengaturan',
 
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
+'description' =>
+'Kelola profil akun, keamanan, notifikasi, dan preferensi aplikasi Anda.',
 
-        /* ================================
-           SIDEBAR
-        ================================= */
 
-        .sidebar {
-            width: 230px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 1000;
-            padding: 20px 14px;
-            color: white;
-            background: linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
-        }
+'profile' => 'Profil Akun',
 
-        .brand {
-            padding: 5px 9px 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+'profile_description' =>
+'Kelola informasi profil Anda.',
 
-        .brand-name {
-            font-size: 18px;
-            font-weight: 700;
-        }
+'change_photo' => 'Ubah Foto',
 
-        .ruangkita-logo {
-            width: 31px;
-            height: 31px;
-            position: relative;
-        }
+'full_name' => 'Nama Lengkap',
 
-        .ruangkita-logo .roof {
-            width: 20px;
-            height: 20px;
-            position: absolute;
-            left: 5px;
-            top: 2px;
-            border-left: 4px solid white;
-            border-top: 4px solid white;
-            transform: rotate(45deg);
-        }
+'email' => 'Email',
 
-        .ruangkita-logo .house {
-            width: 19px;
-            height: 17px;
-            position: absolute;
-            left: 6px;
-            bottom: 2px;
-            border-left: 4px solid white;
-            border-right: 4px solid white;
-            border-bottom: 4px solid white;
-        }
+'phone' => 'Nomor Telepon',
 
-        .ruangkita-logo .door {
-            width: 6px;
-            height: 9px;
-            position: absolute;
-            left: 50%;
-            bottom: -1px;
-            transform: translateX(-50%);
-            border: 2px solid white;
-            border-bottom: none;
-        }
+'address' => 'Alamat',
 
-        .menu-item {
-            min-height: 42px;
-            padding: 0 13px;
-            margin-bottom: 3px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            text-decoration: none;
-            color: #d6e6f5;
-            font-size: 13px;
-        }
+'save_changes' => 'Simpan Perubahan',
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, .08);
-        }
 
-        .menu-item.active {
-            color: white;
-            background: linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+'security' => 'Keamanan',
 
-        .menu-icon {
-            width: 19px;
-            text-align: center;
-        }
+'security_description' =>
+'Ubah password akun Anda secara berkala.',
 
-        /* ================================
-           MAIN
-        ================================= */
+'current_password' => 'Password Lama',
 
-        .main {
-            position: relative;
-            z-index: 1;
-            width: calc(100% - 230px);
-            margin-left: 230px;
-        }
+'new_password' => 'Password Baru',
 
-        .topbar {
-            height: 66px;
-            padding: 0 28px;
-            background: white;
-            border-bottom: 1px solid #e5edf3;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+'confirm_password' => 'Konfirmasi Password',
 
-        .hamburger {
-            color: #41627e;
-            font-size: 20px;
-        }
+'current_password_placeholder' =>
+'Password lama',
 
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
+'new_password_placeholder' =>
+'Minimal 8 karakter',
 
-        .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: #e3edf5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+'confirm_password_placeholder' =>
+'Ulangi password',
 
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center;
-            display: block;
-        }
+'change_password' => 'Ubah Password',
 
-        /* ================================
-           CONTENT
-        ================================= */
 
-        .content {
-            padding: 27px 30px 40px;
-        }
+'notification_preferences' =>
+'Preferensi Notifikasi',
 
-        .breadcrumb {
-            color: #71869a;
-            font-size: 11px;
-            margin-bottom: 15px;
-        }
+'notification_description' =>
+'Tentukan notifikasi yang ingin Anda terima.',
 
-        .breadcrumb a {
-            text-decoration: none;
-            color: #56728b;
-        }
 
-        .page-title {
-            margin-bottom: 23px;
-        }
+'message_notification' =>
+'Notifikasi Pesan',
 
-        .page-title h1 {
-            color: #102e49;
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
+'message_notification_desc' =>
+'Informasi pesan baru dari tim proyek.',
 
-        .page-title p {
-            color: #6f8498;
-            font-size: 13px;
-        }
+
+'progress_notification' =>
+'Update Progress',
+
+'progress_notification_desc' =>
+'Informasi perkembangan proyek terbaru.',
+
+
+'schedule_notification' =>
+'Pengingat Jadwal',
+
+'schedule_notification_desc' =>
+'Perubahan dan pengingat jadwal proyek.',
+
+
+'documentation_notification' =>
+'Dokumentasi Baru',
+
+'documentation_notification_desc' =>
+'Informasi foto atau dokumen terbaru.',
+
+
+'cost_notification' =>
+'Informasi Biaya',
+
+'cost_notification_desc' =>
+'Informasi terbaru terkait pembayaran.',
+
+
+'app_preferences' =>
+'Preferensi Aplikasi',
+
+'app_preferences_description' =>
+'Atur bahasa, zona waktu dan tampilan aplikasi.',
+
+'language' => 'Bahasa',
+
+'timezone' => 'Zona Waktu',
+
+'appearance' => 'Tampilan',
+
+'light_mode' => 'Mode Terang',
+
+'dark_mode' => 'Mode Gelap',
+
+'save_preferences' =>
+'Simpan Preferensi',
+
+
+'account_summary' =>
+'Ringkasan Akun',
+
+'client' => 'Client',
+
+'active' => 'Aktif',
+
+'inactive' => 'Tidak Aktif',
+
+
+'account_action' =>
+'Aksi Akun',
+
+'account_action_description' =>
+'Kelola sesi akun Anda.',
+
+'logout' => 'Keluar',
+
+],
+
+
+'en' => [
+
+'title' => 'Settings',
+
+'description' =>
+'Manage your profile, security, notifications, and application preferences.',
+
+
+'profile' => 'Account Profile',
+
+'profile_description' =>
+'Manage your profile information.',
+
+'change_photo' => 'Change Photo',
+
+'full_name' => 'Full Name',
+
+'email' => 'Email',
+
+'phone' => 'Phone Number',
+
+'address' => 'Address',
+
+'save_changes' => 'Save Changes',
+
+
+'security' => 'Security',
+
+'security_description' =>
+'Change your account password regularly.',
+
+'current_password' =>
+'Current Password',
+
+'new_password' =>
+'New Password',
+
+'confirm_password' =>
+'Confirm Password',
+
+'current_password_placeholder' =>
+'Current password',
+
+'new_password_placeholder' =>
+'Minimum 8 characters',
+
+'confirm_password_placeholder' =>
+'Repeat password',
+
+'change_password' =>
+'Change Password',
+
+
+'notification_preferences' =>
+'Notification Preferences',
+
+'notification_description' =>
+'Choose which notifications you want to receive.',
+
+
+'message_notification' =>
+'Message Notifications',
+
+'message_notification_desc' =>
+'Notifications for new messages from the project team.',
+
+
+'progress_notification' =>
+'Progress Updates',
+
+'progress_notification_desc' =>
+'Notifications about the latest project progress.',
+
+
+'schedule_notification' =>
+'Schedule Reminder',
+
+'schedule_notification_desc' =>
+'Project schedule changes and reminders.',
+
+
+'documentation_notification' =>
+'New Documentation',
+
+'documentation_notification_desc' =>
+'Notifications for new photos or documents.',
+
+
+'cost_notification' =>
+'Cost Information',
+
+'cost_notification_desc' =>
+'Latest information related to payments.',
+
+
+'app_preferences' =>
+'Application Preferences',
+
+'app_preferences_description' =>
+'Set language, time zone, and application appearance.',
+
+'language' => 'Language',
+
+'timezone' => 'Time Zone',
+
+'appearance' => 'Appearance',
+
+'light_mode' => 'Light Mode',
+
+'dark_mode' => 'Dark Mode',
+
+'save_preferences' =>
+'Save Preferences',
+
+
+'account_summary' =>
+'Account Summary',
+
+'client' => 'Client',
+
+'active' => 'Active',
+
+'inactive' => 'Inactive',
+
+
+'account_action' =>
+'Account Actions',
+
+'account_action_description' =>
+'Manage your account session.',
+
+'logout' => 'Logout',
+
+],
+
+];
+
+
+$st =
+$settingsTranslations[$user->language ?? 'id']
+??
+$settingsTranslations['id'];
+@endphp
+
+
+@section(
+'title',
+$st['title'] . ' - RuangKita'
+)
+
+
+@push('styles')
+
+<style>
+    /* =====================================================
+       SETTINGS LAYOUT
+    ===================================================== */
+
+    .settings-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr) 330px;
+
+        gap: 17px;
+    }
+
+
+    .settings-column .card {
+
+        margin-bottom: 17px;
+    }
+
+
+    /* =====================================================
+       PROFILE
+    ===================================================== */
+
+    .profile-layout {
+
+        display: grid;
+
+        grid-template-columns:
+            150px 1fr;
+
+        gap: 22px;
+    }
+
+
+    .profile-photo-box {
+
+        text-align: center;
+    }
+
+
+    .profile-photo {
+
+        width: 105px;
+        height: 105px;
+
+        margin:
+            0 auto 10px;
+
+        border-radius: 50%;
+
+        overflow: hidden;
+
+        background: #eef4f9;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 35px;
+    }
+
+
+    .profile-photo img {
+
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        object-position:
+            center top;
+
+        display: block;
+    }
+
+
+    .photo-label {
+
+        display: inline-block;
+
+        margin-top: 8px;
+
+        color:
+            var(--primary);
+
+        font-size: 10px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    .photo-label input {
+
+        display: none;
+    }
+
+
+    /* =====================================================
+       FORM
+    ===================================================== */
+
+    .form-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 15px;
+    }
+
+
+    .field {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 6px;
+    }
+
+
+    .field.full {
+
+        grid-column:
+            1 / -1;
+    }
+
+
+    .field label {
+
+        color:
+            var(--text-main);
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+
+    .field input,
+    .field textarea,
+    .field select {
+
+        width: 100%;
+
+        padding:
+            11px 12px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 8px;
+
+        outline: none;
+
+        color:
+            var(--text-main);
+
+        background:
+            var(--input-bg);
+
+        font-size: 12px;
+    }
+
+
+    .field textarea {
+
+        min-height: 85px;
+
+        resize: vertical;
+    }
+
+
+    .button-row {
+
+        margin-top: 18px;
+
+        display: flex;
+
+        justify-content: flex-end;
+    }
+
+
+    /* =====================================================
+       PASSWORD
+    ===================================================== */
+
+    .password-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    /* =====================================================
+       NOTIFICATION
+    ===================================================== */
+
+    .notification-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    .notification-item {
+
+        padding: 13px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 10px;
+
+        background:
+            var(--card-bg);
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+
+        gap: 10px;
+    }
+
+
+    .notification-name {
+
+        color:
+            var(--text-main);
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+
+    .notification-text {
+
+        margin-top: 3px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+    }
+
+
+    /* =====================================================
+       SWITCH
+    ===================================================== */
+
+    .switch {
+
+        position: relative;
+
+        width: 41px;
+        height: 23px;
+
+        flex-shrink: 0;
+    }
+
+
+    .switch input {
+
+        width: 0;
+        height: 0;
+
+        opacity: 0;
+    }
+
+
+    .slider {
+
+        position: absolute;
+
+        inset: 0;
+
+        border-radius: 20px;
+
+        background: #ccd7e0;
+
+        cursor: pointer;
+
+        transition: .2s;
+    }
+
+
+    .slider::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 17px;
+        height: 17px;
+
+        top: 3px;
+        left: 3px;
+
+        border-radius: 50%;
+
+        background: white;
+
+        transition: .2s;
+    }
+
+
+    .switch input:checked+.slider {
+
+        background:
+            var(--primary);
+    }
+
+
+    .switch input:checked+.slider::before {
+
+        transform:
+            translateX(18px);
+    }
+
+
+    /* =====================================================
+       ACCOUNT SUMMARY
+    ===================================================== */
+
+    .account-header {
+
+        margin-bottom: 18px;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+    }
+
+
+    .account-header .profile-photo {
+
+        width: 65px;
+        height: 65px;
+
+        margin: 0;
+
+        flex-shrink: 0;
+    }
+
+
+    .account-info {
+
+        flex: 1;
+    }
+
+
+    .account-name {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 16px;
+
+        font-weight: 700;
+    }
+
+
+    .account-role {
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    .status {
+
+        display: inline-block;
+
+        padding:
+            5px 9px;
+
+        border-radius: 15px;
+
+        background: #e1f8eb;
+
+        color: #168456;
+
+        font-size: 9px;
+
+        font-weight: 700;
+    }
+
+
+    .status.inactive {
+
+        background: #fff0f0;
+
+        color: #c0392b;
+    }
+
+
+    .info-row {
+
+        padding:
+            10px 0;
+
+        display: grid;
+
+        grid-template-columns:
+            100px 1fr;
+
+        gap: 10px;
+
+        border-bottom:
+            1px solid var(--border);
+
+        font-size: 10px;
+    }
+
+
+    .info-row:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .info-label {
+
+        color:
+            var(--text-muted);
+    }
+
+
+    .info-value {
+
+        color:
+            var(--text-main);
+
+        font-weight: 600;
+
+        word-break:
+            break-word;
+    }
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    .logout-form {
+
+        margin-top: 10px;
+    }
+
+
+    .btn-logout {
+
+        width: 100%;
+
+        min-height: 42px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #e53935;
+
+        color: white;
+
+        font-size: 11px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+    }
+
+
+    .btn-logout:hover {
+
+        opacity: .9;
+    }
+
+
+    /* =====================================================
+       DARK MODE KHUSUS SETTINGS
+    ===================================================== */
+
+    body.dark-mode .profile-photo {
+
+        background: #233747;
+    }
+
+
+    body.dark-mode .slider {
+
+        background: #425767;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1050px) {
 
         .settings-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 330px;
-            gap: 17px;
+
+            grid-template-columns:
+                1fr;
         }
 
-        .card {
-            background: white;
-            border: 1px solid #e1e9ef;
-            border-radius: 13px;
-            padding: 20px;
-            margin-bottom: 17px;
-        }
-
-        .card-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #17354e;
-            margin-bottom: 5px;
-        }
-
-        .card-subtitle {
-            color: #798da0;
-            font-size: 10px;
-            margin-bottom: 18px;
-        }
-
-        /* ================================
-           PROFILE
-        ================================= */
-
-        .profile-layout {
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            gap: 22px;
-        }
-
-        .profile-photo-box {
-            text-align: center;
-        }
-
-        .profile-photo {
-            width: 105px;
-            height: 105px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 0 auto 10px;
-            background: #eef4f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-        }
-
-        .profile-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center top;
-
-        }
-
-        .photo-label {
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 10px;
-            color: #0877d4;
-            cursor: pointer;
-        }
-
-        .photo-label input {
-            display: none;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .field.full {
-            grid-column: 1 / -1;
-        }
-
-        .field label {
-            color: #29465e;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .field input,
-        .field textarea,
-        .field select {
-            width: 100%;
-            border: 1px solid #dce6ee;
-            border-radius: 8px;
-            padding: 11px 12px;
-            outline: none;
-            color: #29465e;
-            background: #fbfdff;
-            font-size: 12px;
-        }
-
-        .field textarea {
-            min-height: 85px;
-            resize: vertical;
-        }
-
-        .button-row {
-            margin-top: 18px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .btn-primary {
-            border: none;
-            border-radius: 8px;
-            padding: 11px 18px;
-            background: linear-gradient(90deg,
-                    #0877d4,
-                    #078ee5);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* ================================
-           PASSWORD
-        ================================= */
 
         .password-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
+
+            grid-template-columns:
+                1fr;
         }
 
-        /* ================================
-           NOTIFICATION
-        ================================= */
+    }
 
+
+    @media(max-width: 650px) {
+
+        .profile-layout {
+
+            grid-template-columns:
+                1fr;
+        }
+
+
+        .form-grid,
         .notification-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+
+            grid-template-columns:
+                1fr;
         }
 
-        .notification-item {
-            border: 1px solid #e4ebf1;
-            border-radius: 10px;
-            padding: 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notification-name {
-            font-size: 11px;
-            font-weight: 700;
-            color: #27455d;
-        }
-
-        .notification-text {
-            font-size: 9px;
-            color: #8495a5;
-            margin-top: 3px;
-        }
-
-        .switch {
-            position: relative;
-            width: 41px;
-            height: 23px;
-            flex-shrink: 0;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            inset: 0;
-            cursor: pointer;
-            background: #ccd7e0;
-            border-radius: 20px;
-            transition: .2s;
-        }
-
-        .slider::before {
-            content: "";
-            position: absolute;
-            width: 17px;
-            height: 17px;
-            left: 3px;
-            top: 3px;
-            background: white;
-            border-radius: 50%;
-            transition: .2s;
-        }
-
-        .switch input:checked+.slider {
-            background: #0782df;
-        }
-
-        .switch input:checked+.slider::before {
-            transform: translateX(18px);
-        }
-
-        /* ================================
-           RIGHT SIDE
-        ================================= */
-
-        .account-name {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .account-role {
-            color: #70879a;
-            font-size: 10px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 15px;
-            background: #e1f8eb;
-            color: #168456;
-            font-size: 9px;
-            font-weight: 700;
-        }
-
-        .info-row {
-            display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #edf2f6;
-            font-size: 10px;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: #71879a;
-        }
-
-        .info-value {
-            color: #28465d;
-            font-weight: 600;
-        }
-
-        .logout-form {
-            margin-top: 10px;
-        }
-
-        .btn-logout {
-            width: 100%;
-            min-height: 42px;
-            border: none;
-            border-radius: 8px;
-            background: #e53935;
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* ================================
-           ALERT
-        ================================= */
-
-        .alert-success {
-            padding: 12px 14px;
-            margin-bottom: 17px;
-            border-radius: 9px;
-            background: #e8f7ef;
-            color: #167047;
-            font-size: 11px;
-        }
-
-        .alert-error {
-            padding: 12px 14px;
-            margin-bottom: 17px;
-            border-radius: 9px;
-            background: #fff0f0;
-            color: #b42318;
-            font-size: 11px;
-        }
-
-        /* ================================
-           RESPONSIVE
-        ================================= */
-
-        @media(max-width: 1050px) {
-
-            .settings-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .password-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media(max-width: 850px) {
-
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                width: 100%;
-                margin-left: 0;
-            }
-        }
-
-        @media(max-width: 650px) {
-
-            .content {
-                padding: 20px 12px;
-            }
-
-            .profile-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .form-grid,
-            .notification-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ================================
-   DARK MODE
-================================= */
-
-        body.dark-mode {
-            background: #101923;
-            color: #dce7f1;
-        }
-
-        body.dark-mode .main {
-            background: #101923;
-        }
-
-        body.dark-mode .topbar {
-            background: #152331;
-            border-bottom-color: #26394a;
-        }
-
-        body.dark-mode .card {
-            background: #172735;
-            border-color: #294052;
-        }
-
-        body.dark-mode .page-title h1,
-        body.dark-mode .card-title,
-        body.dark-mode .account-name {
-            color: #f4f8fc;
-        }
-
-        body.dark-mode .page-title p,
-        body.dark-mode .card-subtitle,
-        body.dark-mode .account-role,
-        body.dark-mode .breadcrumb {
-            color: #91a7ba;
-        }
-
-        body.dark-mode .field label,
-        body.dark-mode .notification-name,
-        body.dark-mode .info-value {
-            color: #d8e5ef;
-        }
-
-        body.dark-mode .field input,
-        body.dark-mode .field textarea,
-        body.dark-mode .field select {
-            background: #10202d;
-            border-color: #30485b;
-            color: #e8f0f6;
-        }
-
-        body.dark-mode .notification-item {
-            background: #132330;
-            border-color: #294052;
-        }
-
-        body.dark-mode .info-row {
-            border-bottom-color: #294052;
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <body class="{{ $user->theme === 'dark' ? 'dark-mode' : '' }}">
-        <div class="app">
-
-            <aside class="sidebar">
-
-                <div class="brand">
-
-                    <div class="ruangkita-logo">
-                        <div class="roof"></div>
-                        <div class="house">
-                            <div class="door"></div>
-                        </div>
-                    </div>
-
-                    <span class="brand-name">
-                        RuangKita
-                    </span>
-
-                </div>
-
-
-                <a href="{{ route('client.dashboard') }}" class="menu-item">
-                    <span class="menu-icon">⌂</span>
-                    Dashboard
-                </a>
-
-                <a href="{{ route('client.projects.index') }}" class="menu-item">
-                    <span class="menu-icon">▣</span>
-                    Proyek Saya
-                </a>
-
-                <a href="{{ route('client.schedule') }}" class="menu-item">
-                    <span class="menu-icon">▦</span>
-                    Jadwal
-                </a>
-
-                <a href="{{ route('client.progress') }}" class="menu-item">
-                    <span class="menu-icon">↗</span>
-                    Progress
-                </a>
-
-                <a href="{{ route('client.documentation') }}" class="menu-item">
-                    <span class="menu-icon">▧</span>
-                    Dokumentasi
-                </a>
-
-                <a href="{{ route('client.costs') }}" class="menu-item">
-                    <span class="menu-icon">▤</span>
-                    Informasi Biaya
-                </a>
-
-                <a href="{{ route('client.messages') }}" class="menu-item">
-                    <span class="menu-icon">✉</span>
-                    Pesan
-                </a>
-
-                <a href="{{ route('client.ar') }}" class="menu-item">
-                    <span class="menu-icon">◇</span>
-                    Augmented Reality
-                </a>
-
-                <a
-                    href="{{ route('client.settings') }}"
-                    class="menu-item active">
-
-                    <span class="menu-icon">⚙</span>
-
-                    Pengaturan
-                </a>
-
-            </aside>
-
-
-            <main class="main">
-
-                <header class="topbar">
-
-                    <div class="hamburger">
-                        ☰
-                    </div>
-
-                    <div class="user-area">
-
-                        <div class="avatar">
+    }
+</style>
+
+@endpush
+
+
+
+@section('content')
+
+
+{{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
+
+<div class="breadcrumb">
+
+    <a href="{{ route('client.dashboard') }}">
+
+        {{ ($user->language ?? 'id') === 'en' ? 'Home' : 'Beranda' }}
+
+    </a>
+
+    &nbsp;›&nbsp;
+
+    {{ $st['title'] }}
+
+</div>
+
+
+{{-- =====================================================
+         PAGE TITLE
+    ====================================================== --}}
+
+<div class="page-title">
+
+    <h1>
+
+        {{ $st['title'] }}
+
+    </h1>
+
+    <p>
+
+        {{ $st['description'] }}
+
+    </p>
+
+</div>
+
+
+
+<div class="settings-grid">
+
+
+    {{-- =================================================
+             LEFT COLUMN
+        ================================================== --}}
+
+    <div class="settings-column">
+
+
+        {{-- =================================================
+                 PROFILE
+            ================================================== --}}
+
+        <div class="card">
+
+
+            <div class="card-title">
+
+                👤 {{ $st['profile'] }}
+
+            </div>
+
+
+            <div
+                class="card-subtitle"
+                style="margin-top:5px; margin-bottom:18px;">
+
+                {{ $st['profile_description'] }}
+
+            </div>
+
+
+
+            <form
+
+                action="{{
+                        route(
+                            'client.settings.profile'
+                        )
+                    }}"
+
+                method="POST"
+
+                enctype="multipart/form-data">
+
+                @csrf
+
+                @method('PUT')
+
+
+
+                <div class="profile-layout">
+
+
+                    {{-- PHOTO --}}
+
+                    <div class="profile-photo-box">
+
+
+                        <div class="profile-photo">
 
                             @if($user->profile_photo)
 
                             <img
-                                src="{{ asset('storage/' . $user->profile_photo) }}"
+
+                                src="{{
+                                            asset(
+                                                'storage/' .
+                                                $user->profile_photo
+                                            )
+                                        }}"
+
                                 alt="{{ $user->name }}">
 
                             @else
@@ -722,758 +987,1233 @@
 
                         </div>
 
-                        <span>
-                            {{ $user->name }}
-                        </span>
-
-                        <span>▾</span>
-
-                    </div>
-
-                </header>
 
 
-                <section class="content">
+                        <label class="photo-label">
 
-                    <div class="breadcrumb">
-
-                        <a href="{{ route('client.dashboard') }}">
-                            Beranda
-                        </a>
-
-                        &nbsp;›&nbsp;
-
-                        Pengaturan
-
-                    </div>
+                            {{ $st['change_photo'] }}
 
 
-                    <div class="page-title">
+                            <input
 
-                        <h1>
-                            Pengaturan
-                        </h1>
+                                type="file"
 
-                        <p>
-                            Kelola profil akun, keamanan, notifikasi,
-                            dan preferensi aplikasi Anda.
-                        </p>
+                                name="profile_photo"
+
+                                accept="
+                                        .jpg,
+                                        .jpeg,
+                                        .png,
+                                        .webp
+                                    ">
+
+                        </label>
+
 
                     </div>
 
 
-                    @if(session('success'))
 
-                    <div class="alert-success">
-                        {{ session('success') }}
-                    </div>
+                    {{-- PROFILE FORM --}}
 
-                    @endif
+                    <div>
 
 
-                    @if($errors->any())
+                        <div class="form-grid">
 
-                    <div class="alert-error">
 
-                        <strong>
-                            Periksa kembali data berikut:
-                        </strong>
+                            <div class="field">
 
-                        <ul style="margin:8px 0 0 18px;">
+                                <label>
 
-                            @foreach($errors->all() as $error)
+                                    {{
+                                            $st[
+                                                'full_name'
+                                            ]
+                                        }}
 
-                            <li>
-                                {{ $error }}
-                            </li>
+                                </label>
 
-                            @endforeach
 
-                        </ul>
+                                <input
 
-                    </div>
+                                    type="text"
 
-                    @endif
+                                    name="name"
 
+                                    value="{{
+                                            old(
+                                                'name',
+                                                $user->name
+                                            )
+                                        }}"
 
-                    <div class="settings-grid">
-
-
-                        <div>
-
-
-                            <!-- PROFIL -->
-
-                            <div class="card">
-
-                                <div class="card-title">
-                                    👤 Profil Akun
-                                </div>
-
-                                <div class="card-subtitle">
-                                    Kelola informasi profil Anda.
-                                </div>
-
-
-                                <form
-                                    action="{{ route('client.settings.profile') }}"
-                                    method="POST"
-                                    enctype="multipart/form-data">
-
-                                    @csrf
-                                    @method('PUT')
-
-
-                                    <div class="profile-layout">
-
-                                        <div class="profile-photo-box">
-
-                                            <div class="profile-photo">
-
-                                                @if($user->profile_photo)
-
-                                                <img
-                                                    src="{{ asset('storage/' . $user->profile_photo) }}"
-                                                    alt="{{ $user->name }}">
-
-                                                @else
-
-                                                👤
-
-                                                @endif
-
-                                            </div>
-
-                                            <label class="photo-label">
-
-                                                Ubah Foto
-
-                                                <input
-                                                    type="file"
-                                                    name="profile_photo"
-                                                    accept=".jpg,.jpeg,.png,.webp">
-
-                                            </label>
-
-                                        </div>
-
-
-                                        <div>
-
-                                            <div class="form-grid">
-
-                                                <div class="field">
-
-                                                    <label>
-                                                        Nama Lengkap
-                                                    </label>
-
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        value="{{ old('name', $user->name) }}"
-                                                        required>
-
-                                                </div>
-
-
-                                                <div class="field">
-
-                                                    <label>
-                                                        Email
-                                                    </label>
-
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        value="{{ old('email', $user->email) }}"
-                                                        required>
-
-                                                </div>
-
-
-                                                <div class="field">
-
-                                                    <label>
-                                                        Nomor Telepon
-                                                    </label>
-
-                                                    <input
-                                                        type="text"
-                                                        name="phone"
-                                                        value="{{ old('phone', $user->phone) }}">
-
-                                                </div>
-
-
-                                                <div class="field">
-
-                                                    <label>
-                                                        Alamat
-                                                    </label>
-
-                                                    <textarea
-                                                        name="address">{{ old('address', $client->address) }}</textarea>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            <div class="button-row">
-
-                                                <button
-                                                    type="submit"
-                                                    class="btn-primary">
-
-                                                    Simpan Perubahan
-
-                                                </button>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </form>
+                                    required>
 
                             </div>
 
 
-                            <!-- PASSWORD -->
 
-                            <div class="card">
+                            <div class="field">
 
-                                <div class="card-title">
-                                    🔒 Keamanan
-                                </div>
+                                <label>
 
-                                <div class="card-subtitle">
-                                    Ubah password akun Anda secara berkala.
-                                </div>
+                                    {{
+                                            $st[
+                                                'email'
+                                            ]
+                                        }}
 
-
-                                <form
-                                    action="{{ route('client.settings.password') }}"
-                                    method="POST">
-
-                                    @csrf
-                                    @method('PUT')
+                                </label>
 
 
-                                    <div class="password-grid">
+                                <input
 
-                                        <div class="field">
+                                    type="email"
 
-                                            <label>
-                                                Password Lama
-                                            </label>
+                                    name="email"
 
-                                            <input
-                                                type="password"
-                                                name="current_password"
-                                                placeholder="Password lama"
-                                                required>
+                                    value="{{
+                                            old(
+                                                'email',
+                                                $user->email
+                                            )
+                                        }}"
 
-                                        </div>
-
-
-                                        <div class="field">
-
-                                            <label>
-                                                Password Baru
-                                            </label>
-
-                                            <input
-                                                type="password"
-                                                name="password"
-                                                placeholder="Minimal 8 karakter"
-                                                required>
-
-                                        </div>
-
-
-                                        <div class="field">
-
-                                            <label>
-                                                Konfirmasi Password
-                                            </label>
-
-                                            <input
-                                                type="password"
-                                                name="password_confirmation"
-                                                placeholder="Ulangi password"
-                                                required>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="button-row">
-
-                                        <button
-                                            type="submit"
-                                            class="btn-primary">
-
-                                            Ubah Password
-
-                                        </button>
-
-                                    </div>
-
-                                </form>
+                                    required>
 
                             </div>
 
 
-                            <!-- PREFERENCES -->
 
-                            <form
-                                action="{{ route('client.settings.preferences') }}"
-                                method="POST">
+                            <div class="field">
 
-                                @csrf
-                                @method('PUT')
+                                <label>
 
+                                    {{
+                                            $st[
+                                                'phone'
+                                            ]
+                                        }}
 
-                                <div class="card">
+                                </label>
 
-                                    <div class="card-title">
-                                        🔔 Preferensi Notifikasi
-                                    </div>
 
-                                    <div class="card-subtitle">
-                                        Tentukan notifikasi yang ingin Anda terima.
-                                    </div>
+                                <input
 
+                                    type="text"
 
-                                    <div class="notification-grid">
+                                    name="phone"
 
-
-                                        <div class="notification-item">
-
-                                            <div>
-
-                                                <div class="notification-name">
-                                                    Notifikasi Pesan
-                                                </div>
-
-                                                <div class="notification-text">
-                                                    Informasi pesan baru dari tim proyek.
-                                                </div>
-
-                                            </div>
-
-                                            <label class="switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="notify_messages"
-                                                    value="1"
-                                                    @checked($user->notify_messages)>
-
-                                                <span class="slider"></span>
-
-                                            </label>
-
-                                        </div>
-
-
-                                        <div class="notification-item">
-
-                                            <div>
-
-                                                <div class="notification-name">
-                                                    Update Progress
-                                                </div>
-
-                                                <div class="notification-text">
-                                                    Informasi perkembangan proyek terbaru.
-                                                </div>
-
-                                            </div>
-
-                                            <label class="switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="notify_progress"
-                                                    value="1"
-                                                    @checked($user->notify_progress)>
-
-                                                <span class="slider"></span>
-
-                                            </label>
-
-                                        </div>
-
-
-                                        <div class="notification-item">
-
-                                            <div>
-
-                                                <div class="notification-name">
-                                                    Pengingat Jadwal
-                                                </div>
-
-                                                <div class="notification-text">
-                                                    Perubahan dan pengingat jadwal proyek.
-                                                </div>
-
-                                            </div>
-
-                                            <label class="switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="notify_schedule"
-                                                    value="1"
-                                                    @checked($user->notify_schedule)>
-
-                                                <span class="slider"></span>
-
-                                            </label>
-
-                                        </div>
-
-
-                                        <div class="notification-item">
-
-                                            <div>
-
-                                                <div class="notification-name">
-                                                    Dokumentasi Baru
-                                                </div>
-
-                                                <div class="notification-text">
-                                                    Informasi foto atau dokumen terbaru.
-                                                </div>
-
-                                            </div>
-
-                                            <label class="switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="notify_documentation"
-                                                    value="1"
-                                                    @checked($user->notify_documentation)>
-
-                                                <span class="slider"></span>
-
-                                            </label>
-
-                                        </div>
-
-
-                                        <div class="notification-item">
-
-                                            <div>
-
-                                                <div class="notification-name">
-                                                    Informasi Biaya
-                                                </div>
-
-                                                <div class="notification-text">
-                                                    Informasi terbaru terkait pembayaran.
-                                                </div>
-
-                                            </div>
-
-                                            <label class="switch">
-
-                                                <input
-                                                    type="checkbox"
-                                                    name="notify_cost"
-                                                    value="1"
-                                                    @checked($user->notify_cost)>
-
-                                                <span class="slider"></span>
-
-                                            </label>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="card">
-
-                                    <div class="card-title">
-                                        ⚙ Preferensi Aplikasi
-                                    </div>
-
-                                    <div class="card-subtitle">
-                                        Atur bahasa, zona waktu dan tampilan aplikasi.
-                                    </div>
-
-
-                                    <div class="form-grid">
-
-                                        <div class="field">
-
-                                            <label>
-                                                Bahasa
-                                            </label>
-
-                                            <select name="language">
-
-                                                <option
-                                                    value="id"
-                                                    @selected($user->language === 'id')>
-
-                                                    Bahasa Indonesia
-
-                                                </option>
-
-                                                <option
-                                                    value="en"
-                                                    @selected($user->language === 'en')>
-
-                                                    English
-
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-
-                                        <div class="field">
-
-                                            <label>
-                                                Zona Waktu
-                                            </label>
-
-                                            <select name="timezone">
-
-                                                <option
-                                                    value="Asia/Jakarta"
-                                                    @selected($user->timezone === 'Asia/Jakarta')>
-
-                                                    WIB (GMT+7)
-
-                                                </option>
-
-                                                <option
-                                                    value="Asia/Makassar"
-                                                    @selected($user->timezone === 'Asia/Makassar')>
-
-                                                    WITA (GMT+8)
-
-                                                </option>
-
-                                                <option
-                                                    value="Asia/Jayapura"
-                                                    @selected($user->timezone === 'Asia/Jayapura')>
-
-                                                    WIT (GMT+9)
-
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-
-                                        <div class="field full">
-
-                                            <label>
-                                                Tampilan
-                                            </label>
-
-                                            <select name="theme">
-
-                                                <option
-                                                    value="light"
-                                                    @selected($user->theme === 'light')>
-
-                                                    Mode Terang
-
-                                                </option>
-
-                                                <option
-                                                    value="dark"
-                                                    @selected($user->theme === 'dark')>
-
-                                                    Mode Gelap
-
-                                                </option>
-
-                                            </select>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="button-row">
-
-                                        <button
-                                            type="submit"
-                                            class="btn-primary">
-
-                                            Simpan Preferensi
-
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            </form>
-
-
-                        </div>
-
-
-                        <!-- RIGHT SIDE -->
-
-                        <div>
-
-
-                            <div class="card">
-
-                                <div class="card-title">
-                                    Ringkasan Akun
-                                </div>
-
-                                <div style="
-                            display:flex;
-                            align-items:center;
-                            gap:12px;
-                            margin-bottom:18px;
-                        ">
-
-                                    <div class="profile-photo" style="
-                                width:65px;
-                                height:65px;
-                                margin:0;
-                            ">
-
-                                        @if($user->profile_photo)
-
-                                        <img
-                                            src="{{ asset('storage/' . $user->profile_photo) }}"
-                                            alt="{{ $user->name }}">
-
-                                        @else
-
-                                        👤
-
-                                        @endif
-
-                                    </div>
-
-                                    <div style="flex:1;">
-
-                                        <div class="account-name">
-                                            {{ $user->name }}
-                                        </div>
-
-                                        <div class="account-role">
-                                            Client
-                                        </div>
-
-                                    </div>
-
-                                    @if($user->is_active)
-
-                                    <span class="status">
-                                        Aktif
-                                    </span>
-
-                                    @endif
-
-                                </div>
-
-
-                                <div class="info-row">
-
-                                    <div class="info-label">
-                                        Email
-                                    </div>
-
-                                    <div class="info-value">
-                                        {{ $user->email }}
-                                    </div>
-
-                                </div>
-
-
-                                <div class="info-row">
-
-                                    <div class="info-label">
-                                        Telepon
-                                    </div>
-
-                                    <div class="info-value">
-                                        {{ $user->phone ?? '-' }}
-                                    </div>
-
-                                </div>
-
-
-                                <div class="info-row">
-
-                                    <div class="info-label">
-                                        Alamat
-                                    </div>
-
-                                    <div class="info-value">
-                                        {{ $client->address ?? '-' }}
-                                    </div>
-
-                                </div>
+                                    value="{{
+                                            old(
+                                                'phone',
+                                                $user->phone
+                                            )
+                                        }}">
 
                             </div>
 
 
-                            <div class="card">
 
-                                <div class="card-title">
-                                    Aksi Akun
-                                </div>
+                            <div class="field">
 
-                                <div class="card-subtitle">
-                                    Kelola sesi akun Anda.
-                                </div>
+                                <label>
+
+                                    {{
+                                            $st[
+                                                'address'
+                                            ]
+                                        }}
+
+                                </label>
 
 
-                                <form
-                                    action="{{ route('logout') }}"
-                                    method="POST"
-                                    class="logout-form">
-
-                                    @csrf
-
-                                    <button
-                                        type="submit"
-                                        class="btn-logout">
-
-                                        Keluar
-
-                                    </button>
-
-                                </form>
+                                <textarea
+                                    name="address">{{
+                                        old(
+                                            'address',
+                                            $client->address
+                                        )
+                                    }}</textarea>
 
                             </div>
 
 
                         </div>
 
+
+
+                        <div class="button-row">
+
+                            <button
+
+                                type="submit"
+
+                                class="btn-primary">
+
+                                {{
+                                        $st[
+                                            'save_changes'
+                                        ]
+                                    }}
+
+                            </button>
+
+                        </div>
+
+
                     </div>
 
-                </section>
 
-            </main>
+                </div>
+
+
+            </form>
+
 
         </div>
 
-    </body>
 
-</html>
+
+        {{-- =================================================
+                 SECURITY
+            ================================================== --}}
+
+        <div class="card">
+
+
+            <div class="card-title">
+
+                🔒 {{ $st['security'] }}
+
+            </div>
+
+
+            <div
+                class="card-subtitle"
+                style="margin-top:5px; margin-bottom:18px;">
+
+                {{
+                        $st[
+                            'security_description'
+                        ]
+                    }}
+
+            </div>
+
+
+
+            <form
+
+                action="{{
+                        route(
+                            'client.settings.password'
+                        )
+                    }}"
+
+                method="POST">
+
+                @csrf
+
+                @method('PUT')
+
+
+
+                <div class="password-grid">
+
+
+                    <div class="field">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'current_password'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <input
+
+                            type="password"
+
+                            name="current_password"
+
+                            placeholder="{{
+                                    $st[
+                                        'current_password_placeholder'
+                                    ]
+                                }}"
+
+                            required>
+
+                    </div>
+
+
+
+                    <div class="field">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'new_password'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <input
+
+                            type="password"
+
+                            name="password"
+
+                            placeholder="{{
+                                    $st[
+                                        'new_password_placeholder'
+                                    ]
+                                }}"
+
+                            required>
+
+                    </div>
+
+
+
+                    <div class="field">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'confirm_password'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <input
+
+                            type="password"
+
+                            name="password_confirmation"
+
+                            placeholder="{{
+                                    $st[
+                                        'confirm_password_placeholder'
+                                    ]
+                                }}"
+
+                            required>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="button-row">
+
+                    <button
+
+                        type="submit"
+
+                        class="btn-primary">
+
+                        {{
+                                $st[
+                                    'change_password'
+                                ]
+                            }}
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+
+        {{-- =================================================
+                 PREFERENCES FORM
+            ================================================== --}}
+
+        <form
+
+            action="{{
+                    route(
+                        'client.settings.preferences'
+                    )
+                }}"
+
+            method="POST">
+
+            @csrf
+
+            @method('PUT')
+
+
+
+            {{-- =============================================
+                     NOTIFICATIONS
+                ============================================== --}}
+
+            <div class="card">
+
+
+                <div class="card-title">
+
+                    🔔
+                    {{
+                            $st[
+                                'notification_preferences'
+                            ]
+                        }}
+
+                </div>
+
+
+                <div
+                    class="card-subtitle"
+                    style="margin-top:5px; margin-bottom:18px;">
+
+                    {{
+                            $st[
+                                'notification_description'
+                            ]
+                        }}
+
+                </div>
+
+
+
+                <div class="notification-grid">
+
+
+                    {{-- MESSAGE --}}
+
+                    <div class="notification-item">
+
+                        <div>
+
+                            <div class="notification-name">
+
+                                {{
+                                        $st[
+                                            'message_notification'
+                                        ]
+                                    }}
+
+                            </div>
+
+                            <div class="notification-text">
+
+                                {{
+                                        $st[
+                                            'message_notification_desc'
+                                        ]
+                                    }}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input
+
+                                type="checkbox"
+
+                                name="notify_messages"
+
+                                value="1"
+
+                                @checked(
+                                $user
+                                ->notify_messages
+                            )
+
+                            >
+
+                            <span
+                                class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- PROGRESS --}}
+
+                    <div class="notification-item">
+
+                        <div>
+
+                            <div class="notification-name">
+
+                                {{
+                                        $st[
+                                            'progress_notification'
+                                        ]
+                                    }}
+
+                            </div>
+
+                            <div class="notification-text">
+
+                                {{
+                                        $st[
+                                            'progress_notification_desc'
+                                        ]
+                                    }}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input
+
+                                type="checkbox"
+
+                                name="notify_progress"
+
+                                value="1"
+
+                                @checked(
+                                $user
+                                ->notify_progress
+                            )
+
+                            >
+
+                            <span
+                                class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- SCHEDULE --}}
+
+                    <div class="notification-item">
+
+                        <div>
+
+                            <div class="notification-name">
+
+                                {{
+                                        $st[
+                                            'schedule_notification'
+                                        ]
+                                    }}
+
+                            </div>
+
+                            <div class="notification-text">
+
+                                {{
+                                        $st[
+                                            'schedule_notification_desc'
+                                        ]
+                                    }}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input
+
+                                type="checkbox"
+
+                                name="notify_schedule"
+
+                                value="1"
+
+                                @checked(
+                                $user
+                                ->notify_schedule
+                            )
+
+                            >
+
+                            <span
+                                class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- DOCUMENTATION --}}
+
+                    <div class="notification-item">
+
+                        <div>
+
+                            <div class="notification-name">
+
+                                {{
+                                        $st[
+                                            'documentation_notification'
+                                        ]
+                                    }}
+
+                            </div>
+
+                            <div class="notification-text">
+
+                                {{
+                                        $st[
+                                            'documentation_notification_desc'
+                                        ]
+                                    }}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input
+
+                                type="checkbox"
+
+                                name="notify_documentation"
+
+                                value="1"
+
+                                @checked(
+                                $user
+                                ->notify_documentation
+                            )
+
+                            >
+
+                            <span
+                                class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+
+                    {{-- COST --}}
+
+                    <div class="notification-item">
+
+                        <div>
+
+                            <div class="notification-name">
+
+                                {{
+                                        $st[
+                                            'cost_notification'
+                                        ]
+                                    }}
+
+                            </div>
+
+                            <div class="notification-text">
+
+                                {{
+                                        $st[
+                                            'cost_notification_desc'
+                                        ]
+                                    }}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="switch">
+
+                            <input
+
+                                type="checkbox"
+
+                                name="notify_cost"
+
+                                value="1"
+
+                                @checked(
+                                $user
+                                ->notify_cost
+                            )
+
+                            >
+
+                            <span
+                                class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            {{-- =============================================
+                     APPLICATION PREFERENCES
+                ============================================== --}}
+
+            <div class="card">
+
+
+                <div class="card-title">
+
+                    ⚙
+                    {{
+                            $st[
+                                'app_preferences'
+                            ]
+                        }}
+
+                </div>
+
+
+                <div
+                    class="card-subtitle"
+                    style="margin-top:5px; margin-bottom:18px;">
+
+                    {{
+                            $st[
+                                'app_preferences_description'
+                            ]
+                        }}
+
+                </div>
+
+
+
+                <div class="form-grid">
+
+
+                    {{-- LANGUAGE --}}
+
+                    <div class="field">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'language'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <select
+                            name="language">
+
+                            <option
+
+                                value="id"
+
+                                @selected(
+                                $user->language
+                                ===
+                                'id'
+                                )
+
+                                >
+
+                                Bahasa Indonesia
+
+                            </option>
+
+
+                            <option
+
+                                value="en"
+
+                                @selected(
+                                $user->language
+                                ===
+                                'en'
+                                )
+
+                                >
+
+                                English
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    {{-- TIMEZONE --}}
+
+                    <div class="field">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'timezone'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <select
+                            name="timezone">
+
+                            <option
+
+                                value="Asia/Jakarta"
+
+                                @selected(
+                                $user->timezone
+                                ===
+                                'Asia/Jakarta'
+                                )
+
+                                >
+
+                                WIB (GMT+7)
+
+                            </option>
+
+
+                            <option
+
+                                value="Asia/Makassar"
+
+                                @selected(
+                                $user->timezone
+                                ===
+                                'Asia/Makassar'
+                                )
+
+                                >
+
+                                WITA (GMT+8)
+
+                            </option>
+
+
+                            <option
+
+                                value="Asia/Jayapura"
+
+                                @selected(
+                                $user->timezone
+                                ===
+                                'Asia/Jayapura'
+                                )
+
+                                >
+
+                                WIT (GMT+9)
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    {{-- THEME --}}
+
+                    <div class="field full">
+
+                        <label>
+
+                            {{
+                                    $st[
+                                        'appearance'
+                                    ]
+                                }}
+
+                        </label>
+
+
+                        <select
+                            name="theme">
+
+                            <option
+
+                                value="light"
+
+                                @selected(
+                                $user->theme
+                                ===
+                                'light'
+                                )
+
+                                >
+
+                                {{
+                                        $st[
+                                            'light_mode'
+                                        ]
+                                    }}
+
+                            </option>
+
+
+                            <option
+
+                                value="dark"
+
+                                @selected(
+                                $user->theme
+                                ===
+                                'dark'
+                                )
+
+                                >
+
+                                {{
+                                        $st[
+                                            'dark_mode'
+                                        ]
+                                    }}
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="button-row">
+
+                    <button
+
+                        type="submit"
+
+                        class="btn-primary">
+
+                        {{
+                                $st[
+                                    'save_preferences'
+                                ]
+                            }}
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+
+    {{-- =================================================
+             RIGHT COLUMN
+        ================================================== --}}
+
+    <div class="settings-column">
+
+
+        {{-- =================================================
+                 ACCOUNT SUMMARY
+            ================================================== --}}
+
+        <div class="card">
+
+
+            <div
+                class="card-title"
+                style="margin-bottom:18px;">
+
+                {{
+                        $st[
+                            'account_summary'
+                        ]
+                    }}
+
+            </div>
+
+
+
+            <div class="account-header">
+
+
+                <div class="profile-photo">
+
+                    @if($user->profile_photo)
+
+                    <img
+
+                        src="{{
+                                    asset(
+                                        'storage/' .
+                                        $user->profile_photo
+                                    )
+                                }}"
+
+                        alt="{{ $user->name }}">
+
+                    @else
+
+                    👤
+
+                    @endif
+
+                </div>
+
+
+
+                <div class="account-info">
+
+                    <div class="account-name">
+
+                        {{ $user->name }}
+
+                    </div>
+
+
+                    <div class="account-role">
+
+                        {{
+                                $st[
+                                    'client'
+                                ]
+                            }}
+
+                    </div>
+
+                </div>
+
+
+
+                @if($user->is_active)
+
+                <span class="status">
+
+                    {{
+                                $st[
+                                    'active'
+                                ]
+                            }}
+
+                </span>
+
+                @else
+
+                <span
+                    class="
+                                status
+                                inactive
+                            ">
+
+                    {{
+                                $st[
+                                    'inactive'
+                                ]
+                            }}
+
+                </span>
+
+                @endif
+
+
+            </div>
+
+
+
+            {{-- EMAIL --}}
+
+            <div class="info-row">
+
+                <div class="info-label">
+
+                    {{
+                            $st[
+                                'email'
+                            ]
+                        }}
+
+                </div>
+
+
+                <div class="info-value">
+
+                    {{ $user->email }}
+
+                </div>
+
+            </div>
+
+
+
+            {{-- PHONE --}}
+
+            <div class="info-row">
+
+                <div class="info-label">
+
+                    {{
+                            $st[
+                                'phone'
+                            ]
+                        }}
+
+                </div>
+
+
+                <div class="info-value">
+
+                    {{
+                            $user->phone
+                            ??
+                            '-'
+                        }}
+
+                </div>
+
+            </div>
+
+
+
+            {{-- ADDRESS --}}
+
+            <div class="info-row">
+
+                <div class="info-label">
+
+                    {{
+                            $st[
+                                'address'
+                            ]
+                        }}
+
+                </div>
+
+
+                <div class="info-value">
+
+                    {{
+                            $client->address
+                            ??
+                            '-'
+                        }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        {{-- =================================================
+                 ACCOUNT ACTION
+            ================================================== --}}
+
+        <div class="card">
+
+
+            <div class="card-title">
+
+                {{
+                        $st[
+                            'account_action'
+                        ]
+                    }}
+
+            </div>
+
+
+            <div
+                class="card-subtitle"
+                style="margin-top:5px;">
+
+                {{
+                        $st[
+                            'account_action_description'
+                        ]
+                    }}
+
+            </div>
+
+
+
+            <form
+
+                action="{{ route('logout') }}"
+
+                method="POST"
+
+                class="logout-form">
+
+                @csrf
+
+
+                <button
+
+                    type="submit"
+
+                    class="btn-logout">
+
+                    {{
+                            $st[
+                                'logout'
+                            ]
+                        }}
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+@endsection

@@ -1,1357 +1,1484 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.client')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Jadwal - RuangKita</title>
+@php
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+$scheduleLang = auth()->user()->language ?? 'id';
 
-        body {
-            background: #f4f8fc;
-            color: #17334c;
-        }
+$scheduleTranslations = [
 
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
+'id' => [
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+'title' => 'Jadwal',
 
-        .sidebar {
-            width: 230px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
+'description' =>
+'Semua jadwal pekerjaan proyek renovasi Anda',
 
-            padding: 20px 14px;
+'total_schedule' =>
+'Total Jadwal',
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'ongoing' =>
+'Sedang Berjalan',
 
-            color: white;
-        }
+'completed' =>
+'Selesai',
 
-        .brand {
-            padding: 5px 9px 24px;
+'delayed' =>
+'Terlambat',
 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+'all' =>
+'Semua',
 
-        .brand-name {
-            font-size: 18px;
-            font-weight: 700;
-        }
+'planned' =>
+'Akan Datang',
 
-        .ruangkita-logo {
-            width: 31px;
-            height: 31px;
+'sort' =>
+'Urutkan:',
 
-            position: relative;
-        }
+'nearest_date' =>
+'Tanggal Terdekat',
 
-        .ruangkita-logo .roof {
-            width: 20px;
-            height: 20px;
+'view_project_schedule' =>
+'Lihat Jadwal Proyek',
 
-            position: absolute;
+'no_schedule_description' =>
+'Belum ada deskripsi jadwal.',
 
-            left: 5px;
-            top: 2px;
+'no_schedule' =>
+'Belum ada jadwal untuk proyek ini.',
 
-            border-left: 4px solid white;
-            border-top: 4px solid white;
+'no_project' =>
+'Belum ada proyek yang terhubung dengan akun Anda.',
 
-            transform: rotate(45deg);
-        }
+],
 
-        .ruangkita-logo .house {
-            width: 19px;
-            height: 17px;
 
-            position: absolute;
+'en' => [
 
-            left: 6px;
-            bottom: 2px;
+'title' =>
+'Schedule',
 
-            border-left: 4px solid white;
-            border-right: 4px solid white;
-            border-bottom: 4px solid white;
-        }
+'description' =>
+'All work schedules for your renovation projects',
 
-        .ruangkita-logo .door {
-            width: 6px;
-            height: 9px;
+'total_schedule' =>
+'Total Schedule',
 
-            position: absolute;
+'ongoing' =>
+'Ongoing',
 
-            left: 50%;
-            bottom: -1px;
+'completed' =>
+'Completed',
 
-            transform: translateX(-50%);
+'delayed' =>
+'Delayed',
 
-            border: 2px solid white;
-            border-bottom: none;
-        }
+'all' =>
+'All',
 
-        .menu-item {
-            min-height: 42px;
+'planned' =>
+'Upcoming',
 
-            padding: 0 13px;
-            margin-bottom: 3px;
+'sort' =>
+'Sort:',
 
-            border-radius: 8px;
+'nearest_date' =>
+'Nearest Date',
 
-            display: flex;
-            align-items: center;
-            gap: 11px;
+'view_project_schedule' =>
+'View Project Schedule',
 
-            text-decoration: none;
+'no_schedule_description' =>
+'No schedule description available.',
 
-            color: #d6e6f5;
+'no_schedule' =>
+'No schedule available for this project.',
 
-            font-size: 13px;
+'no_project' =>
+'There are no projects connected to your account yet.',
 
-            transition: .2s;
-        }
+],
 
-        .menu-item:hover {
-            background: rgba(255, 255, 255, .08);
-        }
+];
 
-        .menu-item.active {
-            color: white;
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+$st =
+$scheduleTranslations[$scheduleLang]
+??
+$scheduleTranslations['id'];
 
-        .menu-icon {
-            width: 19px;
-            text-align: center;
-        }
 
-        /* =========================
-           MAIN
-        ========================= */
+$totalSchedules = 0;
+$ongoingSchedules = 0;
+$completedSchedules = 0;
+$delayedSchedules = 0;
 
-        .main {
-            width: calc(100% - 230px);
-            margin-left: 230px;
-        }
 
-        .topbar {
-            height: 66px;
+foreach ($projects as $summaryProject) {
 
-            background: white;
+foreach ($summaryProject->schedules as $summarySchedule) {
 
-            border-bottom:
-                1px solid #e7edf3;
+$totalSchedules++;
 
-            padding: 0 28px;
+if ($summarySchedule->status === 'ongoing') {
+$ongoingSchedules++;
+}
 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+if ($summarySchedule->status === 'completed') {
+$completedSchedules++;
+}
 
-        .hamburger {
-            color: #526f87;
-            font-size: 20px;
-        }
+if ($summarySchedule->status === 'delayed') {
+$delayedSchedules++;
+}
 
-        .user-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+}
 
-            font-size: 13px;
-            font-weight: 600;
-        }
+}
 
-        .avatar {
-            width: 33px;
-            height: 33px;
+@endphp
 
-            border-radius: 50%;
 
-            background: #e4eef7;
+@section(
+'title',
+$st['title'] . ' - RuangKita'
+)
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        /* =========================
-           CONTENT
-        ========================= */
+@push('styles')
 
-        .content {
-            padding: 28px 30px 40px;
-        }
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-        .page-header {
-            margin-bottom: 22px;
-        }
+    .schedule-page-header {
 
-        .page-header h1 {
-            color: #14304a;
+        margin-bottom: 22px;
+    }
 
-            font-size: 27px;
 
-            margin-bottom: 4px;
-        }
+    .schedule-page-header h1 {
 
-        .page-header p {
-            color: #8395a7;
+        margin-bottom: 4px;
 
-            font-size: 13px;
-        }
+        color:
+            var(--text-heading);
 
-        /* =========================
-           SUMMARY CARDS
-        ========================= */
+        font-size: 27px;
+    }
+
+
+    .schedule-page-header p {
+
+        color:
+            var(--text-muted);
+
+        font-size: 13px;
+    }
+
+
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
+
+    .summary-grid {
+
+        margin-bottom: 22px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 14px;
+    }
+
+
+    .summary-card {
+
+        padding: 18px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+
+        box-shadow:
+            var(--shadow);
+    }
+
+
+    .summary-label {
+
+        margin-bottom: 7px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+    }
+
+
+    .summary-value {
+
+        color:
+            var(--text-heading);
+
+        font-size: 24px;
+
+        font-weight: 700;
+    }
+
+
+    .summary-value.blue {
+
+        color: #0874ca;
+    }
+
+
+    .summary-value.green {
+
+        color: #14835c;
+    }
+
+
+    .summary-value.orange {
+
+        color: #d76a14;
+    }
+
+
+    /* =====================================================
+       TOOLBAR
+    ===================================================== */
+
+    .toolbar {
+
+        margin-bottom: 18px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+
+        gap: 14px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .filter-group {
+
+        display: flex;
+
+        gap: 9px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .filter-btn {
+
+        padding:
+            9px 15px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #eaf1f7;
+
+        color: #526a7e;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+    }
+
+
+    body.dark-mode .filter-btn {
+
+        background: #273b4b;
+
+        color: #b8c6d1;
+    }
+
+
+    .filter-btn.active {
+
+        color: white;
+
+        background:
+            linear-gradient(90deg,
+                #0767ae,
+                #087dce);
+    }
+
+
+    .sort-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sort-label {
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    .sort-select {
+        padding: 9px 13px;
+
+        border: 1px solid var(--border);
+        border-radius: 10px;
+
+        background: var(--card-bg);
+        color: var(--text-main);
+
+        font-size: 12px;
+
+        outline: none;
+        cursor: pointer;
+    }
+
+    .sort-select:focus {
+        border-color: var(--primary);
+    }
+
+    /* =====================================================
+       PROJECT
+    ===================================================== */
+
+    .project-block {
+
+        margin-bottom: 20px;
+    }
+
+
+    .project-header-card {
+
+        padding:
+            16px 18px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+
+        gap: 15px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius:
+            13px 13px 0 0;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .project-info {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 13px;
+    }
+
+
+    .project-thumb {
+
+        width: 68px;
+        height: 52px;
+
+        border-radius: 8px;
+
+        object-fit: cover;
+
+        background:
+            linear-gradient(135deg,
+                #dbeaf7,
+                #edf5fa);
+    }
+
+
+    body.dark-mode .project-thumb {
+
+        background:
+            linear-gradient(135deg,
+                #24394a,
+                #172735);
+    }
+
+
+    .project-name {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 14px;
+
+        font-weight: 700;
+    }
+
+
+    .project-location {
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+    }
+
+
+    .btn-project {
+
+        padding:
+            8px 12px;
+
+        border-radius: 8px;
+
+        background: #eaf4fd;
+
+        color: #0873c7;
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: 600;
+    }
+
+
+    body.dark-mode .btn-project {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    /* =====================================================
+       SCHEDULE PANEL
+    ===================================================== */
+
+    .schedule-panel {
+
+        padding: 20px;
+
+        border-left:
+            1px solid var(--border);
+
+        border-right:
+            1px solid var(--border);
+
+        border-bottom:
+            1px solid var(--border);
+
+        border-radius:
+            0 0 13px 13px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    /* =====================================================
+       TIMELINE
+    ===================================================== */
+
+    .timeline {
+
+        position: relative;
+
+        margin-left: 13px;
+    }
+
+
+    .timeline::before {
+
+        content: "";
+
+        position: absolute;
+
+        left: 12px;
+        top: 6px;
+        bottom: 6px;
+
+        width: 2px;
+
+        background:
+            var(--border);
+    }
+
+
+    .timeline-item {
+
+        position: relative;
+
+        padding-left: 48px;
+
+        padding-bottom: 25px;
+    }
+
+
+    .timeline-item:last-child {
+
+        padding-bottom: 0;
+    }
+
+
+    .timeline-dot {
+
+        position: absolute;
+
+        left: 0;
+        top: 1px;
+
+        width: 26px;
+        height: 26px;
+
+        z-index: 2;
+
+        border-radius: 50%;
+
+        border:
+            4px solid var(--card-bg);
+
+        box-shadow:
+            0 0 0 1px var(--border);
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 10px;
+    }
+
+
+    .timeline-dot.planned {
+
+        background: #e7f2ff;
+
+        color: #0874ca;
+    }
+
+
+    .timeline-dot.ongoing {
+
+        background: #ddf8eb;
+
+        color: #14835c;
+    }
+
+
+    .timeline-dot.completed {
+
+        background: #e3f1ff;
+
+        color: #126ab3;
+    }
+
+
+    .timeline-dot.delayed {
+
+        background: #fff0e2;
+
+        color: #c95f16;
+    }
+
+
+    body.dark-mode .timeline-dot.planned {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    body.dark-mode .timeline-dot.ongoing {
+
+        background: #173d31;
+
+        color: #79ddb0;
+    }
+
+
+    body.dark-mode .timeline-dot.completed {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    body.dark-mode .timeline-dot.delayed {
+
+        background: #49331e;
+
+        color: #ffc976;
+    }
+
+
+    .timeline-card {
+
+        padding-bottom: 16px;
+
+        display: grid;
+
+        grid-template-columns:
+            125px 1fr auto;
+
+        gap: 16px;
+
+        align-items: center;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .timeline-item:last-child .timeline-card {
+
+        padding-bottom: 0;
+
+        border-bottom: none;
+    }
+
+
+    .timeline-date {
+
+        color: #d96a1e;
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .timeline-title {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 14px;
+
+        font-weight: 700;
+    }
+
+
+    .timeline-description {
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    .status-badge {
+
+        display: inline-flex;
+
+        padding:
+            5px 9px;
+
+        border-radius: 14px;
+
+        white-space: nowrap;
+
+        font-size: 10px;
+
+        font-weight: 600;
+    }
+
+
+    .status-planned {
+
+        background: #e7f2ff;
+
+        color: #0874ca;
+    }
+
+
+    .status-ongoing {
+
+        background: #ddf8eb;
+
+        color: #14835c;
+    }
+
+
+    .status-completed {
+
+        background: #e3f1ff;
+
+        color: #126ab3;
+    }
+
+
+    .status-delayed {
+
+        background: #fff0e2;
+
+        color: #c95f16;
+    }
+
+
+    body.dark-mode .status-planned {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    body.dark-mode .status-ongoing {
+
+        background: #173d31;
+
+        color: #79ddb0;
+    }
+
+
+    body.dark-mode .status-completed {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    body.dark-mode .status-delayed {
+
+        background: #49331e;
+
+        color: #ffc976;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-project {
+
+        padding: 26px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 13px;
+    }
+
+
+    .empty-schedule {
+
+        padding: 25px;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1000px) {
 
         .summary-grid {
-            display: grid;
 
             grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 14px;
-
-            margin-bottom: 22px;
+                repeat(2, 1fr);
         }
 
-        .summary-card {
-            background: white;
-
-            border:
-                1px solid #e7edf3;
-
-            border-radius: 12px;
-
-            padding: 18px;
-        }
-
-        .summary-label {
-            color: #8293a3;
-
-            font-size: 11px;
-
-            margin-bottom: 7px;
-        }
-
-        .summary-value {
-            color: #17334c;
-
-            font-size: 24px;
-
-            font-weight: 700;
-        }
-
-        .summary-value.blue {
-            color: #0874ca;
-        }
-
-        .summary-value.green {
-            color: #14835c;
-        }
-
-        .summary-value.orange {
-            color: #d76a14;
-        }
-
-        /* =========================
-           FILTERS
-        ========================= */
-
-        .toolbar {
-            margin-bottom: 18px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 14px;
-
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-
-            gap: 9px;
-
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 9px 15px;
-
-            border: none;
-            border-radius: 10px;
-
-            background: #eaf1f7;
-
-            color: #526a7e;
-
-            font-size: 12px;
-            font-weight: 600;
-
-            cursor: pointer;
-        }
-
-        .filter-btn.active {
-            color: white;
-
-            background:
-                linear-gradient(90deg,
-                    #0767ae,
-                    #087dce);
-        }
-
-        .sort-box {
-            padding: 9px 13px;
-
-            background: white;
-
-            border:
-                1px solid #e5ecf2;
-
-            border-radius: 10px;
-
-            color: #5f7588;
-
-            font-size: 12px;
-        }
-
-        /* =========================
-           PROJECT SECTION
-        ========================= */
-
-        .project-block {
-            margin-bottom: 20px;
-        }
-
-        .project-header-card {
-            background: white;
-
-            border:
-                1px solid #e6edf3;
-
-            border-radius:
-                13px 13px 0 0;
-
-            padding: 16px 18px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 15px;
-        }
-
-        .project-info {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
-
-        .project-thumb {
-            width: 68px;
-            height: 52px;
-
-            border-radius: 8px;
-
-            object-fit: cover;
-
-            background:
-                linear-gradient(135deg,
-                    #dbeaf7,
-                    #edf5fa);
-        }
-
-        .project-name {
-            font-size: 14px;
-            font-weight: 700;
-
-            margin-bottom: 4px;
-        }
-
-        .project-location {
-            color: #8092a3;
-
-            font-size: 11px;
-        }
-
-        .btn-project {
-            padding: 8px 12px;
-
-            border-radius: 8px;
-
-            text-decoration: none;
-
-            background: #eaf4fd;
-
-            color: #0873c7;
-
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* =========================
-           TIMELINE
-        ========================= */
-
-        .schedule-panel {
-            background: white;
-
-            border-left:
-                1px solid #e6edf3;
-
-            border-right:
-                1px solid #e6edf3;
-
-            border-bottom:
-                1px solid #e6edf3;
-
-            border-radius:
-                0 0 13px 13px;
-
-            padding: 20px;
-        }
-
-        .timeline {
-            position: relative;
-
-            margin-left: 13px;
-        }
-
-        .timeline::before {
-            content: "";
-
-            position: absolute;
-
-            left: 12px;
-            top: 6px;
-            bottom: 6px;
-
-            width: 2px;
-
-            background: #dce6ee;
-        }
-
-        .timeline-item {
-            position: relative;
-
-            padding-left: 48px;
-
-            padding-bottom: 25px;
-        }
-
-        .timeline-item:last-child {
-            padding-bottom: 0;
-        }
-
-        .timeline-dot {
-            position: absolute;
-
-            left: 0;
-            top: 1px;
-
-            width: 26px;
-            height: 26px;
-
-            border-radius: 50%;
-
-            border: 4px solid white;
-
-            box-shadow:
-                0 0 0 1px #d9e5ef;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 10px;
-
-            z-index: 2;
-        }
-
-        .timeline-dot.planned {
-            background: #e7f2ff;
-            color: #0874ca;
-        }
-
-        .timeline-dot.ongoing {
-            background: #ddf8eb;
-            color: #14835c;
-        }
-
-        .timeline-dot.completed {
-            background: #e3f1ff;
-            color: #126ab3;
-        }
-
-        .timeline-dot.delayed {
-            background: #fff0e2;
-            color: #c95f16;
-        }
 
         .timeline-card {
-            display: grid;
 
             grid-template-columns:
-                125px 1fr auto;
-
-            gap: 16px;
-
-            align-items: center;
-
-            padding-bottom: 16px;
-
-            border-bottom:
-                1px solid #edf2f6;
+                110px 1fr;
         }
 
-        .timeline-item:last-child .timeline-card {
-            padding-bottom: 0;
+    }
 
-            border-bottom: none;
+
+    @media(max-width: 600px) {
+
+        .summary-grid {
+
+            grid-template-columns:
+                1fr 1fr;
         }
 
-        .timeline-date {
-            color: #d96a1e;
 
-            font-size: 12px;
+        .project-header-card {
 
-            font-weight: 700;
+            align-items:
+                flex-start;
         }
 
-        .timeline-title {
-            color: #263f56;
 
-            font-size: 14px;
+        .timeline-card {
 
-            font-weight: 700;
-
-            margin-bottom: 4px;
+            grid-template-columns:
+                1fr;
         }
 
-        .timeline-description {
-            color: #8192a2;
 
-            font-size: 11px;
+        .toolbar {
 
-            line-height: 1.5;
+            align-items:
+                stretch;
         }
 
-        .status-badge {
-            display: inline-flex;
+    }
+</style>
 
-            padding:
-                5px 9px;
+@endpush
 
-            border-radius: 14px;
 
-            white-space: nowrap;
 
-            font-size: 10px;
+@section('content')
 
-            font-weight: 600;
-        }
 
-        .status-planned {
-            background: #e7f2ff;
-            color: #0874ca;
-        }
+{{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
-        .status-ongoing {
-            background: #ddf8eb;
-            color: #14835c;
-        }
+<div class="schedule-page-header">
 
-        .status-completed {
-            background: #e3f1ff;
-            color: #126ab3;
-        }
+    <h1>
 
-        .status-delayed {
-            background: #fff0e2;
-            color: #c95f16;
-        }
+        {{ $st['title'] }}
 
-        /* =========================
-           EMPTY
-        ========================= */
+    </h1>
 
-        .empty-project {
-            padding: 26px;
+    <p>
 
-            background: white;
+        {{ $st['description'] }}
 
-            border:
-                1px solid #e7edf3;
+    </p>
 
-            border-radius: 12px;
+</div>
 
-            text-align: center;
 
-            color: #8393a2;
 
-            font-size: 13px;
-        }
+{{-- =====================================================
+         SUMMARY
+    ====================================================== --}}
 
-        .empty-schedule {
-            padding: 25px;
+<div class="summary-grid">
 
-            text-align: center;
 
-            color: #8999a8;
+    <div class="summary-card">
 
-            font-size: 12px;
-        }
+        <div class="summary-label">
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
+            {{ $st['total_schedule'] }}
 
-        @media(max-width: 1000px) {
+        </div>
 
-            .summary-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+        <div class="summary-value blue">
 
-            .timeline-card {
-                grid-template-columns:
-                    110px 1fr;
-            }
-        }
+            {{ $totalSchedules }}
 
-        @media(max-width: 850px) {
-
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                margin-left: 0;
-                width: 100%;
-            }
-        }
-
-        @media(max-width: 600px) {
-
-            .content {
-                padding: 20px 14px;
-            }
-
-            .topbar {
-                padding:
-                    0 17px;
-            }
-
-            .summary-grid {
-                grid-template-columns:
-                    1fr 1fr;
-            }
-
-            .project-header-card {
-                align-items:
-                    flex-start;
-            }
-
-            .timeline-card {
-                grid-template-columns:
-                    1fr;
-            }
-
-            .toolbar {
-                align-items:
-                    stretch;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="app">
-
-        <!-- ============================================
-         SIDEBAR
-    ============================================= -->
-
-        <aside class="sidebar">
-
-            <div class="brand">
-
-                <div class="ruangkita-logo">
-
-                    <div class="roof"></div>
-
-                    <div class="house">
-                        <div class="door"></div>
-                    </div>
-
-                </div>
-
-                <span class="brand-name">
-                    RuangKita
-                </span>
-
-            </div>
-
-
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ⌂
-                </span>
-
-                Dashboard
-
-            </a>
-
-
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▣
-                </span>
-
-                Proyek Saya
-
-            </a>
-
-
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item active">
-
-                <span class="menu-icon">
-                    ▦
-                </span>
-
-                Jadwal
-
-            </a>
-
-
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ↗
-                </span>
-
-                Progress
-
-            </a>
-
-
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▧
-                </span>
-
-                Dokumentasi
-
-            </a>
-
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▤
-                </span>
-
-                Informasi Biaya
-
-            </a>
-
-
-            <a
-                href="{{ route('client.messages') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ✉
-                </span>
-
-                Pesan
-
-            </a>
-
-
-            <a href="{{ route('client.ar') }}" class="menu-item">
-
-                <span class="menu-icon">
-                    ◇
-                </span>
-
-                Augmented Reality
-
-            </a>
-
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-        </aside>
-
-
-        <!-- ============================================
-         MAIN
-    ============================================= -->
-
-        <main class="main">
-
-            <header class="topbar">
-
-                <div class="hamburger">
-                    ☰
-                </div>
-
-                <div class="user-area">
-
-                    <span>
-                        ♧
-                    </span>
-
-                    <div class="avatar">
-                        👤
-                    </div>
-
-                    <span>
-                        {{ auth()->user()->name }}
-                    </span>
-
-                    <span>
-                        ▾
-                    </span>
-
-                </div>
-
-            </header>
-
-
-            <section class="content">
-
-                <!-- PAGE HEADER -->
-
-                <div class="page-header">
-
-                    <h1>
-                        Jadwal
-                    </h1>
-
-                    <p>
-                        Semua jadwal pekerjaan proyek renovasi Anda
-                    </p>
-
-                </div>
-
-
-                <!-- ========================================
-                 SUMMARY
-            ========================================= -->
-
-                @php
-
-                $totalSchedules = 0;
-                $ongoingSchedules = 0;
-                $completedSchedules = 0;
-                $delayedSchedules = 0;
-
-                foreach ($projects as $summaryProject) {
-
-                foreach ($summaryProject->schedules as $summarySchedule) {
-
-                $totalSchedules++;
-
-                if ($summarySchedule->status === 'ongoing') {
-                $ongoingSchedules++;
-                }
-
-                if ($summarySchedule->status === 'completed') {
-                $completedSchedules++;
-                }
-
-                if ($summarySchedule->status === 'delayed') {
-                $delayedSchedules++;
-                }
-
-                }
-
-                }
-
-                @endphp
-
-
-                <div class="summary-grid">
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-label">
-                            Total Jadwal
-                        </div>
-
-                        <div class="summary-value blue">
-                            {{ $totalSchedules }}
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-label">
-                            Sedang Berjalan
-                        </div>
-
-                        <div class="summary-value green">
-                            {{ $ongoingSchedules }}
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-label">
-                            Selesai
-                        </div>
-
-                        <div class="summary-value">
-                            {{ $completedSchedules }}
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-label">
-                            Terlambat
-                        </div>
-
-                        <div class="summary-value orange">
-                            {{ $delayedSchedules }}
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-                <!-- ========================================
-                 FILTER
-            ========================================= -->
-
-                <div class="toolbar">
-
-                    <div class="filter-group">
-
-                        <button
-                            type="button"
-                            class="filter-btn active"
-                            data-filter="all">
-
-                            Semua
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-filter="planned">
-
-                            Akan Datang
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-filter="ongoing">
-
-                            Sedang Berjalan
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-filter="completed">
-
-                            Selesai
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-filter="delayed">
-
-                            Terlambat
-
-                        </button>
-
-                    </div>
-
-
-                    <div class="sort-box">
-
-                        Urutkan:
-                        Tanggal Terdekat
-
-                    </div>
-
-                </div>
-
-
-                <!-- ========================================
-                 PROJECTS + SCHEDULE
-            ========================================= -->
-
-                @forelse($projects as $project)
-
-
-                <div class="project-block">
-
-
-                    <!-- PROJECT HEADER -->
-
-                    <div class="project-header-card">
-
-
-                        <div class="project-info">
-
-
-                            @if($project->cover_image)
-
-                            <img
-                                src="{{ asset('storage/' . $project->cover_image) }}"
-                                class="project-thumb"
-                                alt="{{ $project->project_name }}">
-
-                            @else
-
-                            <div class="project-thumb"></div>
-
-                            @endif
-
-
-                            <div>
-
-                                <div class="project-name">
-
-                                    {{ $project->project_name }}
-
-                                </div>
-
-
-                                <div class="project-location">
-
-                                    ◉ {{ $project->location }}
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-
-                        <a
-                            href="{{ route('client.projects.schedule', $project) }}"
-                            class="btn-project">
-
-                            Lihat Jadwal Proyek
-
-                        </a>
-
-
-                    </div>
-
-
-                    <!-- SCHEDULE LIST -->
-
-                    <div class="schedule-panel">
-
-
-                        @if($project->schedules->count() > 0)
-
-
-                        <div class="timeline">
-
-
-                            @foreach($project->schedules as $schedule)
-
-
-                            @php
-
-                            $status =
-                            $schedule->status
-                            ?? 'planned';
-
-                            $statusLabel =
-                            match($status) {
-
-                            'planned'
-                            => 'Akan Datang',
-
-                            'ongoing'
-                            => 'Sedang Berjalan',
-
-                            'completed'
-                            => 'Selesai',
-
-                            'delayed'
-                            => 'Terlambat',
-
-                            default
-                            => ucfirst($status),
-                            };
-
-                            @endphp
-
-
-                            <div
-                                class="timeline-item schedule-item"
-                                data-status="{{ $status }}">
-
-
-                                <div
-                                    class="timeline-dot {{ $status }}">
-
-                                    ●
-
-                                </div>
-
-
-                                <div class="timeline-card">
-
-
-                                    <div class="timeline-date">
-
-                                        @if($schedule->start_date)
-
-                                        {{ \Carbon\Carbon::parse(
-                                                        $schedule->start_date
-                                                    )->format('d M Y') }}
-
-                                        @else
-
-                                        -
-
-                                        @endif
-
-                                    </div>
-
-
-                                    <div>
-
-
-                                        <div class="timeline-title">
-
-                                            {{ $schedule->title }}
-
-                                        </div>
-
-
-                                        <div class="timeline-description">
-
-                                            {{ $schedule->description
-                                                        ?: 'Belum ada deskripsi jadwal.' }}
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <span
-                                            class="
-                                                        status-badge
-                                                        status-{{ $status }}
-                                                    ">
-
-                                            {{ $statusLabel }}
-
-                                        </span>
-
-                                    </div>
-
-
-                                </div>
-
-
-                            </div>
-
-
-                            @endforeach
-
-
-                        </div>
-
-
-                        @else
-
-
-                        <div class="empty-schedule">
-
-                            Belum ada jadwal
-                            untuk proyek ini.
-
-                        </div>
-
-
-                        @endif
-
-
-                    </div>
-
-
-                </div>
-
-
-                @empty
-
-
-                <div class="empty-project">
-
-                    Belum ada proyek
-                    yang terhubung dengan akun Anda.
-
-                </div>
-
-
-                @endforelse
-
-
-            </section>
-
-        </main>
+        </div>
 
     </div>
 
 
-    <script>
-        const filterButtons =
-            document.querySelectorAll(
-                '.filter-btn'
-            );
 
-        const scheduleItems =
-            document.querySelectorAll(
-                '.schedule-item'
-            );
+    <div class="summary-card">
 
+        <div class="summary-label">
 
-        filterButtons.forEach(
-            function(button) {
+            {{ $st['ongoing'] }}
 
-                button.addEventListener(
-                    'click',
-                    function() {
+        </div>
 
-                        filterButtons.forEach(
-                            function(btn) {
+        <div class="summary-value green">
 
-                                btn.classList.remove(
-                                    'active'
-                                );
+            {{ $ongoingSchedules }}
 
-                            }
-                        );
+        </div>
+
+    </div>
 
 
-                        button.classList.add(
-                            'active'
-                        );
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+
+            {{ $st['completed'] }}
+
+        </div>
+
+        <div class="summary-value">
+
+            {{ $completedSchedules }}
+
+        </div>
+
+    </div>
 
 
-                        const filter =
-                            button.dataset.filter;
+
+    <div class="summary-card">
+
+        <div class="summary-label">
+
+            {{ $st['delayed'] }}
+
+        </div>
+
+        <div class="summary-value orange">
+
+            {{ $delayedSchedules }}
+
+        </div>
+
+    </div>
 
 
-                        scheduleItems.forEach(
-                            function(item) {
-
-                                const status =
-                                    item.dataset.status;
+</div>
 
 
-                                if (
-                                    filter === 'all' ||
-                                    status === filter
-                                ) {
 
-                                    item.style.display =
-                                        'block';
+{{-- =====================================================
+         FILTER
+    ====================================================== --}}
 
-                                } else {
+<div class="toolbar">
 
-                                    item.style.display =
-                                        'none';
 
-                                }
+    <div class="filter-group">
 
-                            }
-                        );
 
-                    }
+        <button
+
+            type="button"
+
+            class="filter-btn active"
+
+            data-filter="all">
+
+            {{ $st['all'] }}
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-filter="planned">
+
+            {{ $st['planned'] }}
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-filter="ongoing">
+
+            {{ $st['ongoing'] }}
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-filter="completed">
+
+            {{ $st['completed'] }}
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-filter="delayed">
+
+            {{ $st['delayed'] }}
+
+        </button>
+
+
+    </div>
+
+
+
+    <div class="sort-wrapper">
+
+        <span class="sort-label">
+            {{ $st['sort'] }}
+        </span>
+
+        <select
+            id="scheduleSort"
+            class="sort-select">
+
+            <option value="nearest">
+                {{ $st['nearest_date'] }}
+            </option>
+
+            <option value="farthest">
+                {{ $scheduleLang === 'en'
+                ? 'Farthest Date'
+                : 'Tanggal Terjauh'
+            }}
+            </option>
+
+        </select>
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =====================================================
+         PROJECTS + SCHEDULE
+    ====================================================== --}}
+
+@forelse($projects as $project)
+
+
+<div class="project-block">
+
+
+    <div class="project-header-card">
+
+
+        <div class="project-info">
+
+
+            @if($project->cover_image)
+
+            <img
+
+                src="{{
+                                asset(
+                                    'storage/' .
+                                    $project
+                                        ->cover_image
+                                )
+                            }}"
+
+                class="project-thumb"
+
+                alt="{{
+                                $project
+                                    ->project_name
+                            }}">
+
+            @else
+
+            <div
+                class="project-thumb"></div>
+
+            @endif
+
+
+
+            <div>
+
+
+                <div class="project-name">
+
+                    {{
+                                $project
+                                    ->project_name
+                            }}
+
+                </div>
+
+
+                <div class="project-location">
+
+                    ◉
+
+                    {{
+                                $project->location
+                                ??
+                                '-'
+                            }}
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <a
+
+            href="{{
+                        route(
+                            'client.projects.schedule',
+                            $project
+                        )
+                    }}"
+
+            class="btn-project">
+
+            {{
+                        $st[
+                            'view_project_schedule'
+                        ]
+                    }}
+
+        </a>
+
+
+    </div>
+
+
+
+    <div class="schedule-panel">
+
+
+        @if($project->schedules->count() > 0)
+
+
+        <div class="timeline">
+
+
+            @foreach($project->schedules as $schedule)
+
+
+            @php
+
+            $status =
+            $schedule->status
+            ??
+            'planned';
+
+
+            $statusLabel =
+            match ($status) {
+
+            'planned'
+            =>
+            $st['planned'],
+
+            'ongoing'
+            =>
+            $st['ongoing'],
+
+            'completed'
+            =>
+            $st['completed'],
+
+            'delayed'
+            =>
+            $st['delayed'],
+
+            default
+            =>
+            ucfirst(
+            $status
+            ),
+
+            };
+
+            @endphp
+
+
+
+            <div
+
+                class="
+        timeline-item
+        schedule-item
+    "
+
+                data-status="{{ $status }}"
+
+                data-date="{{
+        $schedule->start_date
+            ? \Carbon\Carbon::parse($schedule->start_date)->format('Y-m-d')
+            : ''
+    }}">
+
+                <div
+                    class="
+                                        timeline-dot
+                                        {{
+                                            $status
+                                        }}
+                                    ">
+
+                    ●
+
+                </div>
+
+
+
+                <div class="timeline-card">
+
+
+                    <div class="timeline-date">
+
+                        @if($schedule->start_date)
+
+                        {{
+                                                \Carbon\Carbon
+                                                    ::parse(
+                                                        $schedule
+                                                            ->start_date
+                                                    )
+                                                    ->format(
+                                                        'd M Y'
+                                                    )
+                                            }}
+
+                        @else
+
+                        -
+
+                        @endif
+
+                    </div>
+
+
+
+                    <div>
+
+
+                        <div class="timeline-title">
+
+                            {{
+                                                $schedule
+                                                    ->title
+                                            }}
+
+                        </div>
+
+
+                        <div
+                            class="
+                                                timeline-description
+                                            ">
+
+                            {{
+                                                $schedule
+                                                    ->description
+                                                ?:
+                                                $st[
+                                                    'no_schedule_description'
+                                                ]
+                                            }}
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div>
+
+                        <span
+                            class="
+                                                status-badge
+                                                status-{{
+                                                    $status
+                                                }}
+                                            ">
+
+                            {{
+                                                $statusLabel
+                                            }}
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            @endforeach
+
+
+        </div>
+
+
+        @else
+
+
+        <div class="empty-schedule">
+
+            {{ $st['no_schedule'] }}
+
+        </div>
+
+
+        @endif
+
+
+    </div>
+
+
+</div>
+
+
+@empty
+
+
+<div class="empty-project">
+
+    {{ $st['no_project'] }}
+
+</div>
+
+
+@endforelse
+
+
+@endsection
+
+
+
+@push('scripts')
+
+```blade
+@push('scripts')
+<script>
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER SCHEDULE
+    |--------------------------------------------------------------------------
+    */
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const scheduleItems = document.querySelectorAll('.schedule-item');
+
+    filterButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+
+            button.classList.add('active');
+
+            const filter = button.dataset.filter;
+
+            scheduleItems.forEach(function(item) {
+                const status = item.dataset.status;
+
+                if (filter === 'all' || status === filter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SORT SCHEDULE
+    |--------------------------------------------------------------------------
+    */
+
+    const scheduleSort = document.getElementById('scheduleSort');
+
+    if (scheduleSort) {
+        scheduleSort.addEventListener('change', function() {
+            document.querySelectorAll('.timeline').forEach(function(timeline) {
+                const items = Array.from(
+                    timeline.querySelectorAll('.schedule-item')
                 );
 
-            }
-        );
-    </script>
+                items.sort(function(a, b) {
+                    const dateA = a.dataset.date ?
+                        new Date(a.dataset.date) :
+                        new Date('9999-12-31');
 
-</body>
+                    const dateB = b.dataset.date ?
+                        new Date(b.dataset.date) :
+                        new Date('9999-12-31');
 
-</html>
+                    if (scheduleSort.value === 'farthest') {
+                        return dateB - dateA;
+                    }
+
+                    return dateA - dateB;
+                });
+
+                items.forEach(function(item) {
+                    timeline.appendChild(item);
+                });
+            });
+        });
+    }
+</script>
+@endpush

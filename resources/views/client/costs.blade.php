@@ -1,2372 +1,1937 @@
-<!DOCTYPE html>
+@extends('layouts.client')
 
-<html lang="id">
 
-<head>
+@php
 
-    <meta charset="UTF-8">
+$costLang = auth()->user()->language ?? 'id';
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+$costTranslations = [
 
-    <title>
-        Informasi Biaya - RuangKita
-    </title>
+'id' => [
 
+'home' => 'Beranda',
+'projects' => 'Proyek Saya',
+'title' => 'Informasi Biaya',
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+'description' =>
+'Pantau rincian biaya proyek, pembayaran, dan statusnya secara transparan.',
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+'total_project' => 'Total Nilai Proyek',
+'total_paid' => 'Total Terbayar',
+'remaining' => 'Sisa Pembayaran',
+'payment_percentage' => 'Persentase Pembayaran',
 
+'payment_stages' => 'Tahapan Pembayaran',
+'paid' => 'Sudah Dibayar',
+'awaiting' => 'Menunggu Pembayaran',
+'pending' => 'Belum Jatuh Tempo',
 
-        body {
-            background: #f4f8fc;
-            color: #17334c;
-        }
+'no_payment_stages' =>
+'Belum ada tahapan pembayaran yang dibagikan oleh Admin.',
 
+'project_cost_details' => 'Rincian Biaya Proyek',
 
-        .app {
-            display: flex;
-            min-height: 100vh;
-        }
+'no' => 'No',
+'description_label' => 'Keterangan',
+'percentage' => 'Persentase',
+'amount' => 'Nominal',
+'status' => 'Status',
 
+'waiting_short' => 'Menunggu',
 
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
+'no_cost_details' =>
+'Belum ada rincian biaya.',
 
-        .sidebar {
+'payment_history' =>
+'Riwayat Pembayaran',
 
-            width: 230px;
+'view_all' =>
+'Lihat Semua →',
 
-            position: fixed;
+'project_payment' =>
+'Pembayaran Proyek',
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+'success' =>
+'Berhasil',
 
-            z-index: 1000;
+'rejected' =>
+'Ditolak',
 
-            padding: 20px 14px;
+'no_payment_history' =>
+'Belum ada riwayat pembayaran.',
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'no_project' =>
+'Belum ada proyek yang terhubung dengan akun Anda.',
 
-            color: white;
-        }
+],
 
 
-        .brand {
+'en' => [
 
-            padding:
-                5px 9px 24px;
+'home' => 'Home',
+'projects' => 'My Projects',
+'title' => 'Cost Information',
 
-            display: flex;
+'description' =>
+'Monitor project costs, payments, and payment status transparently.',
 
-            align-items: center;
+'total_project' => 'Total Project Value',
+'total_paid' => 'Total Paid',
+'remaining' => 'Remaining Payment',
+'payment_percentage' => 'Payment Percentage',
 
-            gap: 10px;
-        }
+'payment_stages' => 'Payment Stages',
+'paid' => 'Paid',
+'awaiting' => 'Awaiting Payment',
+'pending' => 'Not Due Yet',
 
+'no_payment_stages' =>
+'No payment stages have been shared by Admin yet.',
 
-        .brand-name {
+'project_cost_details' =>
+'Project Cost Details',
 
-            font-size: 18px;
-            font-weight: 700;
-        }
+'no' => 'No',
+'description_label' => 'Description',
+'percentage' => 'Percentage',
+'amount' => 'Amount',
+'status' => 'Status',
 
+'waiting_short' => 'Waiting',
 
-        .ruangkita-logo {
+'no_cost_details' =>
+'No cost details available yet.',
 
-            width: 31px;
-            height: 31px;
+'payment_history' =>
+'Payment History',
 
-            position: relative;
+'view_all' =>
+'View All →',
 
-            flex-shrink: 0;
-        }
+'project_payment' =>
+'Project Payment',
 
+'success' =>
+'Success',
 
-        .ruangkita-logo .roof {
+'rejected' =>
+'Rejected',
 
-            width: 20px;
-            height: 20px;
+'no_payment_history' =>
+'No payment history available yet.',
 
-            position: absolute;
+'no_project' =>
+'There are no projects connected to your account yet.',
 
-            left: 5px;
-            top: 2px;
+],
 
-            border-left:
-                4px solid white;
+];
 
-            border-top:
-                4px solid white;
+$ct =
+$costTranslations[$costLang]
+??
+$costTranslations['id'];
 
-            transform:
-                rotate(45deg);
-        }
+@endphp
 
 
-        .ruangkita-logo .house {
+@section(
+'title',
+$ct['title'] . ' - RuangKita'
+)
 
-            width: 19px;
-            height: 17px;
 
-            position: absolute;
+@push('styles')
 
-            left: 6px;
-            bottom: 2px;
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-            border-left:
-                4px solid white;
+    .cost-page-head {
 
-            border-right:
-                4px solid white;
+        margin-bottom: 23px;
 
-            border-bottom:
-                4px solid white;
-        }
+        display: flex;
 
+        align-items: flex-start;
 
-        .ruangkita-logo .door {
+        justify-content:
+            space-between;
 
-            width: 6px;
-            height: 9px;
+        gap: 20px;
+    }
 
-            position: absolute;
 
-            left: 50%;
-            bottom: -1px;
+    .cost-page-title h1 {
 
-            transform:
-                translateX(-50%);
+        margin-bottom: 7px;
 
-            border:
-                2px solid white;
+        color:
+            var(--text-heading);
 
-            border-bottom: none;
-        }
+        font-size: 27px;
+    }
 
 
-        .menu-item {
+    .cost-page-title p {
 
-            min-height: 42px;
+        color:
+            var(--text-muted);
 
-            padding:
-                0 13px;
+        font-size: 13px;
+    }
 
-            margin-bottom:
-                3px;
 
-            border-radius:
-                8px;
+    /* =====================================================
+       PROJECT SELECTOR
+    ===================================================== */
 
-            display: flex;
+    .project-selector {
 
-            align-items: center;
+        width: 290px;
 
-            gap: 11px;
+        min-height: 60px;
 
-            text-decoration: none;
+        padding:
+            10px 13px;
 
-            color:
-                #d6e6f5;
+        display: flex;
 
-            font-size:
-                13px;
-        }
+        align-items: center;
 
+        gap: 10px;
 
-        .menu-item:hover {
+        border:
+            1px solid var(--border);
 
-            background:
-                rgba(255,
-                    255,
-                    255,
-                    .08);
-        }
+        border-radius: 12px;
 
+        background:
+            var(--card-bg);
+    }
 
-        .menu-item.active {
 
-            color: white;
+    .selector-icon {
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+        width: 35px;
+        height: 35px;
 
+        display: flex;
 
-        .menu-icon {
+        align-items: center;
+        justify-content: center;
 
-            width: 19px;
+        border-radius: 8px;
 
-            text-align: center;
-        }
+        background: #e9f3fc;
 
+        color: #0874ca;
+    }
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
 
-        .main {
+    body.dark-mode .selector-icon {
 
-            position: relative;
+        background: #19364d;
 
-            z-index: 1;
+        color: #72bdf5;
+    }
 
-            width:
-                calc(100% - 230px);
 
-            margin-left:
-                230px;
-        }
+    .selector-text {
 
+        min-width: 0;
 
-        .topbar {
+        flex: 1;
+    }
 
-            height: 66px;
 
-            padding:
-                0 28px;
+    .selector-project {
 
-            display: flex;
+        overflow: hidden;
 
-            align-items: center;
+        white-space: nowrap;
 
-            justify-content:
-                space-between;
+        text-overflow: ellipsis;
 
-            background:
-                white;
+        color:
+            var(--text-heading);
 
-            border-bottom:
-                1px solid #e7edf3;
-        }
+        font-size: 12px;
 
+        font-weight: 700;
+    }
 
-        .hamburger {
 
-            color:
-                #526f87;
+    .project-select {
 
-            font-size:
-                20px;
-        }
+        width: 24px;
 
+        border: none;
 
-        .user-area {
+        outline: none;
 
-            display: flex;
+        background: transparent;
 
-            align-items: center;
+        color:
+            var(--text-muted);
 
-            gap: 10px;
+        cursor: pointer;
+    }
 
-            font-size:
-                13px;
 
-            font-weight:
-                600;
-        }
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
 
+    .summary-grid {
 
-        .avatar {
+        margin-bottom: 18px;
 
-            width: 33px;
-            height: 33px;
+        display: grid;
 
-            border-radius:
-                50%;
+        grid-template-columns:
+            repeat(4,
+                minmax(0, 1fr));
 
-            display: flex;
+        gap: 14px;
+    }
 
-            align-items: center;
 
-            justify-content:
-                center;
+    .summary-card {
 
-            background:
-                #e4eef7;
-        }
+        min-height: 125px;
 
+        padding: 20px;
 
-        /* =====================================================
-           CONTENT
-        ===================================================== */
+        display: flex;
 
-        .content {
+        align-items: center;
 
-            padding:
-                28px 30px 40px;
-        }
+        gap: 15px;
 
+        border:
+            1px solid var(--border);
 
-        .breadcrumb {
+        border-radius: 13px;
 
-            margin-bottom:
-                17px;
+        background:
+            var(--card-bg);
 
-            color:
-                #7c8fa1;
+        box-shadow:
+            var(--shadow);
+    }
 
-            font-size:
-                11px;
-        }
 
+    .summary-icon {
 
-        .breadcrumb a {
+        width: 49px;
+        height: 49px;
 
-            color:
-                #58748c;
+        flex-shrink: 0;
 
-            text-decoration:
-                none;
-        }
+        display: flex;
 
+        align-items: center;
+        justify-content: center;
 
-        .page-head {
+        border-radius: 50%;
 
-            display: flex;
+        font-size: 20px;
+    }
 
-            align-items:
-                flex-start;
 
-            justify-content:
-                space-between;
+    .summary-icon.blue {
 
-            gap:
-                20px;
+        color: #0877d4;
 
-            margin-bottom:
-                23px;
-        }
+        background: #e7f2ff;
+    }
 
 
-        .page-title h1 {
+    .summary-icon.green {
 
-            color:
-                #14304a;
+        color: #11905f;
 
-            font-size:
-                27px;
+        background: #dff8ec;
+    }
 
-            margin-bottom:
-                7px;
-        }
 
+    .summary-icon.orange {
 
-        .page-title p {
+        color: #d97706;
 
-            color:
-                #768b9f;
+        background: #fff3dc;
+    }
 
-            font-size:
-                13px;
-        }
 
+    .summary-icon.purple {
 
-        /* =====================================================
-           PROJECT SELECT
-        ===================================================== */
+        color: #6f42d9;
 
-        .project-selector {
+        background: #eee8ff;
+    }
 
-            width:
-                290px;
 
-            min-height:
-                60px;
+    body.dark-mode .summary-icon.blue {
 
-            padding:
-                10px 13px;
+        background: #19364d;
+    }
 
-            display: flex;
 
-            align-items:
-                center;
+    body.dark-mode .summary-icon.green {
 
-            gap:
-                10px;
+        background: #173d31;
+    }
 
-            background:
-                white;
 
-            border:
-                1px solid #e4ebf1;
+    body.dark-mode .summary-icon.orange {
 
-            border-radius:
-                12px;
-        }
+        background: #49331e;
+    }
 
 
-        .selector-icon {
+    body.dark-mode .summary-icon.purple {
 
-            width:
-                35px;
+        background: #302a4d;
+    }
 
-            height:
-                35px;
 
-            display:
-                flex;
+    .summary-label {
 
-            align-items:
-                center;
+        margin-bottom: 6px;
 
-            justify-content:
-                center;
+        color:
+            var(--text-muted);
 
-            border-radius:
-                8px;
+        font-size: 11px;
+    }
 
-            background:
-                #e9f3fc;
 
-            color:
-                #0874ca;
-        }
+    .summary-number {
 
+        color:
+            var(--text-heading);
 
-        .selector-text {
+        font-size: 20px;
 
-            min-width: 0;
+        font-weight: 700;
+    }
 
-            flex:
-                1;
-        }
 
+    .summary-progress {
 
-        .selector-project {
+        margin-top: 12px;
 
-            color:
-                #17364f;
+        height: 9px;
 
-            font-size:
-                12px;
+        overflow: hidden;
 
-            font-weight:
-                700;
+        border-radius: 30px;
 
-            white-space:
-                nowrap;
+        background: #e6edf3;
+    }
 
-            overflow:
-                hidden;
 
-            text-overflow:
-                ellipsis;
-        }
+    body.dark-mode .summary-progress {
 
+        background: #304352;
+    }
 
-        .project-select {
 
-            width:
-                24px;
+    .summary-progress-fill {
 
-            border:
-                none;
+        width: 0;
 
-            color:
-                #527089;
+        height: 100%;
 
-            background:
-                transparent;
+        border-radius: 30px;
 
-            outline:
-                none;
+        background:
+            linear-gradient(90deg,
+                #0877d4,
+                #1598e8);
+    }
 
-            cursor:
-                pointer;
-        }
 
+    /* =====================================================
+       PAYMENT STAGES
+    ===================================================== */
 
-        /* =====================================================
-           SUMMARY
-        ===================================================== */
+    .stage-panel {
+
+        margin-bottom: 18px;
+
+        padding:
+            18px 20px 22px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 13px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .section-title {
+
+        color:
+            var(--text-heading);
+
+        font-size: 15px;
+
+        font-weight: 700;
+    }
+
+
+    .stages {
+
+        position: relative;
+
+        margin-top: 24px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 15px;
+    }
+
+
+    .stages::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 17px;
+
+        left: 12%;
+        right: 12%;
+
+        height: 3px;
+
+        background:
+            var(--border);
+    }
+
+
+    .stage {
+
+        position: relative;
+
+        z-index: 2;
+
+        text-align: center;
+    }
+
+
+    .stage-circle {
+
+        width: 37px;
+        height: 37px;
+
+        margin:
+            0 auto 10px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #dfe8f0;
+
+        color: #718496;
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    body.dark-mode .stage-circle {
+
+        background: #304352;
+
+        color: #b9c7d1;
+    }
+
+
+    .stage-circle.paid {
+
+        background: #087bd7;
+
+        color: white;
+    }
+
+
+    .stage-circle.waiting {
+
+        border:
+            3px solid #087bd7;
+
+        background: #e4f2ff;
+
+        color: #0875ce;
+    }
+
+
+    body.dark-mode .stage-circle.waiting {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    .stage-name {
+
+        min-height: 34px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .stage-percentage {
+
+        margin-top: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+
+    .stage-amount {
+
+        margin-top: 6px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    /* =====================================================
+       STATUS BADGE
+    ===================================================== */
+
+    .status-badge {
+
+        display: inline-block;
+
+        margin-top: 9px;
+
+        padding:
+            5px 9px;
+
+        border-radius: 15px;
+
+        font-size: 9px;
+
+        font-weight: 600;
+    }
+
+
+    .badge-paid {
+
+        color: #13805b;
+
+        background: #daf7e9;
+    }
+
+
+    .badge-waiting {
+
+        color: #a65b00;
+
+        background: #fff0d2;
+    }
+
+
+    .badge-pending {
+
+        color: #52687b;
+
+        background: #e8edf2;
+    }
+
+
+    body.dark-mode .badge-paid {
+
+        color: #79ddb0;
+
+        background: #173d31;
+    }
+
+
+    body.dark-mode .badge-waiting {
+
+        color: #ffc976;
+
+        background: #49331e;
+    }
+
+
+    body.dark-mode .badge-pending {
+
+        color: #b8c5cf;
+
+        background: #2a3945;
+    }
+
+
+    /* =====================================================
+       LOWER GRID
+    ===================================================== */
+
+    .lower-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.4fr) minmax(300px, .9fr);
+
+        gap: 17px;
+    }
+
+
+    .cost-panel {
+
+        padding: 18px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 13px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    /* =====================================================
+       TABLE
+    ===================================================== */
+
+    .table-wrap {
+
+        margin-top: 15px;
+
+        overflow-x: auto;
+    }
+
+
+    .cost-table {
+
+        width: 100%;
+
+        border-collapse: collapse;
+
+        font-size: 11px;
+    }
+
+
+    .cost-table th {
+
+        padding:
+            12px 10px;
+
+        color:
+            var(--text-muted);
+
+        background:
+            var(--input-bg);
+
+        text-align: left;
+
+        font-weight: 600;
+    }
+
+
+    .cost-table td {
+
+        padding:
+            12px 10px;
+
+        color:
+            var(--text-main);
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    /* =====================================================
+       PAYMENT HISTORY
+    ===================================================== */
+
+    .history-header {
+
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        align-items: center;
+
+        gap: 10px;
+    }
+
+
+    .see-all {
+
+        color:
+            var(--primary);
+
+        text-decoration: none;
+
+        font-size: 10px;
+
+        font-weight: 600;
+    }
+
+
+    .history {
+
+        position: relative;
+
+        margin-top: 17px;
+
+        padding-left: 14px;
+    }
+
+
+    .history::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 10px;
+        bottom: 10px;
+        left: 6px;
+
+        width: 2px;
+
+        background:
+            var(--border);
+    }
+
+
+    .history-item {
+
+        position: relative;
+
+        padding:
+            0 0 19px 21px;
+    }
+
+
+    .history-item:last-child {
+
+        padding-bottom: 0;
+    }
+
+
+    .history-dot {
+
+        position: absolute;
+
+        left: -13px;
+        top: 7px;
+
+        width: 12px;
+        height: 12px;
+
+        border-radius: 50%;
+
+        background: #a8b8c6;
+
+        border:
+            3px solid var(--card-bg);
+
+        box-shadow:
+            0 0 0 1px #a8b8c6;
+    }
+
+
+    .history-dot.success {
+
+        background: #12a36e;
+
+        box-shadow:
+            0 0 0 1px #12a36e;
+    }
+
+
+    .history-row {
+
+        display: grid;
+
+        grid-template-columns:
+            80px 1fr auto;
+
+        gap: 10px;
+
+        align-items: center;
+    }
+
+
+    .history-date {
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+    }
+
+
+    .history-title {
+
+        margin-bottom: 3px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 10px;
+
+        font-weight: 700;
+    }
+
+
+    .history-amount {
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-state {
+
+        margin-top: 15px;
+
+        padding:
+            30px 15px;
+
+        border-radius: 10px;
+
+        background:
+            var(--input-bg);
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1100px) {
 
         .summary-grid {
 
-            display:
-                grid;
+            grid-template-columns:
+                1fr 1fr;
+        }
+
+
+        .lower-grid {
 
             grid-template-columns:
-                repeat(4,
-                    minmax(0,
-                        1fr));
+                1fr;
+        }
 
-            gap:
-                14px;
+    }
 
-            margin-bottom:
-                18px;
+
+    @media(max-width: 650px) {
+
+        .cost-page-head {
+
+            flex-direction: column;
         }
 
 
-        .summary-card {
+        .project-selector {
 
-            min-height:
-                125px;
-
-            padding:
-                20px;
-
-            display: flex;
-
-            align-items:
-                center;
-
-            gap:
-                15px;
-
-            background:
-                white;
-
-            border:
-                1px solid #e5edf3;
-
-            border-radius:
-                13px;
+            width: 100%;
         }
 
 
-        .summary-icon {
+        .summary-grid {
 
-            width:
-                49px;
-
-            height:
-                49px;
-
-            flex-shrink:
-                0;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            border-radius:
-                50%;
-
-            font-size:
-                20px;
-        }
-
-
-        .summary-icon.blue {
-
-            color:
-                #0877d4;
-
-            background:
-                #e7f2ff;
-        }
-
-
-        .summary-icon.green {
-
-            color:
-                #11905f;
-
-            background:
-                #dff8ec;
-        }
-
-
-        .summary-icon.orange {
-
-            color:
-                #d97706;
-
-            background:
-                #fff3dc;
-        }
-
-
-        .summary-icon.purple {
-
-            color:
-                #6f42d9;
-
-            background:
-                #eee8ff;
-        }
-
-
-        .summary-label {
-
-            margin-bottom:
-                6px;
-
-            color:
-                #75899c;
-
-            font-size:
-                11px;
-        }
-
-
-        .summary-number {
-
-            color:
-                #102a43;
-
-            font-size:
-                20px;
-
-            font-weight:
-                700;
-        }
-
-
-        .summary-progress {
-
-            margin-top:
-                12px;
-
-            height:
-                9px;
-
-            overflow:
-                hidden;
-
-            border-radius:
-                30px;
-
-            background:
-                #e6edf3;
-        }
-
-
-        .summary-progress-fill {
-
-            height:
-                100%;
-
-            border-radius:
-                30px;
-
-            background:
-                linear-gradient(90deg,
-                    #0877d4,
-                    #1598e8);
-        }
-
-
-        /* =====================================================
-           PAYMENT STAGES
-        ===================================================== */
-
-        .stage-panel {
-
-            padding:
-                18px 20px 22px;
-
-            margin-bottom:
-                18px;
-
-            background:
-                white;
-
-            border:
-                1px solid #e5edf3;
-
-            border-radius:
-                13px;
-        }
-
-
-        .section-title {
-
-            color:
-                #18354f;
-
-            font-size:
-                15px;
-
-            font-weight:
-                700;
+            grid-template-columns:
+                1fr;
         }
 
 
         .stages {
 
-            position:
-                relative;
-
-            display:
-                grid;
-
             grid-template-columns:
-                repeat(4,
-                    1fr);
-
-            gap:
-                15px;
-
-            margin-top:
-                24px;
+                1fr;
         }
 
 
         .stages::before {
 
-            content:
-                "";
-
-            position:
-                absolute;
-
-            top:
-                17px;
-
-            left:
-                12%;
-
-            right:
-                12%;
-
-            height:
-                3px;
-
-            background:
-                #dfe7ee;
-        }
-
-
-        .stage {
-
-            position:
-                relative;
-
-            z-index:
-                2;
-
-            text-align:
-                center;
-        }
-
-
-        .stage-circle {
-
-            width:
-                37px;
-
-            height:
-                37px;
-
-            margin:
-                0 auto 10px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            border-radius:
-                50%;
-
-            color:
-                #718496;
-
-            background:
-                #dfe8f0;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-        }
-
-
-        .stage-circle.paid {
-
-            background:
-                #087bd7;
-
-            color:
-                white;
-        }
-
-
-        .stage-circle.waiting {
-
-            border:
-                3px solid #087bd7;
-
-            background:
-                #e4f2ff;
-
-            color:
-                #0875ce;
-        }
-
-
-        .stage-name {
-
-            min-height:
-                34px;
-
-            color:
-                #17334c;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-        }
-
-
-        .stage-percentage {
-
-            margin-top:
-                4px;
-
-            color:
-                #17334c;
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
-        }
-
-
-        .stage-amount {
-
-            margin-top:
-                6px;
-
-            color:
-                #435f75;
-
-            font-size:
-                10px;
-        }
-
-
-        .status-badge {
-
-            display:
-                inline-block;
-
-            margin-top:
-                9px;
-
-            padding:
-                5px 9px;
-
-            border-radius:
-                15px;
-
-            font-size:
-                9px;
-
-            font-weight:
-                600;
-        }
-
-
-        .badge-paid {
-
-            color:
-                #13805b;
-
-            background:
-                #daf7e9;
-        }
-
-
-        .badge-waiting {
-
-            color:
-                #a65b00;
-
-            background:
-                #fff0d2;
-        }
-
-
-        .badge-pending {
-
-            color:
-                #52687b;
-
-            background:
-                #e8edf2;
-        }
-
-
-        /* =====================================================
-           LOWER GRID
-        ===================================================== */
-
-        .lower-grid {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                minmax(0,
-                    1.4fr) minmax(300px,
-                    .9fr);
-
-            gap:
-                17px;
-        }
-
-
-        .panel {
-
-            background:
-                white;
-
-            border:
-                1px solid #e5edf3;
-
-            border-radius:
-                13px;
-
-            padding:
-                18px;
-        }
-
-
-        /* =====================================================
-           TABLE
-        ===================================================== */
-
-        .table-wrap {
-
-            margin-top:
-                15px;
-
-            overflow-x:
-                auto;
-        }
-
-
-        table {
-
-            width:
-                100%;
-
-            border-collapse:
-                collapse;
-
-            font-size:
-                11px;
-        }
-
-
-        th {
-
-            padding:
-                12px 10px;
-
-            color:
-                #536b80;
-
-            background:
-                #f4f7fa;
-
-            text-align:
-                left;
-
-            font-weight:
-                600;
-        }
-
-
-        td {
-
-            padding:
-                12px 10px;
-
-            color:
-                #29455c;
-
-            border-bottom:
-                1px solid #edf1f4;
-        }
-
-
-        /* =====================================================
-           PAYMENT HISTORY
-        ===================================================== */
-
-        .history-header {
-
-            display:
-                flex;
-
-            justify-content:
-                space-between;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-        }
-
-
-        .see-all {
-
-            color:
-                #0874ca;
-
-            text-decoration:
-                none;
-
-            font-size:
-                10px;
-
-            font-weight:
-                600;
-        }
-
-
-        .history {
-
-            position:
-                relative;
-
-            margin-top:
-                17px;
-
-            padding-left:
-                14px;
-        }
-
-
-        .history::before {
-
-            content:
-                "";
-
-            position:
-                absolute;
-
-            top:
-                10px;
-
-            bottom:
-                10px;
-
-            left:
-                6px;
-
-            width:
-                2px;
-
-            background:
-                #dde7ee;
-        }
-
-
-        .history-item {
-
-            position:
-                relative;
-
-            padding:
-                0 0 19px 21px;
-        }
-
-
-        .history-item:last-child {
-
-            padding-bottom:
-                0;
-        }
-
-
-        .history-dot {
-
-            position:
-                absolute;
-
-            left:
-                -13px;
-
-            top:
-                7px;
-
-            width:
-                12px;
-
-            height:
-                12px;
-
-            border-radius:
-                50%;
-
-            background:
-                #a8b8c6;
-
-            border:
-                3px solid white;
-
-            box-shadow:
-                0 0 0 1px #a8b8c6;
-        }
-
-
-        .history-dot.success {
-
-            background:
-                #12a36e;
-
-            box-shadow:
-                0 0 0 1px #12a36e;
+            display: none;
         }
 
 
         .history-row {
 
-            display:
-                grid;
-
             grid-template-columns:
-                80px 1fr auto;
-
-            gap:
-                10px;
-
-            align-items:
-                center;
+                65px 1fr;
         }
 
+    }
+</style>
 
-        .history-date {
+@endpush
 
-            color:
-                #75899c;
 
-            font-size:
-                9px;
-        }
 
+@section('content')
 
-        .history-title {
 
-            color:
-                #203b52;
+{{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
 
-            font-size:
-                10px;
+<div class="breadcrumb">
 
-            font-weight:
-                700;
+    <a href="{{ route('client.dashboard') }}">
 
-            margin-bottom:
-                3px;
-        }
+        {{ $ct['home'] }}
 
+    </a>
 
-        .history-amount {
+    &nbsp;›&nbsp;
 
-            color:
-                #496277;
+    <a href="{{ route('client.projects.index') }}">
 
-            font-size:
-                9px;
-        }
+        {{ $ct['projects'] }}
 
+    </a>
 
-        .empty-state {
+    &nbsp;›&nbsp;
 
-            margin-top:
-                15px;
+    {{ $ct['title'] }}
 
-            padding:
-                30px 15px;
+</div>
 
-            text-align:
-                center;
 
-            color:
-                #8394a4;
 
-            font-size:
-                11px;
+{{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
-            background:
-                #f8fafc;
+<div class="cost-page-head">
 
-            border-radius:
-                10px;
-        }
 
+    <div class="cost-page-title">
 
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
+        <h1>
 
-        @media(max-width: 1100px) {
+            {{ $ct['title'] }}
 
-            .summary-grid {
+        </h1>
 
-                grid-template-columns:
-                    1fr 1fr;
-            }
+        <p>
 
+            {{ $ct['description'] }}
 
-            .lower-grid {
+        </p>
 
-                grid-template-columns:
-                    1fr;
-            }
-        }
+    </div>
 
 
-        @media(max-width: 850px) {
 
-            .sidebar {
+    @if($selectedProject)
 
-                display:
-                    none;
-            }
+    <form
 
+        method="GET"
 
-            .main {
+        action="{{ route('client.costs') }}"
 
-                width:
-                    100%;
+        class="project-selector">
 
-                margin-left:
-                    0;
-            }
-        }
 
+        <div class="selector-icon">
 
-        @media(max-width: 650px) {
+            ▤
 
-            .content {
+        </div>
 
-                padding:
-                    20px 14px;
-            }
 
+        <div class="selector-text">
 
-            .page-head {
+            <div class="selector-project">
 
-                flex-direction:
-                    column;
-            }
+                {{
+                            $selectedProject
+                                ->project_name
+                        }}
 
+            </div>
 
-            .project-selector {
+        </div>
 
-                width:
-                    100%;
-            }
 
+        <select
 
-            .summary-grid {
+            name="project"
 
-                grid-template-columns:
-                    1fr;
-            }
+            class="project-select"
 
+            onchange="this.form.submit()">
 
-            .stages {
+            @foreach($projects as $project)
 
-                grid-template-columns:
-                    1fr;
-            }
+            <option
 
+                value="{{ $project->id }}"
 
-            .stages::before {
+                @selected(
+                $project->id
+                ===
+                $selectedProject->id
+                )
 
-                display:
-                    none;
-            }
+                >
 
+                {{ $project->project_name }}
 
-            .history-row {
+            </option>
 
-                grid-template-columns:
-                    65px 1fr;
-            }
-        }
-    </style>
+            @endforeach
 
-</head>
+        </select>
 
 
-<body>
+    </form>
 
+    @endif
 
-    <div class="app">
 
+</div>
 
-        <!-- SIDEBAR -->
 
-        <aside class="sidebar">
 
+@if($selectedProject)
 
-            <div class="brand">
 
-                <div class="ruangkita-logo">
+{{-- =================================================
+             SUMMARY
+        ================================================== --}}
 
-                    <div class="roof"></div>
+<div class="summary-grid">
 
-                    <div class="house">
 
-                        <div class="door"></div>
+    <div class="summary-card">
 
-                    </div>
+        <div class="summary-icon blue">
+            ▤
+        </div>
 
-                </div>
+        <div>
 
+            <div class="summary-label">
 
-                <span class="brand-name">
+                {{ $ct['total_project'] }}
 
-                    RuangKita
+            </div>
 
-                </span>
+            <div class="summary-number">
+
+                Rp
+                {{
+                            number_format(
+                                $totalProject,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="summary-card">
+
+        <div class="summary-icon green">
+            ✓
+        </div>
+
+        <div>
+
+            <div class="summary-label">
+
+                {{ $ct['total_paid'] }}
+
+            </div>
+
+            <div class="summary-number">
+
+                Rp
+                {{
+                            number_format(
+                                $totalPaid,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="summary-card">
+
+        <div class="summary-icon orange">
+            ◷
+        </div>
+
+        <div>
+
+            <div class="summary-label">
+
+                {{ $ct['remaining'] }}
+
+            </div>
+
+            <div class="summary-number">
+
+                Rp
+                {{
+                            number_format(
+                                $remaining,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="summary-card">
+
+        <div class="summary-icon purple">
+            %
+        </div>
+
+        <div style="flex:1">
+
+            <div class="summary-label">
+
+                {{
+                            $ct[
+                                'payment_percentage'
+                            ]
+                        }}
+
+            </div>
+
+            <div class="summary-number">
+
+                {{ $paymentPercentage }}%
+
+            </div>
+
+
+            <div class="summary-progress">
+
+                <div
+
+                    class="
+                                summary-progress-fill
+                            "
+
+                    data-progress="{{
+                                $paymentPercentage
+                            }}"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =================================================
+             PAYMENT STAGES
+        ================================================== --}}
+
+<div class="stage-panel">
+
+
+    <div class="section-title">
+
+        {{ $ct['payment_stages'] }}
+
+    </div>
+
+
+    @if($selectedProject->paymentStages->count())
+
+
+    <div class="stages">
+
+
+        @foreach($selectedProject->paymentStages as $stage)
+
+
+        <div class="stage">
+
+
+            @if($stage->status === 'paid')
+
+            <div class="stage-circle paid">
+
+                ✓
+
+            </div>
+
+            @elseif($stage->status === 'awaiting_payment')
+
+            <div class="stage-circle waiting">
+
+                {{ $loop->iteration }}
+
+            </div>
+
+            @else
+
+            <div class="stage-circle">
+
+                {{ $loop->iteration }}
+
+            </div>
+
+            @endif
+
+
+
+            <div class="stage-name">
+
+                {{ $stage->title }}
+
+            </div>
+
+
+            <div class="stage-percentage">
+
+                {{
+                                    number_format(
+                                        $stage->percentage,
+                                        0
+                                    )
+                                }}%
+
+            </div>
+
+
+            <div class="stage-amount">
+
+                Rp
+                {{
+                                    number_format(
+                                        $stage->amount,
+                                        0,
+                                        ',',
+                                        '.'
+                                    )
+                                }}
 
             </div>
 
 
 
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
+            @if($stage->status === 'paid')
 
-                <span class="menu-icon">⌂</span>
+            <div
+                class="
+                                        status-badge
+                                        badge-paid
+                                    ">
 
-                Dashboard
+                {{ $ct['paid'] }}
 
-            </a>
+            </div>
 
+            @elseif($stage->status === 'awaiting_payment')
 
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item">
+            <div
+                class="
+                                        status-badge
+                                        badge-waiting
+                                    ">
 
-                <span class="menu-icon">▣</span>
+                {{ $ct['awaiting'] }}
 
-                Proyek Saya
+            </div>
 
-            </a>
+            @else
 
+            <div
+                class="
+                                        status-badge
+                                        badge-pending
+                                    ">
 
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item">
+                {{ $ct['pending'] }}
 
-                <span class="menu-icon">▦</span>
+            </div>
 
-                Jadwal
+            @endif
 
-            </a>
 
+        </div>
 
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item">
 
-                <span class="menu-icon">↗</span>
+        @endforeach
 
-                Progress
 
-            </a>
+    </div>
 
 
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item">
+    @else
 
-                <span class="menu-icon">▧</span>
 
-                Dokumentasi
+    <div class="empty-state">
 
-            </a>
+        {{
+                        $ct[
+                            'no_payment_stages'
+                        ]
+                    }}
 
+    </div>
 
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item active">
 
-                <span class="menu-icon">▤</span>
+    @endif
 
-                Informasi Biaya
 
-            </a>
+</div>
 
 
-            <a href="{{ route('client.messages') }}" class="menu-item">
 
-                <span class="menu-icon">✉</span>
+{{-- =================================================
+             LOWER CONTENT
+        ================================================== --}}
 
-                Pesan
+<div class="lower-grid">
 
-            </a>
 
+    {{-- COST DETAILS --}}
 
-            <a
-                href="{{ route('client.ar') }}"
-                class="menu-item">
+    <div class="cost-panel">
 
-                <span class="menu-icon">
-                    ◇
-                </span>
 
-                Augmented Reality
+        <div class="section-title">
 
-            </a>
+            {{
+                        $ct[
+                            'project_cost_details'
+                        ]
+                    }}
 
+        </div>
 
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
 
-                <span class="menu-icon">⚙</span>
+        @if($selectedProject->paymentStages->count())
 
-                Pengaturan
-            </a>
 
+        <div class="table-wrap">
 
-        </aside>
 
+            <table class="cost-table">
 
 
-        <!-- MAIN -->
+                <thead>
 
-        <main class="main">
+                    <tr>
 
+                        <th>
+                            {{ $ct['no'] }}
+                        </th>
 
-            <header class="topbar">
-
-
-                <div class="hamburger">
-
-                    ☰
-
-                </div>
-
-
-                <div class="user-area">
-
-                    <span>♧</span>
-
-                    <div class="avatar">
-
-                        👤
-
-                    </div>
-
-                    <span>
-
-                        {{ auth()->user()->name }}
-
-                    </span>
-
-                    <span>▾</span>
-
-                </div>
-
-
-            </header>
-
-
-
-            <section class="content">
-
-
-                <div class="breadcrumb">
-
-                    <a href="{{ route('client.dashboard') }}">
-
-                        Beranda
-
-                    </a>
-
-                    &nbsp;›&nbsp;
-
-                    <a href="{{ route('client.projects.index') }}">
-
-                        Proyek Saya
-
-                    </a>
-
-                    &nbsp;›&nbsp;
-
-                    Informasi Biaya
-
-                </div>
-
-
-
-                <div class="page-head">
-
-
-                    <div class="page-title">
-
-                        <h1>
-
-                            Informasi Biaya
-
-                        </h1>
-
-                        <p>
-
-                            Pantau rincian biaya proyek, pembayaran,
-                            dan statusnya secara transparan.
-
-                        </p>
-
-                    </div>
-
-
-
-                    @if($selectedProject)
-
-
-                    <form
-                        method="GET"
-                        action="{{ route('client.costs') }}"
-                        class="project-selector">
-
-
-                        <div class="selector-icon">
-
-                            ▤
-
-                        </div>
-
-
-                        <div class="selector-text">
-
-                            <div class="selector-project">
-
-                                {{ $selectedProject->project_name }}
-
-                            </div>
-
-                        </div>
-
-
-                        <select
-                            name="project"
-                            class="project-select"
-                            onchange="this.form.submit()">
-
-
-                            @foreach($projects as $project)
-
-                            <option
-                                value="{{ $project->id }}"
-                                @selected(
-                                $project->id
-                                ===
-                                $selectedProject->id
-                                )>
-
-                                {{ $project->project_name }}
-
-                            </option>
-
-                            @endforeach
-
-
-                        </select>
-
-
-                    </form>
-
-
-                    @endif
-
-
-                </div>
-
-
-
-                @if($selectedProject)
-
-
-                <!-- SUMMARY -->
-
-
-                <div class="summary-grid">
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon blue">
-
-                            ▤
-
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-
-                                Total Nilai Proyek
-
-                            </div>
-
-                            <div class="summary-number">
-
-                                Rp
-                                {{
-                                    number_format(
-                                        $totalProject,
-                                        0,
-                                        ',',
-                                        '.'
-                                    )
-                                }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon green">
-
-                            ✓
-
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-
-                                Total Terbayar
-
-                            </div>
-
-                            <div class="summary-number">
-
-                                Rp
-                                {{
-                                    number_format(
-                                        $totalPaid,
-                                        0,
-                                        ',',
-                                        '.'
-                                    )
-                                }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon orange">
-
-                            ◷
-
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-
-                                Sisa Pembayaran
-
-                            </div>
-
-                            <div class="summary-number">
-
-                                Rp
-                                {{
-                                    number_format(
-                                        $remaining,
-                                        0,
-                                        ',',
-                                        '.'
-                                    )
-                                }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon purple">
-
-                            %
-
-                        </div>
-
-                        <div style="flex:1">
-
-                            <div class="summary-label">
-
-                                Persentase Pembayaran
-
-                            </div>
-
-                            <div class="summary-number">
-
-                                {{ $paymentPercentage }}%
-
-                            </div>
-
-
-                            <div class="summary-progress">
-
-                                <div
-                                    class="summary-progress-fill"
-                                    data-progress="{{ $paymentPercentage }}">
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- PAYMENT STAGES -->
-
-
-                <div class="stage-panel">
-
-
-                    <div class="section-title">
-
-                        Tahapan Pembayaran
-
-                    </div>
-
-
-                    @if($selectedProject->paymentStages->count())
-
-
-                    <div class="stages">
-
-
-                        @foreach(
-                        $selectedProject->paymentStages
-                        as $stage
-                        )
-
-
-                        <div class="stage">
-
-
-                            @if($stage->status === 'paid')
-
-
-                            <div class="stage-circle paid">
-
-                                ✓
-
-                            </div>
-
-
-                            @elseif(
-                            $stage->status
-                            ===
-                            'awaiting_payment'
-                            )
-
-
-                            <div class="stage-circle waiting">
-
-                                {{ $loop->iteration }}
-
-                            </div>
-
-
-                            @else
-
-
-                            <div class="stage-circle">
-
-                                {{ $loop->iteration }}
-
-                            </div>
-
-
-                            @endif
-
-
-
-                            <div class="stage-name">
-
-                                {{ $stage->title }}
-
-                            </div>
-
-
-                            <div class="stage-percentage">
-
-                                {{
-                                            number_format(
-                                                $stage->percentage,
-                                                0
-                                            )
-                                        }}%
-
-                            </div>
-
-
-                            <div class="stage-amount">
-
-                                Rp
-                                {{
-                                            number_format(
-                                                $stage->amount,
-                                                0,
-                                                ',',
-                                                '.'
-                                            )
+                        <th>
+                            {{
+                                            $ct[
+                                                'description_label'
+                                            ]
                                         }}
+                        </th>
 
-                            </div>
+                        <th>
+                            {{
+                                            $ct[
+                                                'percentage'
+                                            ]
+                                        }}
+                        </th>
 
+                        <th>
+                            {{ $ct['amount'] }}
+                        </th>
+
+                        <th>
+                            {{ $ct['status'] }}
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    @foreach($selectedProject->paymentStages as $stage)
+
+
+                    <tr>
+
+                        <td>
+
+                            {{ $loop->iteration }}
+
+                        </td>
+
+                        <td>
+
+                            {{ $stage->title }}
+
+                        </td>
+
+                        <td>
+
+                            {{
+                                                number_format(
+                                                    $stage->percentage,
+                                                    0
+                                                )
+                                            }}%
+
+                        </td>
+
+                        <td>
+
+                            Rp
+                            {{
+                                                number_format(
+                                                    $stage->amount,
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                )
+                                            }}
+
+                        </td>
+
+                        <td>
 
 
                             @if($stage->status === 'paid')
 
+                            <span
+                                class="
+                                                        status-badge
+                                                        badge-paid
+                                                    ">
 
-                            <div class="status-badge badge-paid">
+                                {{ $ct['paid'] }}
 
-                                Sudah Dibayar
+                            </span>
 
-                            </div>
+                            @elseif($stage->status === 'awaiting_payment')
 
+                            <span
+                                class="
+                                                        status-badge
+                                                        badge-waiting
+                                                    ">
 
-                            @elseif(
-                            $stage->status
-                            ===
-                            'awaiting_payment'
-                            )
+                                {{
+                                                        $ct[
+                                                            'waiting_short'
+                                                        ]
+                                                    }}
 
-
-                            <div class="status-badge badge-waiting">
-
-                                Menunggu Pembayaran
-
-                            </div>
-
+                            </span>
 
                             @else
 
+                            <span
+                                class="
+                                                        status-badge
+                                                        badge-pending
+                                                    ">
 
-                            <div class="status-badge badge-pending">
+                                {{ $ct['pending'] }}
 
-                                Belum Jatuh Tempo
-
-                            </div>
-
+                            </span>
 
                             @endif
 
 
-                        </div>
+                        </td>
 
+                    </tr>
 
-                        @endforeach
 
+                    @endforeach
 
-                    </div>
 
+                </tbody>
 
-                    @else
 
+            </table>
 
-                    <div class="empty-state">
 
-                        Belum ada tahapan pembayaran
-                        yang dibagikan oleh Admin.
+        </div>
 
-                    </div>
 
+        @else
 
-                    @endif
 
+        <div class="empty-state">
 
-                </div>
+            {{
+                            $ct[
+                                'no_cost_details'
+                            ]
+                        }}
 
+        </div>
 
 
-                <!-- LOWER CONTENT -->
-
-
-                <div class="lower-grid">
-
-
-                    <!-- RINCIAN BIAYA -->
-
-
-                    <div class="panel">
-
-
-                        <div class="section-title">
-
-                            Rincian Biaya Proyek
-
-                        </div>
-
-
-                        @if($selectedProject->paymentStages->count())
-
-
-                        <div class="table-wrap">
-
-
-                            <table>
-
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>No</th>
-
-                                        <th>Keterangan</th>
-
-                                        <th>Persentase</th>
-
-                                        <th>Nominal</th>
-
-                                        <th>Status</th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody>
-
-
-                                    @foreach(
-                                    $selectedProject->paymentStages
-                                    as $stage
-                                    )
-
-
-                                    <tr>
-
-
-                                        <td>
-
-                                            {{ $loop->iteration }}
-
-                                        </td>
-
-
-                                        <td>
-
-                                            {{ $stage->title }}
-
-                                        </td>
-
-
-                                        <td>
-
-                                            {{
-                                                    number_format(
-                                                        $stage->percentage,
-                                                        0
-                                                    )
-                                                }}%
-
-                                        </td>
-
-
-                                        <td>
-
-                                            Rp
-                                            {{
-                                                    number_format(
-                                                        $stage->amount,
-                                                        0,
-                                                        ',',
-                                                        '.'
-                                                    )
-                                                }}
-
-                                        </td>
-
-
-                                        <td>
-
-
-                                            @if(
-                                            $stage->status
-                                            ===
-                                            'paid'
-                                            )
-
-                                            <span class="status-badge badge-paid">
-
-                                                Sudah Dibayar
-
-                                            </span>
-
-
-                                            @elseif(
-                                            $stage->status
-                                            ===
-                                            'awaiting_payment'
-                                            )
-
-                                            <span class="status-badge badge-waiting">
-
-                                                Menunggu
-
-                                            </span>
-
-
-                                            @else
-
-                                            <span class="status-badge badge-pending">
-
-                                                Belum Jatuh Tempo
-
-                                            </span>
-
-                                            @endif
-
-
-                                        </td>
-
-
-                                    </tr>
-
-
-                                    @endforeach
-
-
-                                </tbody>
-
-
-                            </table>
-
-
-                        </div>
-
-
-                        @else
-
-
-                        <div class="empty-state">
-
-                            Belum ada rincian biaya.
-
-                        </div>
-
-
-                        @endif
-
-
-                    </div>
-
-
-
-                    <!-- RIWAYAT PEMBAYARAN -->
-
-
-                    <div class="panel">
-
-
-                        <div class="history-header">
-
-
-                            <div class="section-title">
-
-                                Riwayat Pembayaran
-
-                            </div>
-
-
-                            <a
-                                href="#"
-                                class="see-all">
-
-                                Lihat Semua →
-
-                            </a>
-
-
-                        </div>
-
-
-
-                        @if($selectedProject->payments->count())
-
-
-                        <div class="history">
-
-
-                            @foreach(
-                            $selectedProject->payments->take(6)
-                            as $payment
-                            )
-
-
-                            <div class="history-item">
-
-
-                                <div
-                                    class="
-                                                history-dot
-                                                {{
-                                                    $payment->status
-                                                    ===
-                                                    'verified'
-                                                    ?
-                                                    'success'
-                                                    :
-                                                    ''
-                                                }}
-                                            ">
-                                </div>
-
-
-                                <div class="history-row">
-
-
-                                    <div class="history-date">
-
-
-                                        @if($payment->payment_date)
-
-                                        {{
-                                                        \Carbon\Carbon::parse(
-                                                            $payment->payment_date
-                                                        )->format(
-                                                            'd M Y'
-                                                        )
-                                                    }}
-
-                                        @else
-
-                                        -
-
-                                        @endif
-
-
-                                    </div>
-
-
-
-                                    <div>
-
-
-                                        <div class="history-title">
-
-                                            {{
-                                                        optional(
-                                                            $payment->paymentStage
-                                                        )->title
-                                                        ??
-                                                        'Pembayaran Proyek'
-                                                    }}
-
-                                        </div>
-
-
-                                        <div class="history-amount">
-
-                                            Rp
-                                            {{
-                                                        number_format(
-                                                            $payment->amount,
-                                                            0,
-                                                            ',',
-                                                            '.'
-                                                        )
-                                                    }}
-
-                                        </div>
-
-
-                                    </div>
-
-
-
-                                    <div>
-
-
-                                        @if(
-                                        $payment->status
-                                        ===
-                                        'verified'
-                                        )
-
-
-                                        <span class="status-badge badge-paid">
-
-                                            Berhasil
-
-                                        </span>
-
-
-                                        @elseif(
-                                        $payment->status
-                                        ===
-                                        'pending'
-                                        )
-
-
-                                        <span class="status-badge badge-waiting">
-
-                                            Menunggu
-
-                                        </span>
-
-
-                                        @else
-
-
-                                        <span class="status-badge badge-pending">
-
-                                            Ditolak
-
-                                        </span>
-
-
-                                        @endif
-
-
-                                    </div>
-
-
-                                </div>
-
-
-                            </div>
-
-
-                            @endforeach
-
-
-                        </div>
-
-
-                        @else
-
-
-                        <div class="empty-state">
-
-                            Belum ada riwayat pembayaran.
-
-                        </div>
-
-
-                        @endif
-
-
-                    </div>
-
-
-                </div>
-
-
-                @else
-
-
-                <div class="empty-state">
-
-                    Belum ada proyek
-                    yang terhubung dengan akun Anda.
-
-                </div>
-
-
-                @endif
-
-
-            </section>
-
-
-        </main>
+        @endif
 
 
     </div>
 
 
 
-    <script>
-        document
-            .querySelectorAll(
-                '.summary-progress-fill'
-            )
-            .forEach(
-                function(bar) {
+    {{-- PAYMENT HISTORY --}}
 
-                    let progress =
-                        parseInt(
-                            bar.dataset.progress ||
-                            '0'
-                        );
+    <div class="cost-panel">
 
 
-                    progress =
-                        Math.max(
-                            0,
-                            Math.min(
-                                100,
-                                progress
-                            )
-                        );
+        <div class="history-header">
 
 
-                    bar.style.width =
-                        progress + '%';
+            <div class="section-title">
 
-                }
-            );
-    </script>
+                {{
+                            $ct[
+                                'payment_history'
+                            ]
+                        }}
+
+            </div>
 
 
-</body>
+            <a
 
-</html>
+                href="#"
+
+                class="see-all">
+
+                {{ $ct['view_all'] }}
+
+            </a>
+
+
+        </div>
+
+
+
+        @if($selectedProject->payments->count())
+
+
+        <div class="history">
+
+
+            @foreach($selectedProject->payments->take(6) as $payment)
+
+
+            <div class="history-item">
+
+
+                <div
+                    class="
+                                        history-dot
+                                        {{
+                                            $payment->status
+                                            ===
+                                            'verified'
+                                            ?
+                                            'success'
+                                            :
+                                            ''
+                                        }}
+                                    "></div>
+
+
+
+                <div class="history-row">
+
+
+                    <div class="history-date">
+
+
+                        @if($payment->payment_date)
+
+                        {{
+                                                \Carbon\Carbon
+                                                    ::parse(
+                                                        $payment
+                                                            ->payment_date
+                                                    )
+                                                    ->format(
+                                                        'd M Y'
+                                                    )
+                                            }}
+
+                        @else
+
+                        -
+
+                        @endif
+
+
+                    </div>
+
+
+
+                    <div>
+
+
+                        <div class="history-title">
+
+                            {{
+                                                optional(
+                                                    $payment
+                                                        ->paymentStage
+                                                )->title
+                                                ??
+                                                $ct[
+                                                    'project_payment'
+                                                ]
+                                            }}
+
+                        </div>
+
+
+                        <div class="history-amount">
+
+                            Rp
+                            {{
+                                                number_format(
+                                                    $payment->amount,
+                                                    0,
+                                                    ',',
+                                                    '.'
+                                                )
+                                            }}
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div>
+
+
+                        @if($payment->status === 'verified')
+
+                        <span
+                            class="
+                                                    status-badge
+                                                    badge-paid
+                                                ">
+
+                            {{
+                                                    $ct[
+                                                        'success'
+                                                    ]
+                                                }}
+
+                        </span>
+
+                        @elseif($payment->status === 'pending')
+
+                        <span
+                            class="
+                                                    status-badge
+                                                    badge-waiting
+                                                ">
+
+                            {{
+                                                    $ct[
+                                                        'waiting_short'
+                                                    ]
+                                                }}
+
+                        </span>
+
+                        @else
+
+                        <span
+                            class="
+                                                    status-badge
+                                                    badge-pending
+                                                ">
+
+                            {{
+                                                    $ct[
+                                                        'rejected'
+                                                    ]
+                                                }}
+
+                        </span>
+
+                        @endif
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            @endforeach
+
+
+        </div>
+
+
+        @else
+
+
+        <div class="empty-state">
+
+            {{
+                            $ct[
+                                'no_payment_history'
+                            ]
+                        }}
+
+        </div>
+
+
+        @endif
+
+
+    </div>
+
+
+</div>
+
+
+@else
+
+
+<div class="empty-state">
+
+    {{ $ct['no_project'] }}
+
+</div>
+
+
+@endif
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    document
+        .querySelectorAll(
+            '.summary-progress-fill'
+        )
+        .forEach(
+            function(bar) {
+
+                let progress =
+                    parseInt(
+                        bar.dataset.progress ||
+                        '0'
+                    );
+
+
+                progress =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            progress
+                        )
+                    );
+
+
+                bar.style.width =
+                    progress + '%';
+
+            }
+        );
+</script>
+
+@endpush

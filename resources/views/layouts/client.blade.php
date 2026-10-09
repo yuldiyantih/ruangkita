@@ -192,7 +192,7 @@ $tr = $translations[$lang] ?? $translations['id'];
 
             color: white;
 
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 700;
         }
 
@@ -203,8 +203,8 @@ $tr = $translations[$lang] ?? $translations['id'];
 
         .ruangkita-logo {
 
-            width: 31px;
-            height: 31px;
+            width: 36px;
+            height: 36px;
 
             position: relative;
 
@@ -214,12 +214,12 @@ $tr = $translations[$lang] ?? $translations['id'];
 
         .ruangkita-logo .roof {
 
-            width: 20px;
-            height: 20px;
+            width: 23px;
+            height: 23px;
 
             position: absolute;
 
-            left: 5px;
+            left: 6px;
             top: 2px;
 
             border-left: 4px solid white;
@@ -231,12 +231,12 @@ $tr = $translations[$lang] ?? $translations['id'];
 
         .ruangkita-logo .house {
 
-            width: 19px;
-            height: 17px;
+            width: 22px;
+            height: 19px;
 
             position: absolute;
 
-            left: 6px;
+            left: 7px;
             bottom: 2px;
 
             border-left: 4px solid white;
@@ -247,8 +247,8 @@ $tr = $translations[$lang] ?? $translations['id'];
 
         .ruangkita-logo .door {
 
-            width: 6px;
-            height: 9px;
+            width: 7px;
+            height: 10px;
 
             position: absolute;
 
@@ -285,7 +285,7 @@ $tr = $translations[$lang] ?? $translations['id'];
 
             color: #d6e6f5;
 
-            font-size: 13px;
+            font-size: 14px;
 
             transition: .2s;
         }
@@ -316,10 +316,10 @@ $tr = $translations[$lang] ?? $translations['id'];
 
         .menu-icon {
 
-            width: 19px;
+            width: 21px;
 
             text-align: center;
-
+            font-size: 16px;
             flex-shrink: 0;
         }
 
@@ -382,13 +382,20 @@ $tr = $translations[$lang] ?? $translations['id'];
 
 
         .hamburger {
-
-            color:
-                var(--text-muted);
-
-            font-size: 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 7px 9px;
+            border-radius: 7px;
+            transition: .2s;
         }
 
+        .hamburger:hover {
+            background: var(--input-bg);
+            color: var(--primary);
+        }
 
         /* =====================================================
            USER AREA
@@ -654,6 +661,416 @@ $tr = $translations[$lang] ?? $translations['id'];
             font-size: 11px;
         }
 
+        /* =====================================================
+   PROFILE DROPDOWN
+===================================================== */
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-button {
+            border: none;
+            background: transparent;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            color: var(--text-main);
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            padding: 6px 8px;
+
+            border-radius: 9px;
+        }
+
+        .profile-button:hover {
+            background: var(--input-bg);
+        }
+
+        .profile-name {
+            white-space: nowrap;
+        }
+
+        .profile-arrow {
+            font-size: 11px;
+            transition: transform .2s ease;
+        }
+
+        .profile-arrow.open {
+            transform: rotate(180deg);
+        }
+
+
+        /* DROPDOWN */
+
+        .profile-menu {
+            position: absolute;
+
+            top: calc(100% + 10px);
+            right: 0;
+
+            width: 220px;
+
+            z-index: 2000;
+
+            display: none;
+
+            overflow: hidden;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            background:
+                var(--card-bg);
+
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, .12);
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+
+        .profile-menu-header {
+            padding: 14px 16px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 4px;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .profile-menu-header strong {
+            color:
+                var(--text-heading);
+
+            font-size: 13px;
+        }
+
+        .profile-menu-header span {
+            color:
+                var(--text-muted);
+
+            font-size: 10px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .profile-menu-item {
+            width: 100%;
+
+            min-height: 42px;
+
+            padding:
+                0 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            border: none;
+
+            background: transparent;
+
+            color:
+                var(--text-main);
+
+            text-decoration: none;
+
+            text-align: left;
+
+            cursor: pointer;
+
+            font-size: 12px;
+        }
+
+        .profile-menu-item:hover {
+            background:
+                var(--input-bg);
+
+            color:
+                var(--primary);
+        }
+
+        .profile-menu-divider {
+            height: 1px;
+
+            background:
+                var(--border);
+        }
+
+        .logout-button {
+            color: #dc4c4c;
+        }
+
+        .logout-button:hover {
+            color: #dc4c4c;
+        }
+
+
+        /* PROFILE PHOTO */
+
+        .avatar {
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center top;
+
+            display: block;
+        }
+
+        /* =====================================================
+   SIDEBAR COLLAPSED
+===================================================== */
+
+        .sidebar {
+            transition:
+                width .25s ease,
+                padding .25s ease;
+        }
+
+        .main {
+            transition:
+                margin-left .25s ease,
+                width .25s ease;
+        }
+
+        body.sidebar-collapsed .sidebar {
+            width: 78px;
+        }
+
+        body.sidebar-collapsed .main {
+            margin-left: 78px;
+            width: calc(100% - 78px);
+        }
+
+        body.sidebar-collapsed .brand {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        body.sidebar-collapsed .brand-name {
+            display: none;
+        }
+
+        body.sidebar-collapsed .menu-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        body.sidebar-collapsed .menu-item .menu-text {
+            display: none;
+        }
+
+        body.sidebar-collapsed .menu-icon {
+            width: auto;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        /* =====================================================
+   PROFILE DROPDOWN
+===================================================== */
+
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-button {
+            border: none;
+            background: transparent;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            color: var(--text-main);
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            padding: 6px 8px;
+
+            border-radius: 9px;
+        }
+
+        .profile-button:hover {
+            background: var(--input-bg);
+        }
+
+        .profile-name {
+            white-space: nowrap;
+        }
+
+        .profile-arrow {
+            font-size: 11px;
+            transition: transform .2s ease;
+        }
+
+        .profile-arrow.open {
+            transform: rotate(180deg);
+        }
+
+
+        /* DROPDOWN */
+
+        .profile-menu {
+            position: absolute;
+
+            top: calc(100% + 10px);
+            right: 0;
+
+            width: 220px;
+
+            z-index: 2000;
+
+            display: none;
+
+            overflow: hidden;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            background:
+                var(--card-bg);
+
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, .12);
+        }
+
+        .profile-menu.show {
+            display: block;
+        }
+
+
+        .profile-menu-header {
+            padding: 14px 16px;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 4px;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .profile-menu-header strong {
+            color:
+                var(--text-heading);
+
+            font-size: 13px;
+        }
+
+        .profile-menu-header span {
+            color:
+                var(--text-muted);
+
+            font-size: 10px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .profile-menu-item {
+            width: 100%;
+
+            min-height: 42px;
+
+            padding:
+                0 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            border: none;
+
+            background: transparent;
+
+            color:
+                var(--text-main);
+
+            text-decoration: none;
+
+            text-align: left;
+
+            cursor: pointer;
+
+            font-size: 12px;
+        }
+
+        .profile-menu-item:hover {
+            background:
+                var(--input-bg);
+
+            color:
+                var(--primary);
+        }
+
+        .profile-menu-divider {
+            height: 1px;
+
+            background:
+                var(--border);
+        }
+
+        .logout-button {
+            color: #dc4c4c;
+        }
+
+        .logout-button:hover {
+            color: #dc4c4c;
+        }
+
+
+        /* PROFILE PHOTO */
+
+        .avatar {
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+            object-position: center top;
+
+            display: block;
+        }
 
         /* =====================================================
            MOBILE
@@ -745,171 +1162,113 @@ $tr = $translations[$lang] ?? $translations['id'];
 
             <a
                 href="{{ route('client.dashboard') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.dashboard') ? 'active' : '' }}
-            ">
+                class="menu-item {{ request()->routeIs('client.dashboard') ? 'active' : '' }}">
+                <span class="menu-icon">⌂</span>
 
-                <span class="menu-icon">
-                    ⌂
+                <span class="menu-text">
+                    {{ $tr['dashboard'] }}
                 </span>
-
-                {{ $tr['dashboard'] }}
-
             </a>
-
-
 
             {{-- PROJECT --}}
 
             <a
                 href="{{ route('client.projects.index') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.projects.*') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.projects.*') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ▣
                 </span>
 
-                {{ $tr['projects'] }}
-
+                <span class="menu-text">{{ $tr['projects'] }}</span>
             </a>
-
-
 
             {{-- SCHEDULE --}}
 
             <a
                 href="{{ route('client.schedule') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.schedule') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.schedule') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ▦
                 </span>
 
-                {{ $tr['schedule'] }}
-
+                <span class="menu-text">{{ $tr['schedule'] }}</span>
             </a>
-
-
 
             {{-- PROGRESS --}}
 
             <a
                 href="{{ route('client.progress') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.progress') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.progress') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ↗
                 </span>
 
-                {{ $tr['progress'] }}
-
+                <span class="menu-text">{{ $tr['progress'] }}</span>
             </a>
-
-
 
             {{-- DOCUMENTATION --}}
 
             <a
                 href="{{ route('client.documentation') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.documentation') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.documentation') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ▧
                 </span>
 
-                {{ $tr['documentation'] }}
-
+                <span class="menu-text">{{ $tr['documentation'] }}</span>
             </a>
-
 
 
             {{-- COST --}}
 
             <a
                 href="{{ route('client.costs') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.costs') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.costs') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ▤
                 </span>
 
-                {{ $tr['costs'] }}
-
+                <span class="menu-text">{{ $tr['costs'] }}</span>
             </a>
-
 
 
             {{-- MESSAGE --}}
 
             <a
                 href="{{ route('client.messages') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.messages*') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.messages*') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ✉
                 </span>
 
-                {{ $tr['messages'] }}
-
+                <span class="menu-text">{{ $tr['messages'] }}</span>
             </a>
-
 
 
             {{-- AR --}}
 
             <a
                 href="{{ route('client.ar') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.ar') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.ar') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ◇
                 </span>
 
-                {{ $tr['ar'] }}
-
+                <span class="menu-text">{{ $tr['ar'] }}</span>
             </a>
-
 
 
             {{-- SETTINGS --}}
 
             <a
                 href="{{ route('client.settings') }}"
-                class="
-                menu-item
-                {{ request()->routeIs('client.settings*') ? 'active' : '' }}
-            ">
-
+                class="menu-item {{ request()->routeIs('client.settings*') ? 'active' : '' }}">
                 <span class="menu-icon">
                     ⚙
                 </span>
 
-                {{ $tr['settings'] }}
-
+                <span class="menu-text">{{ $tr['settings'] }}</span>
             </a>
-
 
         </aside>
 
@@ -927,50 +1286,113 @@ $tr = $translations[$lang] ?? $translations['id'];
             <header class="topbar">
 
 
-                <div class="hamburger">
+                <button
+                    type="button"
+                    class="hamburger"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar">
                     ☰
-                </div>
+                </button>
+
+                <div class="profile-dropdown">
+
+                    <button
+                        type="button"
+                        class="profile-button"
+                        id="profileButton">
+
+                        <div class="avatar">
+
+                            @if($currentUser->profile_photo)
+
+                            <img
+                                src="{{ asset('storage/' . $currentUser->profile_photo) }}"
+                                alt="{{ $currentUser->name }}">
+
+                            @else
+
+                            {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+
+                            @endif
+
+                        </div>
 
 
-                <div class="user-area">
+                        <span class="profile-name">
+                            {{ $currentUser->name }}
+                        </span>
 
 
-                    {{-- FOTO PROFILE --}}
+                        <span
+                            class="profile-arrow"
+                            id="profileArrow">
+                            ▾
+                        </span>
 
-                    <div class="avatar">
+                    </button>
 
-                        @if($currentUser && $currentUser->profile_photo)
 
-                        <img
-                            src="{{ asset(
-                                'storage/' .
-                                $currentUser->profile_photo
-                            ) }}"
-                            alt="{{ $currentUser->name }}">
 
-                        @else
+                    <div
+                        class="profile-menu"
+                        id="profileMenu">
 
-                        👤
+                        <div class="profile-menu-header">
 
-                        @endif
+                            <strong>
+                                {{ $currentUser->name }}
+                            </strong>
+
+                            <span>
+                                {{ $currentUser->email }}
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="{{ route('client.settings') }}"
+                            class="profile-menu-item">
+                            👤
+                            <span>
+                                {{ $lang === 'en' ? 'My Profile' : 'Profil Saya' }}
+                            </span>
+                        </a>
+
+
+                        <a
+                            href="{{ route('client.settings') }}"
+                            class="profile-menu-item">
+                            ⚙
+                            <span>
+                                {{ $lang === 'en' ? 'Settings' : 'Pengaturan' }}
+                            </span>
+                        </a>
+
+
+                        <div class="profile-menu-divider"></div>
+
+
+                        <form
+                            method="POST"
+                            action="{{ route('logout') }}">
+
+                            @csrf
+
+                            <button
+                                type="submit"
+                                class="profile-menu-item logout-button">
+                                ↪
+
+                                <span>
+                                    {{ $lang === 'en' ? 'Logout' : 'Keluar' }}
+                                </span>
+
+                            </button>
+
+                        </form>
 
                     </div>
-
-
-
-                    {{-- USER NAME --}}
-
-                    <span class="user-name">
-
-                        {{ $currentUser->name ?? 'Client' }}
-
-                    </span>
-
-
-                    <span>
-                        ▾
-                    </span>
-
 
                 </div>
 
@@ -1063,7 +1485,136 @@ $tr = $translations[$lang] ?? $translations['id'];
 
 
     {{-- JS khusus halaman --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
+            const sidebarToggle =
+                document.getElementById('sidebarToggle');
+
+            if (sidebarToggle) {
+
+                sidebarToggle.addEventListener(
+                    'click',
+                    function() {
+
+                        document.body.classList.toggle(
+                            'sidebar-collapsed'
+                        );
+
+                        localStorage.setItem(
+                            'ruangkitaSidebarCollapsed',
+                            document.body.classList.contains(
+                                'sidebar-collapsed'
+                            ) ?
+                            '1' :
+                            '0'
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SIMPAN POSISI SIDEBAR
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                localStorage.getItem(
+                    'ruangkitaSidebarCollapsed'
+                ) === '1'
+            ) {
+
+                document.body.classList.add(
+                    'sidebar-collapsed'
+                );
+
+            }
+            /*
+|--------------------------------------------------------------------------
+| PROFILE DROPDOWN
+|--------------------------------------------------------------------------
+*/
+
+            const profileButton =
+                document.getElementById(
+                    'profileButton'
+                );
+
+            const profileMenu =
+                document.getElementById(
+                    'profileMenu'
+                );
+
+            const profileArrow =
+                document.getElementById(
+                    'profileArrow'
+                );
+
+
+            if (
+                profileButton &&
+                profileMenu
+            ) {
+
+                profileButton.addEventListener(
+                    'click',
+                    function(event) {
+
+                        event.stopPropagation();
+
+                        profileMenu.classList.toggle(
+                            'show'
+                        );
+
+                        if (profileArrow) {
+
+                            profileArrow.classList.toggle(
+                                'open'
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                profileMenu.addEventListener(
+                    'click',
+                    function(event) {
+
+                        event.stopPropagation();
+
+                    }
+                );
+
+
+                document.addEventListener(
+                    'click',
+                    function() {
+
+                        profileMenu.classList.remove(
+                            'show'
+                        );
+
+                        if (profileArrow) {
+
+                            profileArrow.classList.remove(
+                                'open'
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+
+        });
+    </script>
     @stack('scripts')
 
 

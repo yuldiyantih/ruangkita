@@ -1,2784 +1,2357 @@
-<!DOCTYPE html>
+@extends('layouts.client')
 
-<html lang="id">
 
-<head>
+@php
 
-    <meta charset="UTF-8">
+$docLang = auth()->user()->language ?? 'id';
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+$docTranslations = [
 
-    <title>
-        Dokumentasi Proyek - RuangKita
-    </title>
+'id' => [
 
+'title' => 'Dokumentasi Proyek',
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
+'description' =>
+'Lihat galeri foto dan video perkembangan proyek renovasi Anda',
 
-            box-sizing:
-                border-box;
+'total_documentation' => 'Total Dokumentasi',
+'all_files' => 'Semua File',
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+'progress_photos' => 'Foto Progress',
+'photo' => 'Foto',
 
+'documents' => 'Dokumen',
+'file' => 'File',
 
-        body {
+'video' => 'Video',
 
-            background:
-                #f4f8fc;
+'all' => 'Semua',
 
-            color:
-                #17334c;
+'all_rooms' => 'Semua Ruangan',
 
-        }
+'sort_latest' => 'Urutkan: Terbaru',
+'sort_oldest' => 'Urutkan: Terlama',
 
+'documentation_files' => 'file dokumentasi',
 
-        .app {
+'view_all' => 'Lihat Semua →',
 
-            display:
-                flex;
+'before_after' => 'Perbandingan Before & After',
 
-            min-height:
-                100vh;
+'latest_documentation' => 'Dokumentasi Terbaru',
 
-        }
+'no_documentation_room' =>
+'Belum ada dokumentasi untuk',
 
+'no_area' =>
+'Belum ada area atau ruangan pada proyek ini.',
 
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
+'no_latest_documentation' =>
+'Belum ada dokumentasi terbaru.',
 
-        .sidebar {
+'no_project' =>
+'Belum ada proyek yang terhubung dengan akun Anda.',
 
-            width:
-                230px;
+],
 
-            position:
-                fixed;
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+'en' => [
 
-            padding:
-                20px 14px;
+'title' => 'Project Documentation',
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'description' =>
+'View photos and videos of your renovation project progress',
 
-            color:
-                white;
+'total_documentation' => 'Total Documentation',
+'all_files' => 'All Files',
 
-        }
+'progress_photos' => 'Progress Photos',
+'photo' => 'Photo',
 
+'documents' => 'Documents',
+'file' => 'File',
 
-        .brand {
+'video' => 'Video',
 
-            padding:
-                5px 9px 24px;
+'all' => 'All',
 
-            display:
-                flex;
+'all_rooms' => 'All Rooms',
 
-            align-items:
-                center;
+'sort_latest' => 'Sort: Latest',
+'sort_oldest' => 'Sort: Oldest',
 
-            gap:
-                10px;
+'documentation_files' => 'documentation files',
 
-        }
+'view_all' => 'View All →',
 
+'before_after' => 'Before & After Comparison',
 
-        .brand-name {
+'latest_documentation' => 'Latest Documentation',
 
-            font-size:
-                18px;
+'no_documentation_room' =>
+'No documentation available for',
 
-            font-weight:
-                700;
+'no_area' =>
+'No areas or rooms are available for this project.',
 
-        }
+'no_latest_documentation' =>
+'No latest documentation available.',
 
+'no_project' =>
+'There are no projects connected to your account yet.',
 
-        /* LOGO */
+],
 
-        .ruangkita-logo {
+];
 
-            position:
-                relative;
+$dt =
+$docTranslations[$docLang]
+??
+$docTranslations['id'];
 
-            width:
-                31px;
+@endphp
 
-            height:
-                31px;
 
-            flex-shrink:
-                0;
+@section(
+'title',
+$dt['title'] . ' - RuangKita'
+)
 
-        }
 
+@push('styles')
 
-        .ruangkita-logo .roof {
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-            position:
-                absolute;
+    .documentation-page-head {
 
-            width:
-                20px;
+        margin-bottom: 16px;
 
-            height:
-                20px;
+        display: flex;
 
-            left:
-                5px;
+        justify-content:
+            space-between;
 
-            top:
-                2px;
+        align-items:
+            flex-start;
 
-            border-left:
-                4px solid white;
+        gap: 20px;
+    }
 
-            border-top:
-                4px solid white;
 
-            transform:
-                rotate(45deg);
+    .documentation-page-title h1 {
 
-        }
+        margin-bottom: 5px;
 
+        color:
+            var(--text-heading);
 
-        .ruangkita-logo .house {
+        font-size: 27px;
+    }
 
-            position:
-                absolute;
 
-            width:
-                19px;
+    .documentation-page-title p {
 
-            height:
-                17px;
+        color:
+            var(--text-muted);
 
-            left:
-                6px;
+        font-size: 13px;
+    }
 
-            bottom:
-                2px;
 
-            border-left:
-                4px solid white;
+    /* =====================================================
+       PROJECT SELECTOR
+    ===================================================== */
 
-            border-right:
-                4px solid white;
+    .project-selector {
 
-            border-bottom:
-                4px solid white;
+        min-width: 310px;
 
-        }
+        padding: 10px;
 
+        border:
+            1px solid var(--border);
 
-        .ruangkita-logo .door {
+        border-radius: 12px;
 
-            position:
-                absolute;
+        display: flex;
 
-            width:
-                6px;
+        align-items: center;
 
-            height:
-                9px;
+        gap: 10px;
 
-            left:
-                50%;
+        background:
+            var(--card-bg);
+    }
 
-            bottom:
-                -1px;
 
-            transform:
-                translateX(-50%);
+    .selector-thumb {
 
-            border:
-                2px solid white;
+        width: 48px;
+        height: 42px;
 
-            border-bottom:
-                none;
+        border-radius: 7px;
 
-        }
+        object-fit: cover;
 
+        background: #e6eef5;
+    }
 
-        .menu-item {
 
-            min-height:
-                42px;
+    body.dark-mode .selector-thumb {
 
-            padding:
-                0 13px;
+        background: #263b4b;
+    }
 
-            margin-bottom:
-                3px;
 
-            border-radius:
-                8px;
+    .selector-content {
 
-            display:
-                flex;
+        flex: 1;
 
-            align-items:
-                center;
+        min-width: 0;
+    }
 
-            gap:
-                11px;
 
-            text-decoration:
-                none;
+    .selector-title {
 
-            color:
-                #d6e6f5;
+        margin-bottom: 3px;
 
-            font-size:
-                13px;
+        color:
+            var(--text-heading);
 
-            transition:
-                .2s;
+        font-size: 12px;
 
-        }
+        font-weight: 700;
+    }
 
 
-        .menu-item:hover {
+    .selector-location {
 
-            background:
-                rgba(255,
-                    255,
-                    255,
-                    .08);
+        color:
+            var(--text-muted);
 
-        }
+        font-size: 10px;
+    }
 
 
-        .menu-item.active {
+    .project-select {
 
-            color:
-                white;
+        width: 30px;
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
+        border: none;
 
-        }
+        background: transparent;
 
+        color:
+            var(--text-muted);
 
-        .menu-icon {
+        cursor: pointer;
+    }
 
-            width:
-                19px;
 
-            text-align:
-                center;
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
 
-        }
+    .summary-grid {
 
+        margin-bottom: 18px;
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        display: grid;
 
-        .main {
+        grid-template-columns:
+            repeat(4, 1fr);
 
-            width:
-                calc(100% - 230px);
+        gap: 14px;
+    }
 
-            margin-left:
-                230px;
 
-        }
+    .summary-card {
 
+        padding: 17px;
 
-        .topbar {
+        border:
+            1px solid var(--border);
 
-            height:
-                66px;
+        border-radius: 12px;
 
-            background:
-                white;
+        display: flex;
 
-            border-bottom:
-                1px solid #e7edf3;
+        align-items: center;
 
-            padding:
-                0 28px;
+        gap: 14px;
 
-            display:
-                flex;
+        background:
+            var(--card-bg);
+    }
 
-            align-items:
-                center;
 
-            justify-content:
-                space-between;
+    .summary-icon {
 
-        }
+        width: 50px;
+        height: 50px;
 
+        border-radius: 50%;
 
-        .hamburger {
+        display: flex;
 
-            color:
-                #526f87;
+        align-items: center;
+        justify-content: center;
 
-            font-size:
-                20px;
+        flex-shrink: 0;
 
-        }
+        font-size: 21px;
+    }
 
 
-        .user-area {
+    .summary-icon.blue {
 
-            display:
-                flex;
+        color: #0877d2;
 
-            align-items:
-                center;
+        background: #e7f3ff;
+    }
 
-            gap:
-                10px;
 
-            font-size:
-                13px;
+    .summary-icon.green {
 
-            font-weight:
-                600;
+        color: #139261;
 
-        }
+        background: #e0f9ed;
+    }
 
 
-        .avatar {
+    .summary-icon.purple {
 
-            width:
-                33px;
+        color: #7154d7;
 
-            height:
-                33px;
+        background: #eee9ff;
+    }
 
-            border-radius:
-                50%;
 
-            background:
-                #e4eef7;
+    .summary-icon.red {
 
-            display:
-                flex;
+        color: #ef554f;
 
-            align-items:
-                center;
+        background: #ffe7e7;
+    }
 
-            justify-content:
-                center;
 
-        }
+    body.dark-mode .summary-icon.blue {
 
+        background: #19364d;
+    }
 
-        /* =====================================================
-           CONTENT
-        ===================================================== */
 
-        .content {
+    body.dark-mode .summary-icon.green {
 
-            padding:
-                28px 30px 40px;
+        background: #173d31;
+    }
 
-        }
 
+    body.dark-mode .summary-icon.purple {
 
-        .page-head {
+        background: #302a4d;
+    }
 
-            display:
-                flex;
 
-            justify-content:
-                space-between;
+    body.dark-mode .summary-icon.red {
 
-            align-items:
-                flex-start;
+        background: #4b2729;
+    }
 
-            gap:
-                20px;
 
-            margin-bottom:
-                16px;
+    .summary-label {
 
-        }
+        margin-bottom: 3px;
 
+        color:
+            var(--text-muted);
 
-        .page-title h1 {
+        font-size: 11px;
+    }
 
-            color:
-                #14304a;
 
-            font-size:
-                27px;
+    .summary-number {
 
-            margin-bottom:
-                5px;
+        color:
+            var(--text-heading);
 
-        }
+        font-size: 23px;
 
+        font-weight: 700;
+    }
 
-        .page-title p {
 
-            color:
-                #8395a7;
+    .summary-type {
 
-            font-size:
-                13px;
+        margin-top: 2px;
 
-        }
+        color:
+            var(--text-muted);
 
+        font-size: 9px;
+    }
 
-        /* =====================================================
-           PROJECT SELECT
-        ===================================================== */
 
-        .project-selector {
+    /* =====================================================
+       TOOLBAR
+    ===================================================== */
 
-            min-width:
-                310px;
+    .toolbar {
 
-            background:
-                white;
+        margin-bottom: 18px;
 
-            border:
-                1px solid #dfe8ef;
+        display: flex;
 
-            border-radius:
-                12px;
+        justify-content:
+            space-between;
 
-            padding:
-                10px;
+        align-items: center;
 
-            display:
-                flex;
+        gap: 12px;
 
-            align-items:
-                center;
+        flex-wrap: wrap;
+    }
 
-            gap:
-                10px;
 
-        }
+    .filter-group {
 
+        display: flex;
 
-        .selector-thumb {
+        gap: 8px;
 
-            width:
-                48px;
+        flex-wrap: wrap;
+    }
 
-            height:
-                42px;
 
-            border-radius:
-                7px;
+    .filter-btn {
 
-            object-fit:
-                cover;
+        padding:
+            9px 13px;
 
-            background:
-                #e6eef5;
+        border:
+            1px solid var(--border);
 
-        }
+        border-radius: 9px;
 
+        background:
+            var(--card-bg);
 
-        .selector-content {
+        color:
+            var(--text-muted);
 
-            flex:
-                1;
+        cursor: pointer;
 
-            min-width:
-                0;
+        font-size: 11px;
 
-        }
+        font-weight: 600;
+    }
 
 
-        .selector-title {
+    .filter-btn.active {
 
-            color:
-                #17354e;
+        border-color:
+            var(--primary);
 
-            font-size:
-                12px;
+        background:
+            var(--primary);
 
-            font-weight:
-                700;
+        color: white;
+    }
 
-            margin-bottom:
-                3px;
 
-        }
+    .toolbar-right {
 
+        display: flex;
 
-        .selector-location {
+        gap: 9px;
+    }
 
-            color:
-                #8496a6;
 
-            font-size:
-                10px;
+    .toolbar-select {
 
-        }
+        min-width: 155px;
 
+        padding:
+            9px 12px;
 
-        .project-select {
+        border:
+            1px solid var(--border);
 
-            width:
-                30px;
+        border-radius: 9px;
 
-            border:
-                none;
+        outline: none;
 
-            background:
-                transparent;
+        background:
+            var(--card-bg);
 
-            color:
-                #526f87;
+        color:
+            var(--text-main);
 
-            cursor:
-                pointer;
+        font-size: 11px;
+    }
 
-        }
 
+    /* =====================================================
+       CONTENT LAYOUT
+    ===================================================== */
 
-        /* =====================================================
-           STATISTIC
-        ===================================================== */
+    .documentation-layout {
 
-        .summary-grid {
+        display: grid;
 
-            display:
-                grid;
+        grid-template-columns:
+            minmax(0, 1fr) 300px;
 
-            grid-template-columns:
-                repeat(4,
-                    1fr);
+        gap: 17px;
 
-            gap:
-                14px;
+        align-items: start;
+    }
 
-            margin-bottom:
-                18px;
 
-        }
+    .rooms-column {
 
+        min-width: 0;
+    }
 
-        .summary-card {
 
-            background:
-                white;
+    /* =====================================================
+       ROOM SECTION
+    ===================================================== */
 
-            border:
-                1px solid #e6edf3;
+    .room-section {
 
-            border-radius:
-                12px;
+        margin-bottom: 17px;
 
-            padding:
-                17px;
+        padding: 17px;
 
-            display:
-                flex;
+        border:
+            1px solid var(--border);
 
-            align-items:
-                center;
+        border-radius: 13px;
 
-            gap:
-                14px;
+        background:
+            var(--card-bg);
+    }
 
-        }
 
+    .room-heading {
 
-        .summary-icon {
+        margin-bottom: 13px;
 
-            width:
-                50px;
+        display: flex;
 
-            height:
-                50px;
+        justify-content:
+            space-between;
 
-            border-radius:
-                50%;
+        align-items: center;
 
-            display:
-                flex;
+        gap: 12px;
+    }
 
-            align-items:
-                center;
 
-            justify-content:
-                center;
+    .room-title-wrapper {
 
-            flex-shrink:
-                0;
+        display: flex;
 
-            font-size:
-                21px;
+        align-items: center;
 
-        }
+        gap: 10px;
+    }
 
 
-        .summary-icon.blue {
+    .room-icon {
 
-            color:
-                #0877d2;
+        width: 36px;
+        height: 36px;
 
-            background:
-                #e7f3ff;
+        border-radius: 9px;
 
-        }
+        display: flex;
 
+        align-items: center;
+        justify-content: center;
 
-        .summary-icon.green {
+        background: #e9f4ff;
 
-            color:
-                #139261;
+        color: #0875ce;
+    }
 
-            background:
-                #e0f9ed;
 
-        }
+    body.dark-mode .room-icon {
 
+        background: #19364d;
+    }
 
-        .summary-icon.purple {
 
-            color:
-                #7154d7;
+    .room-name {
 
-            background:
-                #eee9ff;
+        color:
+            var(--text-heading);
 
-        }
+        font-size: 14px;
 
+        font-weight: 700;
+    }
 
-        .summary-icon.red {
 
-            color:
-                #ef554f;
+    .room-count {
 
-            background:
-                #ffe7e7;
+        margin-top: 2px;
 
-        }
+        color:
+            var(--text-muted);
 
+        font-size: 10px;
+    }
 
-        .summary-label {
 
-            color:
-                #8193a3;
+    .room-see-all {
 
-            font-size:
-                11px;
+        color:
+            var(--primary);
 
-            margin-bottom:
-                3px;
+        text-decoration: none;
 
-        }
+        font-size: 10px;
 
+        font-weight: 600;
+    }
 
-        .summary-number {
 
-            color:
-                #17344c;
+    /* =====================================================
+       GALLERY
+    ===================================================== */
 
-            font-size:
-                23px;
+    .gallery-grid {
 
-            font-weight:
-                700;
+        display: grid;
 
-        }
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
 
+        gap: 11px;
+    }
 
-        .summary-type {
 
-            margin-top:
-                2px;
+    .gallery-card {
 
-            color:
-                #8899a8;
+        min-width: 0;
+    }
 
-            font-size:
-                9px;
 
-        }
+    .gallery-image-wrap {
 
+        position: relative;
 
-        /* =====================================================
-           TOOLBAR
-        ===================================================== */
+        margin-bottom: 7px;
+    }
 
-        .toolbar {
 
-            display:
-                flex;
+    .gallery-image {
 
-            justify-content:
-                space-between;
+        width: 100%;
+        height: 125px;
 
-            align-items:
-                center;
+        display: block;
 
-            gap:
-                12px;
+        border-radius: 9px;
 
-            margin-bottom:
-                18px;
+        object-fit: cover;
 
-            flex-wrap:
-                wrap;
+        background:
+            linear-gradient(135deg,
+                #dae7f2,
+                #edf4f9);
+    }
 
-        }
 
+    body.dark-mode .gallery-image {
 
-        .filter-group {
+        background:
+            linear-gradient(135deg,
+                #263b4b,
+                #172735);
+    }
 
-            display:
-                flex;
 
-            gap:
-                8px;
+    .media-placeholder {
 
-            flex-wrap:
-                wrap;
+        width: 100%;
+        height: 125px;
 
-        }
+        border-radius: 9px;
 
+        display: flex;
 
-        .filter-btn {
+        align-items: center;
+        justify-content: center;
 
-            border:
-                1px solid #e0e9f0;
+        background:
+            var(--input-bg);
 
-            background:
-                white;
+        color:
+            var(--text-muted);
 
-            color:
-                #586f83;
+        font-size: 25px;
+    }
 
-            border-radius:
-                9px;
 
-            padding:
-                9px 13px;
+    .phase-badge {
 
-            cursor:
-                pointer;
+        position: absolute;
 
-            font-size:
-                11px;
+        left: 7px;
+        bottom: 7px;
 
-            font-weight:
-                600;
+        padding:
+            4px 7px;
 
-        }
+        border-radius: 5px;
 
+        color: white;
 
-        .filter-btn.active {
+        font-size: 8px;
 
-            border-color:
-                #0878d0;
+        font-weight: 700;
 
-            background:
-                #0878d0;
+        background:
+            rgba(14,
+                39,
+                58,
+                .85);
+    }
 
-            color:
-                white;
 
-        }
+    .phase-before {
 
+        background:
+            rgba(45,
+                65,
+                80,
+                .9);
+    }
 
-        .toolbar-right {
 
-            display:
-                flex;
+    .phase-during {
 
-            gap:
-                9px;
+        background:
+            rgba(8,
+                117,
+                205,
+                .92);
+    }
 
-        }
 
+    .phase-after {
 
-        .toolbar-select {
+        background:
+            rgba(20,
+                139,
+                91,
+                .92);
+    }
 
-            min-width:
-                155px;
 
-            border:
-                1px solid #e0e9f0;
+    .gallery-title {
 
-            background:
-                white;
+        margin-bottom: 3px;
 
-            color:
-                #536b80;
+        color:
+            var(--text-heading);
 
-            border-radius:
-                9px;
+        font-size: 11px;
 
-            padding:
-                9px 12px;
+        line-height: 1.35;
 
-            outline:
-                none;
+        font-weight: 700;
+    }
 
-            font-size:
-                11px;
 
-        }
+    .gallery-description {
 
+        color:
+            var(--text-muted);
 
-        /* =====================================================
-           CONTENT LAYOUT
-        ===================================================== */
+        font-size: 9px;
 
-        .documentation-layout {
+        line-height: 1.45;
+    }
 
-            display:
-                grid;
 
-            grid-template-columns:
-                minmax(0,
-                    1fr) 300px;
+    /* =====================================================
+       BEFORE AFTER
+    ===================================================== */
 
-            gap:
-                17px;
+    .before-after {
 
-            align-items:
-                start;
+        margin-top: 16px;
 
-        }
+        padding-top: 15px;
 
+        border-top:
+            1px solid var(--border);
+    }
 
-        .rooms-column {
 
-            min-width:
-                0;
+    .before-after-title {
 
-        }
+        margin-bottom: 10px;
 
+        color:
+            var(--text-heading);
 
-        /* =====================================================
-           ROOM
-        ===================================================== */
+        font-size: 11px;
 
-        .room-section {
+        font-weight: 700;
+    }
 
-            margin-bottom:
-                17px;
 
-            background:
-                white;
+    .before-after-grid {
 
-            border:
-                1px solid #e6edf3;
+        display: grid;
 
-            border-radius:
-                13px;
+        grid-template-columns:
+            1fr 1fr;
 
-            padding:
-                17px;
+        gap: 10px;
+    }
 
-        }
 
+    .comparison-box {
 
-        .room-heading {
+        position: relative;
+    }
 
-            margin-bottom:
-                13px;
 
-            display:
-                flex;
+    .comparison-box img {
 
-            justify-content:
-                space-between;
+        width: 100%;
+        height: 150px;
 
-            align-items:
-                center;
+        display: block;
 
-            gap:
-                12px;
+        object-fit: cover;
 
-        }
+        border-radius: 9px;
+    }
 
 
-        .room-title-wrapper {
+    .comparison-label {
 
-            display:
-                flex;
+        position: absolute;
 
-            align-items:
-                center;
+        top: 8px;
+        left: 8px;
 
-            gap:
-                10px;
+        padding:
+            5px 9px;
 
-        }
+        border-radius: 20px;
 
+        background:
+            rgba(13,
+                41,
+                62,
+                .85);
 
-        .room-icon {
+        color: white;
 
-            width:
-                36px;
+        font-size: 9px;
 
-            height:
-                36px;
+        font-weight: 700;
+    }
 
-            border-radius:
-                9px;
 
-            display:
-                flex;
+    .comparison-label.after {
 
-            align-items:
-                center;
+        background:
+            rgba(19,
+                139,
+                91,
+                .9);
+    }
 
-            justify-content:
-                center;
 
-            background:
-                #e9f4ff;
+    /* =====================================================
+       LATEST DOCUMENTATION
+    ===================================================== */
 
-            color:
-                #0875ce;
+    .latest-panel {
 
-        }
+        padding: 17px;
 
+        border:
+            1px solid var(--border);
 
-        .room-name {
+        border-radius: 13px;
 
-            color:
-                #17354e;
+        background:
+            var(--card-bg);
+    }
 
-            font-size:
-                14px;
 
-            font-weight:
-                700;
+    .latest-title {
 
-        }
+        margin-bottom: 16px;
 
+        color:
+            var(--text-heading);
 
-        .room-count {
+        font-size: 15px;
 
-            color:
-                #8294a4;
+        font-weight: 700;
+    }
 
-            font-size:
-                10px;
 
-            margin-top:
-                2px;
+    .latest-timeline {
 
-        }
+        position: relative;
+    }
 
 
-        .room-see-all {
+    .latest-timeline::before {
 
-            text-decoration:
-                none;
+        content: "";
 
-            color:
-                #0873c8;
+        position: absolute;
 
-            font-size:
-                10px;
+        left: 7px;
 
-            font-weight:
-                600;
+        top: 12px;
+        bottom: 20px;
 
-        }
+        width: 2px;
 
+        background:
+            var(--border);
+    }
 
-        /* =====================================================
-           GALLERY
-        ===================================================== */
+
+    .latest-item {
+
+        position: relative;
+
+        padding-left: 27px;
+
+        padding-bottom: 17px;
+    }
+
+
+    .latest-dot {
+
+        width: 13px;
+        height: 13px;
+
+        position: absolute;
+
+        left: 1px;
+        top: 11px;
+
+        z-index: 2;
+
+        border-radius: 50%;
+
+        border:
+            4px solid var(--card-bg);
+
+        background:
+            var(--primary);
+
+        box-shadow:
+            0 0 0 1px var(--primary);
+    }
+
+
+    .latest-card {
+
+        display: grid;
+
+        grid-template-columns:
+            72px minmax(0, 1fr);
+
+        gap: 10px;
+    }
+
+
+    .latest-thumb {
+
+        width: 72px;
+        height: 60px;
+
+        border-radius: 7px;
+
+        object-fit: cover;
+
+        background:
+            var(--input-bg);
+    }
+
+
+    .latest-item-title {
+
+        margin-bottom: 5px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 10px;
+
+        font-weight: 700;
+
+        line-height: 1.35;
+    }
+
+
+    .latest-room {
+
+        display: inline-block;
+
+        margin-bottom: 4px;
+
+        padding:
+            3px 7px;
+
+        border-radius: 10px;
+
+        background: #e6f2ff;
+
+        color: #0872c6;
+
+        font-size: 8px;
+    }
+
+
+    body.dark-mode .latest-room {
+
+        background: #19364d;
+
+        color: #72bdf5;
+    }
+
+
+    .latest-date {
+
+        color:
+            var(--text-muted);
+
+        font-size: 8px;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-state {
+
+        padding:
+            35px 20px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+
+    .room-empty {
+
+        padding: 20px;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 10px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1150px) {
 
         .gallery-grid {
 
-            display:
-                grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+
+        .documentation-layout {
 
             grid-template-columns:
-                repeat(4,
-                    minmax(0,
-                        1fr));
+                1fr;
+        }
 
-            gap:
-                11px;
+    }
 
+
+    @media(max-width: 900px) {
+
+        .summary-grid {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+    }
+
+
+    @media(max-width: 650px) {
+
+        .documentation-page-head {
+
+            flex-direction: column;
         }
 
 
-        .gallery-card {
+        .project-selector {
 
-            min-width:
-                0;
+            width: 100%;
 
+            min-width: 0;
         }
 
 
-        .gallery-image-wrap {
+        .summary-grid {
 
-            position:
-                relative;
-
-            margin-bottom:
-                7px;
-
+            grid-template-columns:
+                1fr 1fr;
         }
 
 
-        .gallery-image {
+        .gallery-grid {
 
-            width:
-                100%;
-
-            height:
-                125px;
-
-            border-radius:
-                9px;
-
-            object-fit:
-                cover;
-
-            display:
-                block;
-
-            background:
-                linear-gradient(135deg,
-                    #dae7f2,
-                    #edf4f9);
-
-        }
-
-
-        .media-placeholder {
-
-            width:
-                100%;
-
-            height:
-                125px;
-
-            border-radius:
-                9px;
-
-            background:
-                #edf3f8;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            color:
-                #6c8194;
-
-            font-size:
-                25px;
-
-        }
-
-
-        .phase-badge {
-
-            position:
-                absolute;
-
-            left:
-                7px;
-
-            bottom:
-                7px;
-
-            padding:
-                4px 7px;
-
-            border-radius:
-                5px;
-
-            color:
-                white;
-
-            font-size:
-                8px;
-
-            font-weight:
-                700;
-
-            background:
-                rgba(14,
-                    39,
-                    58,
-                    .85);
-
-        }
-
-
-        .phase-before {
-
-            background:
-                rgba(45,
-                    65,
-                    80,
-                    .9);
-
-        }
-
-
-        .phase-during {
-
-            background:
-                rgba(8,
-                    117,
-                    205,
-                    .92);
-
-        }
-
-
-        .phase-after {
-
-            background:
-                rgba(20,
-                    139,
-                    91,
-                    .92);
-
-        }
-
-
-        .gallery-title {
-
-            color:
-                #234158;
-
-            font-size:
-                11px;
-
-            line-height:
-                1.35;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                3px;
-
-        }
-
-
-        .gallery-description {
-
-            color:
-                #8495a4;
-
-            font-size:
-                9px;
-
-            line-height:
-                1.45;
-
-        }
-
-
-        /* =====================================================
-           BEFORE / AFTER
-        ===================================================== */
-
-        .before-after {
-
-            margin-top:
-                16px;
-
-            border-top:
-                1px solid #edf2f6;
-
-            padding-top:
-                15px;
-
-        }
-
-
-        .before-after-title {
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
-
-            color:
-                #26445b;
-
-            margin-bottom:
-                10px;
-
+            grid-template-columns:
+                1fr 1fr;
         }
 
 
         .before-after-grid {
 
-            display:
-                grid;
-
             grid-template-columns:
-                1fr 1fr;
-
-            gap:
-                10px;
-
+                1fr;
         }
 
 
-        .comparison-box {
+        .toolbar-right {
 
-            position:
-                relative;
-
+            width: 100%;
         }
 
 
-        .comparison-box img {
+        .toolbar-select {
 
-            width:
-                100%;
+            flex: 1;
 
-            height:
-                150px;
-
-            display:
-                block;
-
-            object-fit:
-                cover;
-
-            border-radius:
-                9px;
-
+            min-width: 0;
         }
 
+    }
+</style>
 
-        .comparison-label {
+@endpush
 
-            position:
-                absolute;
 
-            top:
-                8px;
 
-            left:
-                8px;
+@section('content')
 
-            padding:
-                5px 9px;
 
-            border-radius:
-                20px;
+{{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
-            background:
-                rgba(13,
-                    41,
-                    62,
-                    .85);
+<div class="documentation-page-head">
 
-            color:
-                white;
 
-            font-size:
-                9px;
+    <div class="documentation-page-title">
 
-            font-weight:
-                700;
+        <h1>
 
-        }
+            {{ $dt['title'] }}
 
+        </h1>
 
-        .comparison-label.after {
+        <p>
 
-            background:
-                rgba(19,
-                    139,
-                    91,
-                    .9);
+            {{ $dt['description'] }}
 
-        }
+        </p>
 
+    </div>
 
-        /* =====================================================
-           LATEST DOCUMENTATION
-        ===================================================== */
 
-        .latest-panel {
 
-            background:
-                white;
+    @if($selectedProject)
 
-            border:
-                1px solid #e6edf3;
+    <form
 
-            border-radius:
-                13px;
+        method="GET"
 
-            padding:
-                17px;
+        action="{{ route('client.documentation') }}"
 
-        }
+        class="project-selector">
 
 
-        .latest-title {
+        @if($selectedProject->cover_image)
 
-            color:
-                #17354e;
+        <img
 
-            font-size:
-                15px;
+            src="{{
+                            asset(
+                                'storage/' .
+                                $selectedProject
+                                    ->cover_image
+                            )
+                        }}"
 
-            font-weight:
-                700;
+            alt="{{
+                            $selectedProject
+                                ->project_name
+                        }}"
 
-            margin-bottom:
-                16px;
+            class="selector-thumb">
 
-        }
+        @else
 
+        <div
+            class="selector-thumb"></div>
 
-        .latest-timeline {
+        @endif
 
-            position:
-                relative;
 
-        }
 
+        <div class="selector-content">
 
-        .latest-timeline::before {
 
-            content:
-                "";
+            <div class="selector-title">
 
-            position:
-                absolute;
-
-            left:
-                7px;
-
-            top:
-                12px;
-
-            bottom:
-                20px;
-
-            width:
-                2px;
-
-            background:
-                #dce7ef;
-
-        }
-
-
-        .latest-item {
-
-            position:
-                relative;
-
-            padding-left:
-                27px;
-
-            padding-bottom:
-                17px;
-
-        }
-
-
-        .latest-dot {
-
-            width:
-                13px;
-
-            height:
-                13px;
-
-            position:
-                absolute;
-
-            left:
-                1px;
-
-            top:
-                11px;
-
-            border-radius:
-                50%;
-
-            background:
-                #0a79d2;
-
-            border:
-                4px solid white;
-
-            box-shadow:
-                0 0 0 1px #0a79d2;
-
-            z-index:
-                2;
-
-        }
-
-
-        .latest-card {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                72px minmax(0,
-                    1fr);
-
-            gap:
-                10px;
-
-        }
-
-
-        .latest-thumb {
-
-            width:
-                72px;
-
-            height:
-                60px;
-
-            border-radius:
-                7px;
-
-            object-fit:
-                cover;
-
-            background:
-                #e8eff5;
-
-        }
-
-
-        .latest-item-title {
-
-            color:
-                #233e55;
-
-            font-size:
-                10px;
-
-            font-weight:
-                700;
-
-            line-height:
-                1.35;
-
-            margin-bottom:
-                5px;
-
-        }
-
-
-        .latest-room {
-
-            display:
-                inline-block;
-
-            background:
-                #e6f2ff;
-
-            color:
-                #0872c6;
-
-            border-radius:
-                10px;
-
-            padding:
-                3px 7px;
-
-            font-size:
-                8px;
-
-            margin-bottom:
-                4px;
-
-        }
-
-
-        .latest-date {
-
-            color:
-                #8395a5;
-
-            font-size:
-                8px;
-
-        }
-
-
-        /* =====================================================
-           EMPTY
-        ===================================================== */
-
-        .empty-state {
-
-            padding:
-                35px 20px;
-
-            border:
-                1px solid #e5edf4;
-
-            border-radius:
-                12px;
-
-            background:
-                white;
-
-            color:
-                #8293a3;
-
-            font-size:
-                12px;
-
-            text-align:
-                center;
-
-        }
-
-
-        .room-empty {
-
-            padding:
-                20px;
-
-            text-align:
-                center;
-
-            color:
-                #8a9aa8;
-
-            font-size:
-                10px;
-
-        }
-
-
-        /* RESPONSIVE */
-
-        @media(max-width: 1150px) {
-
-            .gallery-grid {
-
-                grid-template-columns:
-                    repeat(2,
-                        1fr);
-
-            }
-
-            .documentation-layout {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-        }
-
-
-        @media(max-width: 900px) {
-
-            .summary-grid {
-
-                grid-template-columns:
-                    repeat(2,
-                        1fr);
-
-            }
-
-        }
-
-
-        @media(max-width: 850px) {
-
-            .sidebar {
-
-                display:
-                    none;
-
-            }
-
-            .main {
-
-                width:
-                    100%;
-
-                margin-left:
-                    0;
-
-            }
-
-        }
-
-
-        @media(max-width: 650px) {
-
-            .content {
-
-                padding:
-                    20px 14px;
-
-            }
-
-            .page-head {
-
-                flex-direction:
-                    column;
-
-            }
-
-            .project-selector {
-
-                width:
-                    100%;
-
-                min-width:
-                    0;
-
-            }
-
-            .summary-grid {
-
-                grid-template-columns:
-                    1fr 1fr;
-
-            }
-
-            .gallery-grid {
-
-                grid-template-columns:
-                    1fr 1fr;
-
-            }
-
-            .before-after-grid {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-            .toolbar-right {
-
-                width:
-                    100%;
-
-            }
-
-            .toolbar-select {
-
-                flex:
-                    1;
-
-                min-width:
-                    0;
-
-            }
-
-        }
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <div class="app">
-
-
-        <!-- SIDEBAR -->
-
-        <aside class="sidebar">
-
-
-            <div class="brand">
-
-                <div class="ruangkita-logo">
-
-                    <div class="roof"></div>
-
-                    <div class="house">
-
-                        <div class="door"></div>
-
-                    </div>
-
-                </div>
-
-                <span class="brand-name">
-                    RuangKita
-                </span>
+                {{
+                            $selectedProject
+                                ->project_name
+                        }}
 
             </div>
 
 
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
+            <div class="selector-location">
 
-                <span class="menu-icon">⌂</span>
-
-                Dashboard
-
-            </a>
-
-
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▣</span>
-
-                Proyek Saya
-
-            </a>
-
-
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item">
-
-                <span class="menu-icon">▦</span>
-
-                Jadwal
-
-            </a>
-
-
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item">
-
-                <span class="menu-icon">↗</span>
-
-                Progress
-
-            </a>
-
-
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item active">
-
-                <span class="menu-icon">▧</span>
-
-                Dokumentasi
-
-            </a>
-
-
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▤
-                </span>
-
-                Informasi Biaya
-
-            </a>
-            <a
-                href="{{ route('client.messages') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ✉
-                </span>
-
-                Pesan
-
-            </a>
-
-
-            <a
-                href="{{ route('client.ar') }}"
-                class="menu-item">
-
-                <span class="menu-icon">◇</span>
-
-                Augmented Reality
-
-            </a>
-
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-
-        </aside>
-
-
-
-        <!-- MAIN -->
-
-        <main class="main">
-
-
-            <header class="topbar">
-
-
-                <div class="hamburger">
-                    ☰
-                </div>
-
-
-                <div class="user-area">
-
-                    <span>
-                        ♧
-                    </span>
-
-                    <div class="avatar">
-                        👤
-                    </div>
-
-                    <span>
-                        {{ auth()->user()->name }}
-                    </span>
-
-                    <span>
-                        ▾
-                    </span>
-
-                </div>
-
-
-            </header>
-
-
-
-            <section class="content">
-
-
-                <!-- ========================================
-                 PAGE HEADER
-            ========================================= -->
-
-                <div class="page-head">
-
-
-                    <div class="page-title">
-
-                        <h1>
-                            Dokumentasi Proyek
-                        </h1>
-
-                        <p>
-                            Lihat galeri foto dan video perkembangan proyek renovasi Anda
-                        </p>
-
-                    </div>
-
-
-                    @if($selectedProject)
-
-
-                    <form
-                        method="GET"
-                        action="{{ route('client.documentation') }}"
-                        class="project-selector">
-
-
-                        @if($selectedProject->cover_image)
-
-                        <img
-                            src="{{ asset('storage/' . $selectedProject->cover_image) }}"
-                            alt="{{ $selectedProject->project_name }}"
-                            class="selector-thumb">
-
-                        @else
-
-                        <div class="selector-thumb"></div>
-
-                        @endif
-
-
-                        <div class="selector-content">
-
-                            <div class="selector-title">
-
-                                {{ $selectedProject->project_name }}
-
-                            </div>
-
-                            <div class="selector-location">
-
-                                {{ $selectedProject->location }}
-
-                            </div>
-
-                        </div>
-
-
-                        <select
-                            name="project"
-                            class="project-select"
-                            onchange="this.form.submit()">
-
-
-                            @foreach($projects as $project)
-
-                            <option
-                                value="{{ $project->id }}"
-                                @selected(
-                                $selectedProject->id
-                                ===
-                                $project->id
-                                )>
-
-                                {{ $project->project_name }}
-
-                            </option>
-
-                            @endforeach
-
-
-                        </select>
-
-
-                    </form>
-
-
-                    @endif
-
-
-                </div>
-
-
-
-                @if($selectedProject)
-
-
-                <!-- ========================================
-                     SUMMARY
-                ========================================= -->
-
-                <div class="summary-grid">
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon blue">
-                            ▧
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-                                Total Dokumentasi
-                            </div>
-
-                            <div class="summary-number">
-
-                                {{ $documentationStats['total'] }}
-
-                            </div>
-
-                            <div class="summary-type">
-                                Semua File
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon green">
-                            ▣
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-                                Foto Progress
-                            </div>
-
-                            <div class="summary-number">
-
-                                {{ $documentationStats['photo'] }}
-
-                            </div>
-
-                            <div class="summary-type">
-                                Foto
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon purple">
-                            ▤
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-                                Dokumen
-                            </div>
-
-                            <div class="summary-number">
-
-                                {{ $documentationStats['document'] }}
-
-                            </div>
-
-                            <div class="summary-type">
-                                File
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="summary-card">
-
-                        <div class="summary-icon red">
-                            ▶
-                        </div>
-
-                        <div>
-
-                            <div class="summary-label">
-                                Video
-                            </div>
-
-                            <div class="summary-number">
-
-                                {{ $documentationStats['video'] }}
-
-                            </div>
-
-                            <div class="summary-type">
-                                Video
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ========================================
-                     FILTERS
-                ========================================= -->
-
-                <div class="toolbar">
-
-
-                    <div class="filter-group">
-
-
-                        <button
-                            type="button"
-                            class="filter-btn active"
-                            data-media="all">
-
-                            Semua
-                            ({{ $documentationStats['total'] }})
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-media="photo">
-
-                            Foto
-                            ({{ $documentationStats['photo'] }})
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-media="video">
-
-                            Video
-                            ({{ $documentationStats['video'] }})
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="filter-btn"
-                            data-media="document">
-
-                            Dokumen
-                            ({{ $documentationStats['document'] }})
-
-                        </button>
-
-
-                    </div>
-
-
-                    <div class="toolbar-right">
-
-
-                        <select
-                            id="roomFilter"
-                            class="toolbar-select">
-
-                            <option value="all">
-                                Semua Ruangan
-                            </option>
-
-
-                            @foreach($selectedProject->areas as $area)
-
-                            <option
-                                value="{{ $area->id }}">
-
-                                {{ $area->area_name }}
-
-                            </option>
-
-                            @endforeach
-
-
-                        </select>
-
-
-                        <select
-                            id="sortFilter"
-                            class="toolbar-select">
-
-                            <option value="latest">
-                                Urutkan: Terbaru
-                            </option>
-
-                            <option value="oldest">
-                                Urutkan: Terlama
-                            </option>
-
-                        </select>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ========================================
-                     MAIN CONTENT
-                ========================================= -->
-
-                <div class="documentation-layout">
-
-
-                    <!-- ROOM GALLERIES -->
-
-                    <div class="rooms-column">
-
-
-                        @forelse(
-                        $selectedProject->areas
-                        as $area
-                        )
-
-
-                        @php
-
-                        $areaDocs =
-                        $area
-                        ->documentations;
-
-
-                        $beforePhoto =
-                        $areaDocs
-                        ->where(
-                        'media_type',
-                        'photo'
-                        )
-                        ->where(
-                        'category',
-                        'before'
-                        )
-                        ->first();
-
-
-                        $afterPhoto =
-                        $areaDocs
-                        ->where(
-                        'media_type',
-                        'photo'
-                        )
-                        ->where(
-                        'category',
-                        'after'
-                        )
-                        ->last();
-
-                        @endphp
-
-
-                        <div
-                            class="room-section"
-                            data-room="{{ $area->id }}">
-
-
-                            <div class="room-heading">
-
-
-                                <div class="room-title-wrapper">
-
-                                    <div class="room-icon">
-                                        ▧
-                                    </div>
-
-                                    <div>
-
-                                        <div class="room-name">
-
-                                            {{ $area->area_name }}
-
-                                        </div>
-
-                                        <div class="room-count">
-
-                                            {{ $areaDocs->count() }}
-                                            file dokumentasi
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-                                <a
-                                    href="#"
-                                    class="room-see-all">
-
-                                    Lihat Semua →
-
-                                </a>
-
-
-                            </div>
-
-
-
-                            @if($areaDocs->count() > 0)
-
-
-                            <div class="gallery-grid">
-
-
-                                @foreach(
-                                $areaDocs->take(4)
-                                as $doc
-                                )
-
-
-                                <div
-                                    class="gallery-card documentation-item"
-                                    data-media="{{ $doc->media_type }}"
-                                    data-date="{{ optional($doc->photo_date)->format('Y-m-d') }}">
-
-
-                                    <div class="gallery-image-wrap">
-
-
-                                        @if(
-                                        $doc->media_type
-                                        ===
-                                        'photo'
-                                        )
-
-
-                                        <img
-                                            src="{{ asset('storage/' . $doc->file_path) }}"
-                                            alt="{{ $doc->title }}"
-                                            class="gallery-image">
-
-
-                                        @elseif(
-                                        $doc->media_type
-                                        ===
-                                        'video'
-                                        )
-
-
-                                        <div class="media-placeholder">
-                                            ▶
-                                        </div>
-
-
-                                        @else
-
-
-                                        <div class="media-placeholder">
-                                            ▤
-                                        </div>
-
-
-                                        @endif
-
-
-
-                                        @if($doc->category === 'before')
-
-                                        <span class="phase-badge phase-before">
-                                            BEFORE
-                                        </span>
-
-
-                                        @elseif($doc->category === 'during')
-
-                                        <span class="phase-badge phase-during">
-                                            PROGRESS
-                                        </span>
-
-
-                                        @elseif($doc->category === 'after')
-
-                                        <span class="phase-badge phase-after">
-                                            AFTER
-                                        </span>
-
-                                        @endif
-
-
-                                    </div>
-
-
-
-                                    <div class="gallery-title">
-
-                                        {{ $doc->title }}
-
-                                    </div>
-
-
-                                    <div class="gallery-description">
-
-                                        {{
-                                                        $doc->description
-                                                        ?: optional(
-                                                            $doc->photo_date
-                                                        )->format(
-                                                            'd M Y'
-                                                        )
-                                                    }}
-
-                                    </div>
-
-
-                                </div>
-
-
-                                @endforeach
-
-
-                            </div>
-
-
-
-                            <!-- BEFORE AFTER -->
-
-                            @if(
-                            $beforePhoto
-                            &&
-                            $afterPhoto
-                            )
-
-
-                            <div class="before-after">
-
-
-                                <div class="before-after-title">
-
-                                    Perbandingan Before & After
-                                    — {{ $area->area_name }}
-
-                                </div>
-
-
-                                <div class="before-after-grid">
-
-
-                                    <div class="comparison-box">
-
-                                        <img
-                                            src="{{ asset('storage/' . $beforePhoto->file_path) }}"
-                                            alt="Before {{ $area->area_name }}">
-
-                                        <span class="comparison-label">
-
-                                            BEFORE
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div class="comparison-box">
-
-                                        <img
-                                            src="{{ asset('storage/' . $afterPhoto->file_path) }}"
-                                            alt="After {{ $area->area_name }}">
-
-                                        <span class="comparison-label after">
-
-                                            AFTER
-
-                                        </span>
-
-                                    </div>
-
-
-                                </div>
-
-
-                            </div>
-
-
-                            @endif
-
-
-                            @else
-
-
-                            <div class="room-empty">
-
-                                Belum ada dokumentasi
-                                untuk {{ $area->area_name }}.
-
-                            </div>
-
-
-                            @endif
-
-
-                        </div>
-
-
-                        @empty
-
-
-                        <div class="empty-state">
-
-                            Belum ada area atau ruangan
-                            pada proyek ini.
-
-                        </div>
-
-
-                        @endforelse
-
-
-                    </div>
-
-
-
-                    <!-- ========================================
-                         DOKUMENTASI TERBARU
-                    ========================================= -->
-
-                    <aside class="latest-panel">
-
-
-                        <div class="latest-title">
-
-                            Dokumentasi Terbaru
-
-                        </div>
-
-
-                        <div class="latest-timeline">
-
-
-                            @forelse(
+                {{
                             $selectedProject
-                            ->documentations
-                            ->take(6)
-                            as $latest
-                            )
+                                ->location
+                        }}
 
+            </div>
 
-                            <div class="latest-item">
 
+        </div>
 
-                                <div class="latest-dot"></div>
 
 
-                                <div class="latest-card">
+        <select
 
+            name="project"
 
-                                    @if(
-                                    $latest->media_type
-                                    ===
-                                    'photo'
-                                    )
+            class="project-select"
 
+            onchange="this.form.submit()">
 
-                                    <img
-                                        src="{{ asset('storage/' . $latest->file_path) }}"
-                                        alt="{{ $latest->title }}"
-                                        class="latest-thumb">
+            @foreach($projects as $project)
 
+            <option
 
-                                    @else
+                value="{{ $project->id }}"
 
+                @selected(
+                $selectedProject->id
+                ===
+                $project->id
+                )
 
-                                    <div class="latest-thumb"></div>
+                >
 
+                {{
+                                $project
+                                    ->project_name
+                            }}
 
-                                    @endif
+            </option>
 
+            @endforeach
 
-                                    <div>
+        </select>
 
 
-                                        <div class="latest-item-title">
+    </form>
 
-                                            {{ $latest->title }}
+    @endif
 
-                                        </div>
 
+</div>
 
-                                        @if($latest->projectArea)
 
 
-                                        <div class="latest-room">
+@if($selectedProject)
 
-                                            {{
-                                                        $latest
-                                                            ->projectArea
-                                                            ->area_name
-                                                    }}
 
-                                        </div>
+{{-- =================================================
+             SUMMARY
+        ================================================== --}}
 
+<div class="summary-grid">
 
-                                        @endif
 
+    <div class="summary-card">
 
-                                        <div class="latest-date">
+        <div class="summary-icon blue">
 
-                                            @if($latest->photo_date)
+            ▧
 
-                                            {{
-                                                        \Carbon\Carbon::parse(
-                                                            $latest->photo_date
-                                                        )->format(
-                                                            'd M Y'
-                                                        )
-                                                    }}
+        </div>
 
-                                            @else
+        <div>
 
-                                            {{
-                                                        $latest
-                                                            ->created_at
-                                                            ->format(
-                                                                'd M Y'
-                                                            )
-                                                    }}
+            <div class="summary-label">
 
-                                            @endif
+                {{
+                            $dt[
+                                'total_documentation'
+                            ]
+                        }}
 
+            </div>
 
-                                        </div>
+            <div class="summary-number">
 
+                {{
+                            $documentationStats[
+                                'total'
+                            ]
+                        }}
 
-                                    </div>
+            </div>
 
+            <div class="summary-type">
 
-                                </div>
+                {{
+                            $dt[
+                                'all_files'
+                            ]
+                        }}
 
+            </div>
 
-                            </div>
+        </div>
 
+    </div>
 
-                            @empty
 
 
-                            <div class="room-empty">
+    <div class="summary-card">
 
-                                Belum ada dokumentasi terbaru.
+        <div class="summary-icon green">
 
-                            </div>
+            ▣
 
+        </div>
 
-                            @endforelse
+        <div>
 
+            <div class="summary-label">
 
-                        </div>
+                {{
+                            $dt[
+                                'progress_photos'
+                            ]
+                        }}
 
+            </div>
 
-                    </aside>
+            <div class="summary-number">
 
+                {{
+                            $documentationStats[
+                                'photo'
+                            ]
+                        }}
 
-                </div>
+            </div>
 
+            <div class="summary-type">
 
-                @else
+                {{ $dt['photo'] }}
 
+            </div>
 
-                <div class="empty-state">
+        </div>
 
-                    Belum ada proyek
-                    yang terhubung dengan akun Anda.
+    </div>
 
-                </div>
 
 
-                @endif
+    <div class="summary-card">
 
+        <div class="summary-icon purple">
 
-            </section>
+            ▤
 
+        </div>
 
-        </main>
+        <div>
+
+            <div class="summary-label">
+
+                {{ $dt['documents'] }}
+
+            </div>
+
+            <div class="summary-number">
+
+                {{
+                            $documentationStats[
+                                'document'
+                            ]
+                        }}
+
+            </div>
+
+            <div class="summary-type">
+
+                {{ $dt['file'] }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="summary-card">
+
+        <div class="summary-icon red">
+
+            ▶
+
+        </div>
+
+        <div>
+
+            <div class="summary-label">
+
+                {{ $dt['video'] }}
+
+            </div>
+
+            <div class="summary-number">
+
+                {{
+                            $documentationStats[
+                                'video'
+                            ]
+                        }}
+
+            </div>
+
+            <div class="summary-type">
+
+                {{ $dt['video'] }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =================================================
+             FILTER
+        ================================================== --}}
+
+<div class="toolbar">
+
+
+    <div class="filter-group">
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn active"
+
+            data-media="all">
+
+            {{ $dt['all'] }}
+
+            ({{
+                        $documentationStats[
+                            'total'
+                        ]
+                    }})
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-media="photo">
+
+            {{ $dt['photo'] }}
+
+            ({{
+                        $documentationStats[
+                            'photo'
+                        ]
+                    }})
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-media="video">
+
+            {{ $dt['video'] }}
+
+            ({{
+                        $documentationStats[
+                            'video'
+                        ]
+                    }})
+
+        </button>
+
+
+
+        <button
+
+            type="button"
+
+            class="filter-btn"
+
+            data-media="document">
+
+            {{ $dt['documents'] }}
+
+            ({{
+                        $documentationStats[
+                            'document'
+                        ]
+                    }})
+
+        </button>
 
 
     </div>
 
 
 
-    <script>
-        const mediaButtons =
-            document.querySelectorAll(
-                '.filter-btn'
-            );
+    <div class="toolbar-right">
 
 
-        const documentationItems =
-            document.querySelectorAll(
-                '.documentation-item'
-            );
+        <select
+
+            id="roomFilter"
+
+            class="toolbar-select">
+
+            <option value="all">
+
+                {{ $dt['all_rooms'] }}
+
+            </option>
 
 
-        const roomSections =
-            document.querySelectorAll(
-                '.room-section'
-            );
+            @foreach($selectedProject->areas as $area)
+
+            <option
+                value="{{ $area->id }}">
+
+                {{ $area->area_name }}
+
+            </option>
+
+            @endforeach
+
+        </select>
 
 
-        const roomFilter =
-            document.getElementById(
-                'roomFilter'
-            );
+
+        <select
+
+            id="sortFilter"
+
+            class="toolbar-select">
+
+            <option value="latest">
+
+                {{
+                            $dt[
+                                'sort_latest'
+                            ]
+                        }}
+
+            </option>
+
+            <option value="oldest">
+
+                {{
+                            $dt[
+                                'sort_oldest'
+                            ]
+                        }}
+
+            </option>
+
+        </select>
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | MEDIA FILTER
-        |--------------------------------------------------------------------------
-        */
-
-        mediaButtons.forEach(
-            function(button) {
-
-                button.addEventListener(
-                    'click',
-                    function() {
+    </div>
 
 
-                        mediaButtons.forEach(
-                            function(btn) {
+</div>
 
-                                btn.classList.remove(
-                                    'active'
-                                );
+
+
+{{-- =================================================
+             MAIN CONTENT
+        ================================================== --}}
+
+<div class="documentation-layout">
+
+
+    <div class="rooms-column">
+
+
+        @forelse($selectedProject->areas as $area)
+
+
+        @php
+
+        $areaDocs =
+        $area
+        ->documentations;
+
+
+        $beforePhoto =
+        $areaDocs
+        ->where(
+        'media_type',
+        'photo'
+        )
+        ->where(
+        'category',
+        'before'
+        )
+        ->first();
+
+
+        $afterPhoto =
+        $areaDocs
+        ->where(
+        'media_type',
+        'photo'
+        )
+        ->where(
+        'category',
+        'after'
+        )
+        ->last();
+
+        @endphp
+
+
+
+        <div
+
+            class="room-section"
+
+            data-room="{{ $area->id }}">
+
+
+            <div class="room-heading">
+
+
+                <div class="room-title-wrapper">
+
+
+                    <div class="room-icon">
+
+                        ▧
+
+                    </div>
+
+
+                    <div>
+
+                        <div class="room-name">
+
+                            {{
+                                            $area
+                                                ->area_name
+                                        }}
+
+                        </div>
+
+                        <div class="room-count">
+
+                            {{
+                                            $areaDocs
+                                                ->count()
+                                        }}
+
+                            {{
+                                            $dt[
+                                                'documentation_files'
+                                            ]
+                                        }}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <a
+
+                    href="#"
+
+                    class="room-see-all">
+
+                    {{
+                                    $dt[
+                                        'view_all'
+                                    ]
+                                }}
+
+                </a>
+
+
+            </div>
+
+
+
+            @if($areaDocs->count() > 0)
+
+
+            <div class="gallery-grid">
+
+
+                @foreach($areaDocs->take(4) as $doc)
+
+
+                <div
+
+                    class="
+                                            gallery-card
+                                            documentation-item
+                                        "
+
+                    data-media="{{
+                                            $doc->media_type
+                                        }}"
+
+                    data-date="{{
+                                            optional(
+                                                $doc->photo_date
+                                            )
+                                            ->format(
+                                                'Y-m-d'
+                                            )
+                                        }}">
+
+
+                    <div class="gallery-image-wrap">
+
+
+                        @if($doc->media_type === 'photo')
+
+                        <img
+
+                            src="{{
+                                                        asset(
+                                                            'storage/' .
+                                                            $doc
+                                                                ->file_path
+                                                        )
+                                                    }}"
+
+                            alt="{{
+                                                        $doc
+                                                            ->title
+                                                    }}"
+
+                            class="
+                                                        gallery-image
+                                                    ">
+
+                        @elseif($doc->media_type === 'video')
+
+                        <div
+                            class="
+                                                        media-placeholder
+                                                    ">
+
+                            ▶
+
+                        </div>
+
+                        @else
+
+                        <div
+                            class="
+                                                        media-placeholder
+                                                    ">
+
+                            ▤
+
+                        </div>
+
+                        @endif
+
+
+
+                        @if($doc->category === 'before')
+
+                        <span
+                            class="
+                                                        phase-badge
+                                                        phase-before
+                                                    ">
+
+                            BEFORE
+
+                        </span>
+
+                        @elseif($doc->category === 'during')
+
+                        <span
+                            class="
+                                                        phase-badge
+                                                        phase-during
+                                                    ">
+
+                            PROGRESS
+
+                        </span>
+
+                        @elseif($doc->category === 'after')
+
+                        <span
+                            class="
+                                                        phase-badge
+                                                        phase-after
+                                                    ">
+
+                            AFTER
+
+                        </span>
+
+                        @endif
+
+
+                    </div>
+
+
+
+                    <div class="gallery-title">
+
+                        {{ $doc->title }}
+
+                    </div>
+
+
+                    <div class="gallery-description">
+
+                        {{
+                                                $doc->description
+                                                ?:
+                                                optional(
+                                                    $doc->photo_date
+                                                )
+                                                ->format(
+                                                    'd M Y'
+                                                )
+                                            }}
+
+                    </div>
+
+
+                </div>
+
+
+                @endforeach
+
+
+            </div>
+
+
+
+            @if($beforePhoto && $afterPhoto)
+
+
+            <div class="before-after">
+
+
+                <div class="before-after-title">
+
+                    {{
+                                            $dt[
+                                                'before_after'
+                                            ]
+                                        }}
+
+                    —
+                    {{ $area->area_name }}
+
+                </div>
+
+
+
+                <div class="before-after-grid">
+
+
+                    <div class="comparison-box">
+
+                        <img
+
+                            src="{{
+                                                    asset(
+                                                        'storage/' .
+                                                        $beforePhoto
+                                                            ->file_path
+                                                    )
+                                                }}"
+
+                            alt="Before {{
+                                                    $area
+                                                        ->area_name
+                                                }}">
+
+                        <span
+                            class="
+                                                    comparison-label
+                                                ">
+
+                            BEFORE
+
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="comparison-box">
+
+                        <img
+
+                            src="{{
+                                                    asset(
+                                                        'storage/' .
+                                                        $afterPhoto
+                                                            ->file_path
+                                                    )
+                                                }}"
+
+                            alt="After {{
+                                                    $area
+                                                        ->area_name
+                                                }}">
+
+                        <span
+                            class="
+                                                    comparison-label
+                                                    after
+                                                ">
+
+                            AFTER
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            @endif
+
+
+            @else
+
+
+            <div class="room-empty">
+
+                {{
+                                    $dt[
+                                        'no_documentation_room'
+                                    ]
+                                }}
+
+                {{ $area->area_name }}.
+
+            </div>
+
+
+            @endif
+
+
+        </div>
+
+
+        @empty
+
+
+        <div class="empty-state">
+
+            {{ $dt['no_area'] }}
+
+        </div>
+
+
+        @endforelse
+
+
+    </div>
+
+
+
+    {{-- =================================================
+                 LATEST DOCUMENTATION
+            ================================================== --}}
+
+    <aside class="latest-panel">
+
+
+        <div class="latest-title">
+
+            {{
+                        $dt[
+                            'latest_documentation'
+                        ]
+                    }}
+
+        </div>
+
+
+
+        <div class="latest-timeline">
+
+
+            @forelse($selectedProject->documentations->take(6) as $latest)
+
+
+            <div class="latest-item">
+
+
+                <div class="latest-dot"></div>
+
+
+                <div class="latest-card">
+
+
+                    @if($latest->media_type === 'photo')
+
+                    <img
+
+                        src="{{
+                                            asset(
+                                                'storage/' .
+                                                $latest
+                                                    ->file_path
+                                            )
+                                        }}"
+
+                        alt="{{
+                                            $latest
+                                                ->title
+                                        }}"
+
+                        class="latest-thumb">
+
+                    @else
+
+                    <div
+                        class="latest-thumb"></div>
+
+                    @endif
+
+
+
+                    <div>
+
+
+                        <div class="latest-item-title">
+
+                            {{
+                                            $latest
+                                                ->title
+                                        }}
+
+                        </div>
+
+
+                        @if($latest->projectArea)
+
+                        <div class="latest-room">
+
+                            {{
+                                                $latest
+                                                    ->projectArea
+                                                    ->area_name
+                                            }}
+
+                        </div>
+
+                        @endif
+
+
+
+                        <div class="latest-date">
+
+                            @if($latest->photo_date)
+
+                            {{
+                                                \Carbon\Carbon
+                                                    ::parse(
+                                                        $latest
+                                                            ->photo_date
+                                                    )
+                                                    ->format(
+                                                        'd M Y'
+                                                    )
+                                            }}
+
+                            @else
+
+                            {{
+                                                $latest
+                                                    ->created_at
+                                                    ->format(
+                                                        'd M Y'
+                                                    )
+                                            }}
+
+                            @endif
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            @empty
+
+
+            <div class="room-empty">
+
+                {{
+                                $dt[
+                                    'no_latest_documentation'
+                                ]
+                            }}
+
+            </div>
+
+
+            @endforelse
+
+
+        </div>
+
+
+    </aside>
+
+
+</div>
+
+
+@else
+
+
+<div class="empty-state">
+
+    {{ $dt['no_project'] }}
+
+</div>
+
+
+@endif
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    const mediaButtons =
+        document.querySelectorAll(
+            '.filter-btn'
+        );
+
+
+    const documentationItems =
+        document.querySelectorAll(
+            '.documentation-item'
+        );
+
+
+    const roomSections =
+        document.querySelectorAll(
+            '.room-section'
+        );
+
+
+    const roomFilter =
+        document.getElementById(
+            'roomFilter'
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDIA FILTER
+    |--------------------------------------------------------------------------
+    */
+
+    mediaButtons.forEach(
+        function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    mediaButtons.forEach(
+                        function(btn) {
+
+                            btn.classList.remove(
+                                'active'
+                            );
+
+                        }
+                    );
+
+
+                    button.classList.add(
+                        'active'
+                    );
+
+
+                    const filter =
+                        button.dataset.media;
+
+
+                    documentationItems.forEach(
+                        function(item) {
+
+                            const media =
+                                item.dataset.media;
+
+
+                            if (
+                                filter === 'all' ||
+                                media === filter
+                            ) {
+
+                                item.style.display =
+                                    'block';
+
+                            } else {
+
+                                item.style.display =
+                                    'none';
 
                             }
-                        );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
 
 
-                        button.classList.add(
-                            'active'
-                        );
+    /*
+    |--------------------------------------------------------------------------
+    | ROOM FILTER
+    |--------------------------------------------------------------------------
+    */
+
+    if (roomFilter) {
+
+        roomFilter.addEventListener(
+            'change',
+            function() {
+
+                const selected =
+                    roomFilter.value;
 
 
-                        const filter =
-                            button.dataset.media;
+                roomSections.forEach(
+                    function(section) {
 
+                        if (
+                            selected === 'all' ||
+                            section.dataset.room ===
+                            selected
+                        ) {
 
-                        documentationItems.forEach(
-                            function(item) {
+                            section.style.display =
+                                'block';
 
+                        } else {
 
-                                const media =
-                                    item.dataset.media;
+                            section.style.display =
+                                'none';
 
-
-                                if (
-                                    filter === 'all' ||
-                                    media === filter
-                                ) {
-
-                                    item.style.display =
-                                        'block';
-
-                                } else {
-
-                                    item.style.display =
-                                        'none';
-
-                                }
-
-
-                            }
-                        );
-
+                        }
 
                     }
                 );
@@ -2786,57 +2359,7 @@
             }
         );
 
+    }
+</script>
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | ROOM FILTER
-        |--------------------------------------------------------------------------
-        */
-
-        if (roomFilter) {
-
-            roomFilter.addEventListener(
-                'change',
-                function() {
-
-
-                    const selected =
-                        roomFilter.value;
-
-
-                    roomSections.forEach(
-                        function(section) {
-
-
-                            if (
-                                selected === 'all' ||
-                                section.dataset.room ===
-                                selected
-                            ) {
-
-                                section.style.display =
-                                    'block';
-
-                            } else {
-
-                                section.style.display =
-                                    'none';
-
-                            }
-
-
-                        }
-                    );
-
-
-                }
-            );
-
-        }
-    </script>
-
-
-</body>
-
-</html>
+@endpush

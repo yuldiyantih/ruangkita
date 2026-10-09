@@ -1,2289 +1,2159 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.client')
 
-<head>
 
-    <meta charset="UTF-8">
+@php
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+$progressLang =
+auth()->user()->language
+?? 'id';
 
-    <title>
-        Progress Proyek - RuangKita
-    </title>
+$progressTranslations = [
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+'id' => [
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+'title' =>
+'Progress Proyek',
 
+'description' =>
+'Pantau perkembangan proyek renovasi Anda secara terperinci',
 
-        body {
+'ongoing' =>
+'Berjalan',
 
-            background: #f4f8fc;
+'completed' =>
+'Selesai',
 
-            color: #17334c;
+'paused' =>
+'Ditunda',
 
-        }
+'planning' =>
+'Perencanaan',
 
+'no_project_description' =>
+'Belum ada deskripsi proyek.',
 
-        .app {
+'total_progress' =>
+'Total Progress',
 
-            display: flex;
+'completed_stage' =>
+'Tahap Selesai',
 
-            min-height: 100vh;
+'ongoing_stage' =>
+'Tahap Berjalan',
 
-        }
+'next_stage' =>
+'Tahap Berikutnya',
 
+'work_stages' =>
+'Daftar Tahap Pekerjaan',
 
-        .sidebar {
+'work_stages_desc' =>
+'Pantau status setiap tahap pekerjaan renovasi',
 
-            width: 230px;
+'default_work_desc' =>
+'Tahap pekerjaan proyek',
 
-            position: fixed;
+'work_completed' =>
+'Selesai',
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+'work_ongoing' =>
+'Sedang berjalan',
 
-            z-index: 1000;
+'work_pending' =>
+'Belum dimulai',
 
-            padding: 20px 14px;
+'no_work' =>
+'Belum ada tahap pekerjaan.',
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'latest_progress' =>
+'Update Progress Terbaru',
 
-            color: white;
+'latest_progress_desc' =>
+'Riwayat perkembangan proyek terbaru',
 
-        }
+'progress_label' =>
+'Progress',
 
-        .brand {
+'default_progress_desc' =>
+'Update perkembangan proyek.',
 
-            padding:
-                5px 9px 24px;
+'no_progress' =>
+'Belum ada update progress.',
 
-            display: flex;
+'room_progress' =>
+'Progress per Area/Ruangan',
 
-            align-items: center;
+'room_progress_desc' =>
+'Persentase penyelesaian dan gambar setiap ruangan',
 
-            gap: 10px;
+'default_room_desc' =>
+'Belum ada keterangan progress ruangan.',
 
-        }
+'no_room' =>
+'Belum ada data area atau ruangan.',
 
+'view_detail' =>
+'Lihat Detail Progress',
 
-        .brand-name {
+'no_project' =>
+'Belum ada proyek yang terhubung dengan akun Anda.',
 
-            font-size: 18px;
+],
 
-            font-weight: 700;
 
-        }
+'en' => [
 
+'title' =>
+'Project Progress',
 
-        /* LOGO */
+'description' =>
+'Monitor your renovation project progress in detail',
 
-        .ruangkita-logo {
+'ongoing' =>
+'Ongoing',
 
-            width: 31px;
-            height: 31px;
+'completed' =>
+'Completed',
 
-            position: relative;
+'paused' =>
+'Paused',
 
-            flex-shrink: 0;
+'planning' =>
+'Planning',
 
-        }
+'no_project_description' =>
+'No project description available.',
 
+'total_progress' =>
+'Total Progress',
 
-        .ruangkita-logo .roof {
+'completed_stage' =>
+'Completed Stages',
 
-            width: 20px;
-            height: 20px;
+'ongoing_stage' =>
+'Ongoing Stages',
 
-            position: absolute;
+'next_stage' =>
+'Next Stages',
 
-            left: 5px;
-            top: 2px;
+'work_stages' =>
+'Work Stages',
 
-            border-left:
-                4px solid white;
+'work_stages_desc' =>
+'Monitor the status of each renovation work stage',
 
-            border-top:
-                4px solid white;
+'default_work_desc' =>
+'Project work stage',
 
-            transform:
-                rotate(45deg);
+'work_completed' =>
+'Completed',
 
-        }
+'work_ongoing' =>
+'In Progress',
 
+'work_pending' =>
+'Not Started',
 
-        .ruangkita-logo .house {
+'no_work' =>
+'No work stages available yet.',
 
-            width: 19px;
-            height: 17px;
+'latest_progress' =>
+'Latest Progress Updates',
 
-            position: absolute;
+'latest_progress_desc' =>
+'Latest project progress history',
 
-            left: 6px;
-            bottom: 2px;
+'progress_label' =>
+'Progress',
 
-            border-left:
-                4px solid white;
+'default_progress_desc' =>
+'Project progress update.',
 
-            border-right:
-                4px solid white;
+'no_progress' =>
+'No progress updates available yet.',
 
-            border-bottom:
-                4px solid white;
+'room_progress' =>
+'Progress by Area / Room',
 
-        }
+'room_progress_desc' =>
+'Completion percentage and images for each room',
 
+'default_room_desc' =>
+'No room progress description available.',
 
-        .ruangkita-logo .door {
+'no_room' =>
+'No area or room data available yet.',
 
-            width: 6px;
-            height: 9px;
+'view_detail' =>
+'View Progress Details',
 
-            position: absolute;
+'no_project' =>
+'There are no projects connected to your account yet.',
 
-            left: 50%;
-            bottom: -1px;
+],
 
-            transform:
-                translateX(-50%);
+];
 
-            border:
-                2px solid white;
 
-            border-bottom: none;
+$pt =
+$progressTranslations[
+$progressLang
+]
+??
+$progressTranslations['id'];
 
-        }
+@endphp
 
 
-        .menu-item {
+@section(
+'title',
+$pt['title'] . ' - RuangKita'
+)
 
-            min-height: 42px;
 
-            padding:
-                0 13px;
+@push('styles')
 
-            margin-bottom:
-                3px;
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-            border-radius:
-                8px;
+    .progress-page-header {
 
-            display: flex;
+        margin-bottom: 22px;
+    }
 
-            align-items: center;
 
-            gap: 11px;
+    .progress-page-header h1 {
 
-            text-decoration: none;
+        margin-bottom: 5px;
 
-            color: #d6e6f5;
+        color:
+            var(--text-heading);
 
-            font-size: 13px;
+        font-size: 27px;
+    }
 
-            transition: .2s;
 
-        }
+    .progress-page-header p {
 
+        color:
+            var(--text-muted);
 
-        .menu-item:hover {
+        font-size: 13px;
+    }
 
-            background:
-                rgba(255,
-                    255,
-                    255,
-                    .08);
 
-        }
+    /* =====================================================
+       PROJECT CARD
+    ===================================================== */
 
+    .progress-project-card {
 
-        .menu-item.active {
+        margin-bottom: 22px;
 
-            color: white;
+        padding: 18px;
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
+        border:
+            1px solid var(--border);
 
-        }
+        border-radius: 14px;
 
+        background:
+            var(--card-bg);
 
-        .menu-icon {
+        box-shadow:
+            var(--shadow);
+    }
 
-            width: 19px;
 
-            text-align: center;
+    .project-overview {
 
-        }
+        display: grid;
 
+        grid-template-columns:
+            200px 1fr 180px;
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        gap: 22px;
 
-        .main {
+        align-items: center;
+    }
 
-            position: relative;
 
-            z-index: 1;
+    .project-image {
 
-            width:
-                calc(100% - 230px);
+        width: 200px;
+        height: 135px;
 
-            margin-left:
-                230px;
+        border-radius: 11px;
 
-        }
+        object-fit: cover;
 
+        background:
+            linear-gradient(135deg,
+                #dcebf8,
+                #eef5fa);
+    }
 
-        .topbar {
 
-            height: 66px;
+    body.dark-mode .project-image {
 
-            padding:
-                0 28px;
+        background:
+            linear-gradient(135deg,
+                #24394a,
+                #172735);
+    }
 
-            display: flex;
 
-            align-items: center;
+    .project-title {
 
-            justify-content:
-                space-between;
+        margin-bottom: 8px;
 
-            background: white;
+        color:
+            var(--text-heading);
 
-            border-bottom:
-                1px solid #e7edf3;
+        font-size: 20px;
 
-        }
+        font-weight: 700;
+    }
 
 
-        .hamburger {
+    .project-meta {
 
-            color: #526f87;
+        color:
+            var(--text-muted);
 
-            font-size: 20px;
+        font-size: 12px;
 
-        }
+        line-height: 1.8;
+    }
 
 
-        .user-area {
+    .project-description {
 
-            display: flex;
+        margin-top: 9px;
 
-            align-items: center;
+        color:
+            var(--text-muted);
 
-            gap: 10px;
+        font-size: 12px;
 
-            font-size: 13px;
+        line-height: 1.6;
+    }
 
-            font-weight: 600;
 
-        }
+    /* =====================================================
+       STATUS
+    ===================================================== */
 
+    .project-status {
 
-        .avatar {
+        display: inline-flex;
 
-            width: 33px;
-            height: 33px;
+        margin-top: 8px;
 
-            border-radius: 50%;
+        padding:
+            5px 10px;
 
-            display: flex;
+        border-radius: 20px;
 
-            align-items: center;
+        background: #ddf8eb;
 
-            justify-content: center;
+        color: #11815a;
 
-            background:
-                #e4eef7;
+        font-size: 10px;
 
-        }
+        font-weight: 700;
+    }
 
 
-        /* =====================================================
-           CONTENT
-        ===================================================== */
+    body.dark-mode .project-status {
 
-        .content {
+        background: #173c31;
 
-            padding:
-                28px 30px 40px;
+        color: #79ddb0;
+    }
 
-        }
 
+    /* =====================================================
+       CIRCULAR PROGRESS
+    ===================================================== */
 
-        .page-header {
+    .progress-circle {
 
-            margin-bottom:
-                22px;
+        --progress: 0deg;
 
-        }
+        width: 125px;
+        height: 125px;
 
+        margin: 0 auto;
 
-        .page-header h1 {
+        position: relative;
 
-            color: #14304a;
+        border-radius: 50%;
 
-            font-size: 27px;
+        display: flex;
 
-            margin-bottom:
-                5px;
+        align-items: center;
+        justify-content: center;
 
-        }
+        background:
+            conic-gradient(#087ce0 var(--progress),
+                #e1ecf5 0deg);
+    }
 
 
-        .page-header p {
+    body.dark-mode .progress-circle {
 
-            color: #8495a6;
+        background:
+            conic-gradient(#1594ef var(--progress),
+                #304352 0deg);
+    }
 
-            font-size: 13px;
 
-        }
+    .progress-circle::before {
 
+        content: "";
 
-        /* =====================================================
-           PROJECT OVERVIEW
-        ===================================================== */
+        position: absolute;
 
-        .project-card {
+        width: 92px;
+        height: 92px;
 
-            background: white;
+        border-radius: 50%;
 
-            border:
-                1px solid #e5edf4;
+        background:
+            var(--card-bg);
+    }
 
-            border-radius:
-                14px;
 
-            padding: 18px;
+    .progress-circle-value {
 
-            margin-bottom:
-                22px;
+        position: relative;
 
+        z-index: 2;
+
+        color:
+            var(--text-heading);
+
+        font-size: 25px;
+
+        font-weight: 700;
+    }
+
+
+    .progress-circle-label {
+
+        margin-top: 8px;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       STATISTICS
+    ===================================================== */
+
+    .stats-grid {
+
+        margin:
+            18px 0;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4,
+                1fr);
+
+        gap: 13px;
+    }
+
+
+    .stat-card {
+
+        padding: 15px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 11px;
+
+        background:
+            var(--input-bg);
+    }
+
+
+    .stat-title {
+
+        margin-bottom: 7px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+    }
+
+
+    .stat-number {
+
+        color:
+            var(--text-heading);
+
+        font-size: 22px;
+
+        font-weight: 700;
+    }
+
+
+    .stat-blue {
+
+        color: #087ae0;
+    }
+
+
+    .stat-green {
+
+        color: #169260;
+    }
+
+
+    .stat-orange {
+
+        color: #e47a20;
+    }
+
+
+    /* =====================================================
+       LOWER GRID
+    ===================================================== */
+
+    .progress-content-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr 1fr;
+
+        gap: 15px;
+    }
+
+
+    .progress-panel {
+
+        padding: 17px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+    }
+
+
+    .panel-title {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 14px;
+
+        font-weight: 700;
+    }
+
+
+    .panel-subtitle {
+
+        margin-bottom: 17px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    /* =====================================================
+       WORK STEPS
+    ===================================================== */
+
+    .work-step {
+
+        padding:
+            12px 0;
+
+        display: flex;
+
+        gap: 11px;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .work-step:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .step-number {
+
+        width: 25px;
+        height: 25px;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #e7f2ff;
+
+        color: #0874ca;
+
+        font-size: 10px;
+
+        font-weight: 700;
+    }
+
+
+    .step-number.completed {
+
+        background: #ddf8eb;
+
+        color: #14835c;
+    }
+
+
+    body.dark-mode .step-number {
+
+        background: #19364d;
+
+        color: #68baff;
+    }
+
+
+    body.dark-mode .step-number.completed {
+
+        background: #173d31;
+
+        color: #7addb1;
+    }
+
+
+    .step-info {
+
+        flex: 1;
+    }
+
+
+    .step-title {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .step-description {
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+    }
+
+
+    .step-status {
+
+        padding:
+            4px 7px;
+
+        border-radius: 10px;
+
+        white-space: nowrap;
+
+        font-size: 9px;
+    }
+
+
+    .step-status.completed {
+
+        color: #16825d;
+
+        background: #dcf8ea;
+    }
+
+
+    .step-status.ongoing {
+
+        color: #0874ca;
+
+        background: #e4f1ff;
+    }
+
+
+    .step-status.pending {
+
+        color: #7a8996;
+
+        background: #edf1f5;
+    }
+
+
+    body.dark-mode .step-status.completed {
+
+        background: #173d31;
+
+        color: #79ddb0;
+    }
+
+
+    body.dark-mode .step-status.ongoing {
+
+        background: #19364d;
+
+        color: #67baff;
+    }
+
+
+    body.dark-mode .step-status.pending {
+
+        background: #2a3945;
+
+        color: #b1c0cc;
+    }
+
+
+    /* =====================================================
+       UPDATE PROGRESS
+    ===================================================== */
+
+    .update-item {
+
+        padding:
+            11px 0;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 80px;
+
+        gap: 10px;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .update-item:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .update-date {
+
+        margin-bottom: 5px;
+
+        color:
+            var(--primary);
+
+        font-size: 10px;
+
+        font-weight: 700;
+    }
+
+
+    .update-title {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .update-description {
+
+        color:
+            var(--text-muted);
+
+        font-size: 10px;
+
+        line-height: 1.5;
+    }
+
+
+    .update-image {
+
+        width: 80px;
+        height: 65px;
+
+        border-radius: 8px;
+
+        object-fit: cover;
+
+        background: #e5edf4;
+    }
+
+
+    body.dark-mode .update-image {
+
+        background: #2b4050;
+    }
+
+
+    /* =====================================================
+       ROOM PROGRESS
+    ===================================================== */
+
+    .room-card {
+
+        padding:
+            10px 0 15px;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .room-card:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .room-image {
+
+        width: 100%;
+        height: 120px;
+
+        margin-bottom: 9px;
+
+        border-radius: 9px;
+
+        object-fit: cover;
+
+        background:
+            linear-gradient(135deg,
+                #dcebf8,
+                #eef5fa);
+    }
+
+
+    body.dark-mode .room-image {
+
+        background:
+            linear-gradient(135deg,
+                #24394a,
+                #172735);
+    }
+
+
+    .room-header {
+
+        margin-bottom: 7px;
+
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        gap: 10px;
+    }
+
+
+    .room-name {
+
+        color:
+            var(--text-heading);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .room-percent {
+
+        color:
+            var(--primary);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .room-progress-track {
+
+        height: 7px;
+
+        overflow: hidden;
+
+        border-radius: 20px;
+
+        background: #e3eaf0;
+    }
+
+
+    body.dark-mode .room-progress-track {
+
+        background: #304352;
+    }
+
+
+    .room-progress-fill {
+
+        width: 0;
+
+        height: 100%;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #1484df,
+                #21a3ec);
+    }
+
+
+    .room-description {
+
+        margin-top: 7px;
+
+        color:
+            var(--text-muted);
+
+        font-size: 9px;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       BUTTON
+    ===================================================== */
+
+    .project-button-area {
+
+        margin-top: 17px;
+
+        display: flex;
+
+        justify-content:
+            flex-end;
+    }
+
+
+    .progress-detail-button {
+
+        padding:
+            10px 16px;
+
+        border-radius: 8px;
+
+        color: white;
+
+        background:
+            linear-gradient(90deg,
+                #075ca3,
+                #087acb);
+
+        text-decoration: none;
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    .empty-state {
+
+        padding:
+            35px 20px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 13px;
+
+        background:
+            var(--card-bg);
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 13px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1100px) {
+
+        .progress-content-grid {
+
+            grid-template-columns:
+                1fr 1fr;
         }
 
 
         .project-overview {
 
-            display: grid;
+            grid-template-columns:
+                170px 1fr;
+        }
+
+
+        .progress-circle-box {
+
+            grid-column:
+                1 / -1;
+        }
+
+    }
+
+
+    @media(max-width: 650px) {
+
+        .project-overview {
 
             grid-template-columns:
-                200px 1fr 180px;
-
-            gap: 22px;
-
-            align-items:
-                center;
-
+                1fr;
         }
 
 
         .project-image {
 
-            width: 200px;
-
-            height: 135px;
-
-            border-radius:
-                11px;
-
-            object-fit:
-                cover;
-
-            background:
-                linear-gradient(135deg,
-                    #dcebf8,
-                    #eef5fa);
-
+            width: 100%;
+            height: 210px;
         }
 
-
-        .project-title {
-
-            color: #18354f;
-
-            font-size: 20px;
-
-            font-weight: 700;
-
-            margin-bottom:
-                8px;
-
-        }
-
-
-        .project-meta {
-
-            color: #75899c;
-
-            font-size: 12px;
-
-            line-height: 1.8;
-
-        }
-
-
-        .project-description {
-
-            margin-top:
-                9px;
-
-            color: #687f93;
-
-            font-size: 12px;
-
-            line-height: 1.6;
-
-        }
-
-
-        .status {
-
-            display:
-                inline-flex;
-
-            padding:
-                5px 10px;
-
-            margin-top:
-                8px;
-
-            border-radius:
-                20px;
-
-            background:
-                #ddf8eb;
-
-            color:
-                #11815a;
-
-            font-size:
-                10px;
-
-            font-weight:
-                700;
-
-        }
-
-
-        /* =====================================================
-           CIRCULAR PROGRESS
-        ===================================================== */
-
-        .progress-circle {
-
-            --progress: 0deg;
-
-            width: 125px;
-
-            height: 125px;
-
-            margin:
-                0 auto;
-
-            border-radius:
-                50%;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content:
-                center;
-
-            background:
-                conic-gradient(#087ce0 var(--progress),
-
-                    #e1ecf5 0deg);
-
-            position:
-                relative;
-
-        }
-
-
-        .progress-circle::before {
-
-            content: "";
-
-            position:
-                absolute;
-
-            width: 92px;
-
-            height: 92px;
-
-            border-radius:
-                50%;
-
-            background:
-                white;
-
-        }
-
-
-        .progress-circle-value {
-
-            position:
-                relative;
-
-            z-index: 2;
-
-            font-size:
-                25px;
-
-            font-weight:
-                700;
-
-            color:
-                #14304a;
-
-        }
-
-
-        .progress-circle-label {
-
-            margin-top:
-                8px;
-
-            text-align:
-                center;
-
-            color:
-                #73879a;
-
-            font-size:
-                11px;
-
-        }
-
-
-        /* =====================================================
-           STATISTIC CARDS
-        ===================================================== */
 
         .stats-grid {
 
-            display: grid;
-
             grid-template-columns:
-                repeat(4,
-                    1fr);
-
-            gap:
-                13px;
-
-            margin:
-                18px 0;
-
+                1fr 1fr;
         }
 
-
-        .stat-card {
-
-            padding:
-                15px;
-
-            border:
-                1px solid #e7edf3;
-
-            border-radius:
-                11px;
-
-            background:
-                #fbfdff;
-
-        }
-
-
-        .stat-title {
-
-            color:
-                #778b9e;
-
-            font-size:
-                11px;
-
-            margin-bottom:
-                7px;
-
-        }
-
-
-        .stat-number {
-
-            color:
-                #17364f;
-
-            font-size:
-                22px;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .stat-blue {
-
-            color:
-                #087ae0;
-
-        }
-
-
-        .stat-green {
-
-            color:
-                #169260;
-
-        }
-
-
-        .stat-orange {
-
-            color:
-                #e47a20;
-
-        }
-
-
-        /* =====================================================
-           LOWER GRID
-        ===================================================== */
 
         .progress-content-grid {
 
-            display: grid;
-
             grid-template-columns:
-                1fr 1fr 1fr;
-
-            gap:
-                15px;
-
+                1fr;
         }
 
+    }
+</style>
 
-        .panel {
+@endpush
 
-            border:
-                1px solid #e5edf4;
 
-            border-radius:
-                12px;
 
-            background:
-                white;
+@section('content')
 
-            padding:
-                17px;
 
-        }
+<div class="progress-page-header">
 
+    <h1>
 
-        .panel-title {
+        {{ $pt['title'] }}
 
-            color:
-                #17354f;
+    </h1>
 
-            font-size:
-                14px;
+    <p>
 
-            font-weight:
-                700;
+        {{ $pt['description'] }}
 
-            margin-bottom:
-                4px;
+    </p>
 
-        }
+</div>
 
 
-        .panel-subtitle {
 
-            color:
-                #8596a6;
+@forelse($projects as $project)
 
-            font-size:
-                10px;
 
-            margin-bottom:
-                17px;
+@php
 
-        }
+$totalWorks =
+$project
+->works
+->count();
 
 
-        /* =====================================================
-           WORK STEPS
-        ===================================================== */
+$completedWorks =
+$project
+->works
+->where(
+'status',
+'completed'
+)
+->count();
 
-        .work-step {
 
-            display: flex;
+$ongoingWorks =
+$project
+->works
+->where(
+'status',
+'ongoing'
+)
+->count();
 
-            gap: 11px;
 
-            padding:
-                12px 0;
+$remainingWorks =
+max(
+0,
+$totalWorks
+-
+$completedWorks
+-
+$ongoingWorks
+);
 
-            border-bottom:
-                1px solid #eef2f6;
+@endphp
 
-        }
 
 
-        .work-step:last-child {
+<div class="progress-project-card">
 
-            border-bottom:
-                none;
 
-        }
+    {{-- PROJECT OVERVIEW --}}
 
+    <div class="project-overview">
 
-        .step-number {
 
-            width: 25px;
-            height: 25px;
+        @if(
+        $project->cover_image
+        )
 
-            flex-shrink:
-                0;
+        <img
 
-            border-radius:
-                50%;
+            src="{{
+                            asset(
+                                'storage/' .
+                                $project
+                                    ->cover_image
+                            )
+                        }}"
 
-            display: flex;
+            alt="{{
+                            $project
+                                ->project_name
+                        }}"
 
-            align-items:
-                center;
+            class="project-image">
 
-            justify-content:
-                center;
+        @else
 
-            background:
-                #e7f2ff;
+        <div
+            class="project-image"></div>
 
-            color:
-                #0874ca;
+        @endif
 
-            font-size:
-                10px;
 
-            font-weight:
-                700;
 
-        }
+        <div>
 
 
-        .step-number.completed {
+            <div class="project-title">
 
-            background:
-                #ddf8eb;
+                {{
+                            $project
+                                ->project_name
+                        }}
 
-            color:
-                #14835c;
+            </div>
 
-        }
 
+            <div class="project-meta">
 
-        .step-info {
+                ◉
 
-            flex:
-                1;
+                {{
+                            $project->location
+                            ??
+                            '-'
+                        }}
 
-        }
+            </div>
 
 
-        .step-title {
+            <div class="project-meta">
 
-            color:
-                #29445b;
+                ▦
 
-            font-size:
-                12px;
 
-            font-weight:
-                700;
+                @if(
+                $project->start_date
+                )
 
-            margin-bottom:
-                4px;
+                {{
+                                \Carbon\Carbon
+                                    ::parse(
+                                        $project
+                                            ->start_date
+                                    )
+                                    ->format(
+                                        'd M Y'
+                                    )
+                            }}
 
-        }
+                @else
 
+                -
 
-        .step-description {
+                @endif
 
-            color:
-                #8696a5;
 
-            font-size:
-                10px;
+                &nbsp;–&nbsp;
 
-        }
 
+                @if(
+                $project
+                ->target_end_date
+                )
 
-        .step-status {
+                {{
+                                \Carbon\Carbon
+                                    ::parse(
+                                        $project
+                                            ->target_end_date
+                                    )
+                                    ->format(
+                                        'd M Y'
+                                    )
+                            }}
 
-            font-size:
-                9px;
+                @else
 
-            padding:
-                4px 7px;
+                -
 
-            border-radius:
-                10px;
-
-            white-space:
-                nowrap;
-
-        }
-
-
-        .step-status.completed {
-
-            color:
-                #16825d;
-
-            background:
-                #dcf8ea;
-
-        }
-
-
-        .step-status.ongoing {
-
-            color:
-                #0874ca;
-
-            background:
-                #e4f1ff;
-
-        }
-
-
-        .step-status.pending {
-
-            color:
-                #7a8996;
-
-            background:
-                #edf1f5;
-
-        }
-
-
-        /* =====================================================
-           PROGRESS UPDATE
-        ===================================================== */
-
-        .update-item {
-
-            display:
-                grid;
-
-            grid-template-columns:
-                1fr 80px;
-
-            gap:
-                10px;
-
-            padding:
-                11px 0;
-
-            border-bottom:
-                1px solid #eef2f6;
-
-        }
-
-
-        .update-item:last-child {
-
-            border-bottom:
-                none;
-
-        }
-
-
-        .update-date {
-
-            color:
-                #0876d0;
-
-            font-size:
-                10px;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                5px;
-
-        }
-
-
-        .update-title {
-
-            color:
-                #29445b;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-
-            margin-bottom:
-                4px;
-
-        }
-
-
-        .update-description {
-
-            color:
-                #8596a5;
-
-            font-size:
-                10px;
-
-            line-height:
-                1.5;
-
-        }
-
-
-        .update-image {
-
-            width:
-                80px;
-
-            height:
-                65px;
-
-            border-radius:
-                8px;
-
-            object-fit:
-                cover;
-
-            background:
-                #e5edf4;
-
-        }
-
-
-        /* =====================================================
-           ROOM PROGRESS
-        ===================================================== */
-
-        .room-card {
-
-            padding:
-                10px 0 15px;
-
-            border-bottom:
-                1px solid #eef2f6;
-
-        }
-
-
-        .room-card:last-child {
-
-            border-bottom:
-                none;
-
-        }
-
-
-        .room-image {
-
-            width:
-                100%;
-
-            height:
-                120px;
-
-            border-radius:
-                9px;
-
-            object-fit:
-                cover;
-
-            margin-bottom:
-                9px;
-
-            background:
-                linear-gradient(135deg,
-                    #dcebf8,
-                    #eef5fa);
-
-        }
-
-
-        .room-header {
-
-            display:
-                flex;
-
-            justify-content:
-                space-between;
-
-            gap:
-                10px;
-
-            margin-bottom:
-                7px;
-
-        }
-
-
-        .room-name {
-
-            color:
-                #29445b;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .room-percent {
-
-            color:
-                #0875cf;
-
-            font-size:
-                12px;
-
-            font-weight:
-                700;
-
-        }
-
-
-        .room-progress-track {
-
-            height:
-                7px;
-
-            background:
-                #e3eaf0;
-
-            border-radius:
-                20px;
-
-            overflow:
-                hidden;
-
-        }
-
-
-        .room-progress-fill {
-
-            height:
-                100%;
-
-            border-radius:
-                20px;
-
-            background:
-                linear-gradient(90deg,
-                    #1484df,
-                    #21a3ec);
-
-        }
-
-
-        .room-description {
-
-            margin-top:
-                7px;
-
-            color:
-                #8596a5;
-
-            font-size:
-                9px;
-
-            line-height:
-                1.5;
-
-        }
-
-
-        /* =====================================================
-           BUTTON
-        ===================================================== */
-
-        .project-button-area {
-
-            margin-top:
-                17px;
-
-            display: flex;
-
-            justify-content:
-                flex-end;
-
-        }
-
-
-        .btn-detail {
-
-            padding:
-                10px 16px;
-
-            border-radius:
-                8px;
-
-            background:
-                linear-gradient(90deg,
-                    #075ca3,
-                    #087acb);
-
-            color:
-                white;
-
-            text-decoration:
-                none;
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
-
-        }
-
-
-        /* EMPTY */
-
-        .empty-state {
-
-            padding:
-                45px 20px;
-
-            border:
-                1px solid #e5edf4;
-
-            background:
-                white;
-
-            border-radius:
-                13px;
-
-            text-align:
-                center;
-
-            color:
-                #8394a4;
-
-            font-size:
-                13px;
-
-        }
-
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media(max-width: 1100px) {
-
-            .progress-content-grid {
-
-                grid-template-columns:
-                    1fr 1fr;
-
-            }
-
-            .project-overview {
-
-                grid-template-columns:
-                    170px 1fr;
-
-            }
-
-            .progress-circle-box {
-
-                grid-column:
-                    1 / -1;
-
-            }
-
-        }
-
-
-        @media(max-width: 850px) {
-
-            .sidebar {
-
-                display: none;
-
-            }
-
-            .main {
-
-                width:
-                    100%;
-
-                margin-left:
-                    0;
-
-            }
-
-        }
-
-
-        @media(max-width: 650px) {
-
-            .content {
-
-                padding:
-                    20px 14px;
-
-            }
-
-            .topbar {
-
-                padding:
-                    0 17px;
-
-            }
-
-            .project-overview {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-            .project-image {
-
-                width:
-                    100%;
-
-                height:
-                    210px;
-
-            }
-
-            .stats-grid {
-
-                grid-template-columns:
-                    1fr 1fr;
-
-            }
-
-            .progress-content-grid {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-        }
-    </style>
-
-</head>
-
-
-<body>
-
-
-    <div class="app">
-
-
-        <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-        <aside class="sidebar">
-
-
-            <div class="brand">
-
-
-                <div class="ruangkita-logo">
-
-                    <div class="roof"></div>
-
-                    <div class="house">
-
-                        <div class="door"></div>
-
-                    </div>
-
-                </div>
-
-
-                <span class="brand-name">
-
-                    RuangKita
-
-                </span>
-
+                @endif
 
             </div>
 
 
 
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ⌂
-                </span>
-
-                Dashboard
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.projects.index') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▣
-                </span>
-
-                Proyek Saya
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▦
-                </span>
-
-                Jadwal
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item active">
-
-                <span class="menu-icon">
-                    ↗
-                </span>
-
-                Progress
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▧
-                </span>
-
-                Dokumentasi
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▤
-                </span>
-
-                Informasi Biaya
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.messages') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ✉
-                </span>
-
-                Pesan
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.ar') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ◇
-                </span>
-
-                Augmented Reality
-
-            </a>
-
-
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-
-        </aside>
-
-
-
-        <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
-        <main class="main">
-
-
-            <header class="topbar">
-
-
-                <div class="hamburger">
-
-                    ☰
-
-                </div>
-
-
-                <div class="user-area">
-
-                    <span>
-                        ♧
-                    </span>
-
-                    <div class="avatar">
-                        👤
-                    </div>
-
-                    <span>
-
-                        {{ auth()->user()->name }}
-
-                    </span>
-
-                    <span>
-                        ▾
-                    </span>
-
-                </div>
-
-
-            </header>
-
-
-
-            <section class="content">
-
-
-                <div class="page-header">
-
-                    <h1>
-                        Progress Proyek
-                    </h1>
-
-                    <p>
-                        Pantau perkembangan proyek renovasi Anda secara terperinci
-                    </p>
-
-                </div>
-
-
-
-                @forelse($projects as $project)
-
-
-                @php
-
-                $totalWorks =
-                $project->works->count();
-
-                $completedWorks =
-                $project->works
-                ->where(
-                'status',
-                'completed'
-                )
-                ->count();
-
-                $ongoingWorks =
-                $project->works
-                ->where(
-                'status',
+            <div class="project-status">
+
+                @if(
+                $project->status
+                ===
                 'ongoing'
                 )
-                ->count();
 
-                $remainingWorks =
-                max(
-                0,
-                $totalWorks
-                -
-                $completedWorks
-                -
-                $ongoingWorks
-                );
+                {{
+                                $pt[
+                                    'ongoing'
+                                ]
+                            }}
 
-                @endphp
+                @elseif(
+                $project->status
+                ===
+                'completed'
+                )
 
+                {{
+                                $pt[
+                                    'completed'
+                                ]
+                            }}
 
+                @elseif(
+                $project->status
+                ===
+                'paused'
+                )
 
-                <div class="project-card">
+                {{
+                                $pt[
+                                    'paused'
+                                ]
+                            }}
 
+                @else
 
-                    <!-- PROJECT OVERVIEW -->
+                {{
+                                $pt[
+                                    'planning'
+                                ]
+                            }}
 
-                    <div class="project-overview">
+                @endif
 
+            </div>
 
-                        @if($project->cover_image)
 
-                        <img
-                            src="{{ asset('storage/' . $project->cover_image) }}"
-                            alt="{{ $project->project_name }}"
-                            class="project-image">
 
-                        @else
+            <div
+                class="project-description">
 
-                        <div class="project-image"></div>
+                {{
+                            $project
+                                ->description
+                            ?:
+                            $pt[
+                                'no_project_description'
+                            ]
+                        }}
 
-                        @endif
+            </div>
 
 
+        </div>
 
-                        <div>
 
 
-                            <div class="project-title">
+        <div
+            class="progress-circle-box">
 
-                                {{ $project->project_name }}
 
-                            </div>
+            <div
 
+                class="progress-circle"
 
-                            <div class="project-meta">
+                data-progress="{{
+                            $project
+                                ->progress_percentage
+                            ??
+                            0
+                        }}">
 
-                                ◉ {{ $project->location }}
+                <span
+                    class="
+                                progress-circle-value
+                            ">
 
-                            </div>
+                    {{
+                                $project
+                                    ->progress_percentage
+                                ??
+                                0
+                            }}%
 
+                </span>
 
-                            <div class="project-meta">
+            </div>
 
-                                ▦
 
-                                @if($project->start_date)
+            <div
+                class="
+                            progress-circle-label
+                        ">
 
-                                {{
-                                        \Carbon\Carbon::parse(
-                                            $project->start_date
-                                        )->format('d M Y')
-                                    }}
+                {{
+                            $pt[
+                                'total_progress'
+                            ]
+                        }}
 
-                                @else
+            </div>
 
-                                -
 
-                                @endif
-
-
-                                &nbsp;–&nbsp;
-
-
-                                @if($project->target_end_date)
-
-                                {{
-                                        \Carbon\Carbon::parse(
-                                            $project->target_end_date
-                                        )->format('d M Y')
-                                    }}
-
-                                @else
-
-                                -
-
-                                @endif
-
-                            </div>
-
-
-                            <div class="status">
-
-                                @if($project->status === 'ongoing')
-
-                                Berjalan
-
-                                @elseif($project->status === 'completed')
-
-                                Selesai
-
-                                @elseif($project->status === 'paused')
-
-                                Ditunda
-
-                                @else
-
-                                Perencanaan
-
-                                @endif
-
-                            </div>
-
-
-                            <div class="project-description">
-
-                                {{
-                                    $project->description
-                                    ?: 'Belum ada deskripsi proyek.'
-                                }}
-
-                            </div>
-
-
-                        </div>
-
-
-
-                        <div class="progress-circle-box">
-
-
-                            <div
-                                class="progress-circle"
-                                data-progress="{{ $project->progress_percentage }}">
-
-                                <span class="progress-circle-value">
-
-                                    {{ $project->progress_percentage }}%
-
-                                </span>
-
-                            </div>
-
-
-                            <div class="progress-circle-label">
-
-                                Total Progress
-
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <!-- STATISTICS -->
-
-                    <div class="stats-grid">
-
-
-                        <div class="stat-card">
-
-                            <div class="stat-title">
-
-                                Total Progress
-
-                            </div>
-
-                            <div class="stat-number stat-blue">
-
-                                {{ $project->progress_percentage }}%
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="stat-card">
-
-                            <div class="stat-title">
-
-                                Tahap Selesai
-
-                            </div>
-
-                            <div class="stat-number stat-green">
-
-                                {{ $completedWorks }}
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="stat-card">
-
-                            <div class="stat-title">
-
-                                Tahap Berjalan
-
-                            </div>
-
-                            <div class="stat-number stat-orange">
-
-                                {{ $ongoingWorks }}
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="stat-card">
-
-                            <div class="stat-title">
-
-                                Tahap Berikutnya
-
-                            </div>
-
-                            <div class="stat-number">
-
-                                {{ $remainingWorks }}
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <!-- LOWER SECTION -->
-
-                    <div class="progress-content-grid">
-
-
-                        <!-- ================================
-                             DAFTAR TAHAP PEKERJAAN
-                        ================================= -->
-
-                        <div class="panel">
-
-
-                            <div class="panel-title">
-
-                                Daftar Tahap Pekerjaan
-
-                            </div>
-
-
-                            <div class="panel-subtitle">
-
-                                Pantau status setiap tahap pekerjaan renovasi
-
-                            </div>
-
-
-
-                            @forelse(
-                            $project->works->take(5)
-                            as $work
-                            )
-
-
-                            <div class="work-step">
-
-
-                                <div
-                                    class="
-                                            step-number
-                                            {{ $work->status === 'completed' ? 'completed' : '' }}
-                                        ">
-
-                                    {{
-                                            $loop->iteration
-                                        }}
-
-                                </div>
-
-
-                                <div class="step-info">
-
-
-                                    <div class="step-title">
-
-                                        {{ $work->work_name }}
-
-                                    </div>
-
-
-                                    <div class="step-description">
-
-                                        {{
-                                                $work->description
-                                                ?? 'Tahap pekerjaan proyek'
-                                            }}
-
-                                    </div>
-
-
-                                </div>
-
-
-                                @php
-
-                                $workStatus =
-                                $work->status
-                                ?? 'planned';
-
-                                @endphp
-
-
-                                @if($workStatus === 'completed')
-
-                                <span
-                                    class="step-status completed">
-
-                                    Selesai
-
-                                </span>
-
-
-                                @elseif($workStatus === 'ongoing')
-
-                                <span
-                                    class="step-status ongoing">
-
-                                    Sedang berjalan
-
-                                </span>
-
-
-                                @else
-
-                                <span
-                                    class="step-status pending">
-
-                                    Belum dimulai
-
-                                </span>
-
-                                @endif
-
-
-                            </div>
-
-
-                            @empty
-
-
-                            <div class="empty-state">
-
-                                Belum ada tahap pekerjaan.
-
-                            </div>
-
-
-                            @endforelse
-
-
-                        </div>
-
-
-
-                        <!-- ================================
-                             UPDATE PROGRESS TERBARU
-                        ================================= -->
-
-                        <div class="panel">
-
-
-                            <div class="panel-title">
-
-                                Update Progress Terbaru
-
-                            </div>
-
-
-                            <div class="panel-subtitle">
-
-                                Riwayat perkembangan proyek terbaru
-
-                            </div>
-
-
-
-                            @forelse(
-                            $project->progressUpdates
-                            ->take(4)
-                            as $update
-                            )
-
-
-                            <div class="update-item">
-
-
-                                <div>
-
-
-                                    <div class="update-date">
-
-                                        @if($update->update_date)
-
-                                        {{
-                                                    \Carbon\Carbon::parse(
-                                                        $update->update_date
-                                                    )->format('d M Y')
-                                                }}
-
-                                        @endif
-
-                                    </div>
-
-
-                                    <div class="update-title">
-
-                                        Progress
-                                        {{ $update->percentage }}%
-
-                                    </div>
-
-
-                                    <div class="update-description">
-
-                                        {{
-                                                $update->description
-                                                ?: 'Update perkembangan proyek.'
-                                            }}
-
-                                    </div>
-
-
-                                </div>
-
-
-
-                                @if($update->photo_path)
-
-                                <img
-                                    src="{{ asset('storage/' . $update->photo_path) }}"
-                                    alt="Progress"
-                                    class="update-image">
-
-                                @else
-
-                                <div class="update-image"></div>
-
-                                @endif
-
-
-                            </div>
-
-
-                            @empty
-
-
-                            <div class="empty-state">
-
-                                Belum ada update progress.
-
-                            </div>
-
-
-                            @endforelse
-
-
-                        </div>
-
-
-
-                        <!-- ================================
-                             PROGRESS PER AREA / RUANG
-                        ================================= -->
-
-                        <div class="panel">
-
-
-                            <div class="panel-title">
-
-                                Progress per Area/Ruangan
-
-                            </div>
-
-
-                            <div class="panel-subtitle">
-
-                                Persentase penyelesaian dan gambar setiap ruangan
-
-                            </div>
-
-
-
-                            @forelse(
-                            $project->areas->take(4)
-                            as $area
-                            )
-
-
-                            @php
-
-                            $areaProgress =
-                            $area->progress_percentage
-                            ?? 0;
-
-                            @endphp
-
-
-                            <div class="room-card">
-
-
-                                @if($area->photo)
-
-                                <img
-                                    src="{{ asset('storage/' . $area->photo) }}"
-                                    alt="{{ $area->area_name }}"
-                                    class="room-image">
-
-                                @else
-
-                                <div class="room-image"></div>
-
-                                @endif
-
-
-
-                                <div class="room-header">
-
-
-                                    <div class="room-name">
-
-                                        {{ $area->area_name }}
-
-                                    </div>
-
-
-                                    <div class="room-percent">
-
-                                        {{ $areaProgress }}%
-
-                                    </div>
-
-
-                                </div>
-
-
-
-                                <div class="room-progress-track">
-
-
-                                    <div
-                                        class="room-progress-fill"
-                                        data-progress="{{ $areaProgress }}">
-
-                                    </div>
-
-
-                                </div>
-
-
-
-                                <div class="room-description">
-
-                                    {{
-                                            $area->description
-                                            ?: 'Belum ada keterangan progress ruangan.'
-                                        }}
-
-                                </div>
-
-
-                            </div>
-
-
-                            @empty
-
-
-                            <div class="empty-state">
-
-                                Belum ada data area atau ruangan.
-
-                            </div>
-
-
-                            @endforelse
-
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <div class="project-button-area">
-
-
-                        <a
-                            href="{{ route('client.projects.progress', $project) }}"
-                            class="btn-detail">
-
-                            Lihat Detail Progress
-
-                        </a>
-
-
-                    </div>
-
-
-                </div>
-
-
-                @empty
-
-
-                <div class="empty-state">
-
-                    Belum ada proyek yang terhubung dengan akun Anda.
-
-                </div>
-
-
-                @endforelse
-
-
-            </section>
-
-
-        </main>
+        </div>
 
 
     </div>
 
 
 
-    <script>
-        /*
+    {{-- STATISTICS --}}
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                {{
+                            $pt[
+                                'total_progress'
+                            ]
+                        }}
+
+            </div>
+
+            <div
+                class="
+                            stat-number
+                            stat-blue
+                        ">
+
+                {{
+                            $project
+                                ->progress_percentage
+                            ??
+                            0
+                        }}%
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                {{
+                            $pt[
+                                'completed_stage'
+                            ]
+                        }}
+
+            </div>
+
+            <div
+                class="
+                            stat-number
+                            stat-green
+                        ">
+
+                {{ $completedWorks }}
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                {{
+                            $pt[
+                                'ongoing_stage'
+                            ]
+                        }}
+
+            </div>
+
+            <div
+                class="
+                            stat-number
+                            stat-orange
+                        ">
+
+                {{ $ongoingWorks }}
+
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+
+                {{
+                            $pt[
+                                'next_stage'
+                            ]
+                        }}
+
+            </div>
+
+            <div class="stat-number">
+
+                {{ $remainingWorks }}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    {{-- LOWER CONTENT --}}
+
+    <div
+        class="
+                    progress-content-grid
+                ">
+
+
+        {{-- WORK STAGES --}}
+
+        <div class="progress-panel">
+
+
+            <div class="panel-title">
+
+                {{
+                            $pt[
+                                'work_stages'
+                            ]
+                        }}
+
+            </div>
+
+
+            <div class="panel-subtitle">
+
+                {{
+                            $pt[
+                                'work_stages_desc'
+                            ]
+                        }}
+
+            </div>
+
+            @forelse($project->works->take(5) as $work)
+
+            <div class="work-step">
+
+
+                <div
+                    class="
+                                    step-number
+                                    {{
+                                        $work->status
+                                        ===
+                                        'completed'
+                                        ?
+                                        'completed'
+                                        :
+                                        ''
+                                    }}
+                                ">
+
+                    {{
+                                    $loop
+                                        ->iteration
+                                }}
+
+                </div>
+
+
+
+                <div class="step-info">
+
+
+                    <div class="step-title">
+
+                        {{
+                                        $work
+                                            ->work_name
+                                    }}
+
+                    </div>
+
+
+                    <div
+                        class="
+                                        step-description
+                                    ">
+
+                        {{
+                                        $work
+                                            ->description
+                                        ??
+                                        $pt[
+                                            'default_work_desc'
+                                        ]
+                                    }}
+
+                    </div>
+
+
+                </div>
+
+
+
+                @php
+
+                $workStatus =
+                $work->status
+                ??
+                'planned';
+
+                @endphp
+
+
+
+                @if(
+                $workStatus
+                ===
+                'completed'
+                )
+
+                <span
+                    class="
+                                        step-status
+                                        completed
+                                    ">
+
+                    {{
+                                        $pt[
+                                            'work_completed'
+                                        ]
+                                    }}
+
+                </span>
+
+
+                @elseif(
+                $workStatus
+                ===
+                'ongoing'
+                )
+
+                <span
+                    class="
+                                        step-status
+                                        ongoing
+                                    ">
+
+                    {{
+                                        $pt[
+                                            'work_ongoing'
+                                        ]
+                                    }}
+
+                </span>
+
+
+                @else
+
+                <span
+                    class="
+                                        step-status
+                                        pending
+                                    ">
+
+                    {{
+                                        $pt[
+                                            'work_pending'
+                                        ]
+                                    }}
+
+                </span>
+
+                @endif
+
+
+            </div>
+
+
+            @empty
+
+
+            <div class="empty-state">
+
+                {{
+                                $pt[
+                                    'no_work'
+                                ]
+                            }}
+
+            </div>
+
+
+            @endforelse
+
+
+        </div>
+
+
+
+        {{-- LATEST PROGRESS --}}
+
+        <div class="progress-panel">
+
+
+            <div class="panel-title">
+
+                {{
+                            $pt[
+                                'latest_progress'
+                            ]
+                        }}
+
+            </div>
+
+
+            <div class="panel-subtitle">
+
+                {{
+                            $pt[
+                                'latest_progress_desc'
+                            ]
+                        }}
+
+            </div>
+
+            @forelse($project->progressUpdates->take(4) as $update)
+
+            <div class="update-item">
+
+
+                <div>
+
+
+                    <div class="update-date">
+
+                        @if(
+                        $update
+                        ->update_date
+                        )
+
+                        {{
+                                            \Carbon\Carbon
+                                                ::parse(
+                                                    $update
+                                                        ->update_date
+                                                )
+                                                ->format(
+                                                    'd M Y'
+                                                )
+                                        }}
+
+                        @endif
+
+                    </div>
+
+
+                    <div
+                        class="update-title">
+
+                        {{
+                                        $pt[
+                                            'progress_label'
+                                        ]
+                                    }}
+
+                        {{
+                                        $update
+                                            ->percentage
+                                    }}%
+
+                    </div>
+
+
+                    <div
+                        class="
+                                        update-description
+                                    ">
+
+                        {{
+                                        $update
+                                            ->description
+                                        ?:
+                                        $pt[
+                                            'default_progress_desc'
+                                        ]
+                                    }}
+
+                    </div>
+
+
+                </div>
+
+
+
+                @if(
+                $update
+                ->photo_path
+                )
+
+                <img
+
+                    src="{{
+                                        asset(
+                                            'storage/' .
+                                            $update
+                                                ->photo_path
+                                        )
+                                    }}"
+
+                    alt="Progress"
+
+                    class="
+                                        update-image
+                                    ">
+
+                @else
+
+                <div
+                    class="
+                                        update-image
+                                    "></div>
+
+                @endif
+
+
+            </div>
+
+
+            @empty
+
+
+            <div class="empty-state">
+
+                {{
+                                $pt[
+                                    'no_progress'
+                                ]
+                            }}
+
+            </div>
+
+
+            @endforelse
+
+
+        </div>
+
+
+
+        {{-- AREA PROGRESS --}}
+
+        <div class="progress-panel">
+
+
+            <div class="panel-title">
+
+                {{
+                            $pt[
+                                'room_progress'
+                            ]
+                        }}
+
+            </div>
+
+
+            <div class="panel-subtitle">
+
+                {{
+                            $pt[
+                                'room_progress_desc'
+                            ]
+                        }}
+
+            </div>
+
+            @forelse($project->areas->take(4) as $area)
+
+            @php
+
+            $areaProgress =
+            $area
+            ->progress_percentage
+            ??
+            0;
+
+            @endphp
+
+
+
+            <div class="room-card">
+
+
+                @if(
+                $area->photo
+                )
+
+                <img
+
+                    src="{{
+                                        asset(
+                                            'storage/' .
+                                            $area->photo
+                                        )
+                                    }}"
+
+                    alt="{{
+                                        $area
+                                            ->area_name
+                                    }}"
+
+                    class="
+                                        room-image
+                                    ">
+
+                @else
+
+                <div
+                    class="
+                                        room-image
+                                    "></div>
+
+                @endif
+
+
+
+                <div class="room-header">
+
+
+                    <div class="room-name">
+
+                        {{
+                                        $area
+                                            ->area_name
+                                    }}
+
+                    </div>
+
+
+                    <div
+                        class="
+                                        room-percent
+                                    ">
+
+                        {{
+                                        $areaProgress
+                                    }}%
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div
+                    class="
+                                    room-progress-track
+                                ">
+
+                    <div
+
+                        class="
+                                        room-progress-fill
+                                    "
+
+                        data-progress="{{
+                                        $areaProgress
+                                    }}"></div>
+
+                </div>
+
+
+
+                <div
+                    class="
+                                    room-description
+                                ">
+
+                    {{
+                                    $area
+                                        ->description
+                                    ?:
+                                    $pt[
+                                        'default_room_desc'
+                                    ]
+                                }}
+
+                </div>
+
+
+            </div>
+
+
+            @empty
+
+
+            <div class="empty-state">
+
+                {{
+                                $pt[
+                                    'no_room'
+                                ]
+                            }}
+
+            </div>
+
+
+            @endforelse
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div
+        class="
+                    project-button-area
+                ">
+
+        <a
+
+            href="{{
+                        route(
+                            'client.projects.progress',
+                            $project
+                        )
+                    }}"
+
+            class="
+                        progress-detail-button
+                    ">
+
+            {{
+                        $pt[
+                            'view_detail'
+                        ]
+                    }}
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+@empty
+
+
+<div class="empty-state">
+
+    {{
+                $pt[
+                    'no_project'
+                ]
+            }}
+
+</div>
+
+
+@endforelse
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    /*
     |--------------------------------------------------------------------------
     | CIRCULAR PROJECT PROGRESS
     |--------------------------------------------------------------------------
     */
 
-        document
-            .querySelectorAll(
-                '.progress-circle'
-            )
-            .forEach(
-                function(circle) {
+    document
+        .querySelectorAll(
+            '.progress-circle'
+        )
+        .forEach(
+            function(circle) {
 
-                    let progress =
-                        parseInt(
-                            circle.dataset.progress ||
-                            '0'
-                        );
-
-
-                    progress =
-                        Math.max(
-                            0,
-                            Math.min(
-                                100,
-                                progress
-                            )
-                        );
+                let progress =
+                    parseInt(
+                        circle
+                        .dataset
+                        .progress ||
+                        '0'
+                    );
 
 
-                    const degree =
-                        progress * 3.6;
+                progress =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            progress
+                        )
+                    );
 
 
-                    circle.style
-                        .setProperty(
-                            '--progress',
-                            degree + 'deg'
-                        );
-
-                }
-            );
+                const degree =
+                    progress * 3.6;
 
 
+                circle
+                    .style
+                    .setProperty(
+                        '--progress',
+                        degree + 'deg'
+                    );
 
-        /*
-        |--------------------------------------------------------------------------
-        | ROOM PROGRESS BAR
-        |--------------------------------------------------------------------------
-        */
-
-        document
-            .querySelectorAll(
-                '.room-progress-fill'
-            )
-            .forEach(
-                function(bar) {
-
-                    let progress =
-                        parseInt(
-                            bar.dataset.progress ||
-                            '0'
-                        );
+            }
+        );
 
 
-                    progress =
-                        Math.max(
-                            0,
-                            Math.min(
-                                100,
-                                progress
-                            )
-                        );
+    /*
+    |--------------------------------------------------------------------------
+    | ROOM PROGRESS
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .querySelectorAll(
+            '.room-progress-fill'
+        )
+        .forEach(
+            function(bar) {
+
+                let progress =
+                    parseInt(
+                        bar
+                        .dataset
+                        .progress ||
+                        '0'
+                    );
 
 
-                    bar.style.width =
-                        progress + '%';
+                progress =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            progress
+                        )
+                    );
 
-                }
-            );
-    </script>
 
+                bar.style.width =
+                    progress + '%';
 
-</body>
+            }
+        );
+</script>
 
-</html>
+@endpush

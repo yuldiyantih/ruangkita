@@ -1,1244 +1,1239 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.client')
 
-<head>
 
-    <meta charset="UTF-8">
+@php
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+$dashboardLang =
+auth()->user()->language
+?? 'id';
 
-    <title>
-        Dashboard Client - RuangKita
-    </title>
+$dashboardTranslations = [
 
+'id' => [
 
-    <style>
-        /* =====================================================
-           RESET
-        ===================================================== */
+'dashboard' =>
+'Dashboard',
 
-        * {
-            margin: 0;
-            padding: 0;
+'welcome' =>
+'Selamat datang',
 
-            box-sizing: border-box;
+'my_projects' =>
+'Proyek Saya',
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+'ongoing' =>
+'Berjalan',
 
+'view_detail' =>
+'Lihat Detail',
 
-        body {
-            color: #17334c;
+'empty_project' =>
+'Belum ada proyek yang terhubung dengan akun Anda.',
 
-            background: #f4f8fc;
-        }
+'schedule' =>
+'Jadwal',
 
+'schedule_desc' =>
+'Lihat jadwal pekerjaan proyek',
 
-        .app {
-            display: flex;
+'progress' =>
+'Progress',
 
-            min-height: 100vh;
-        }
+'progress_desc' =>
+'Pantau perkembangan proyek',
 
+'documentation' =>
+'Dokumentasi',
 
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
+'documentation_desc' =>
+'Lihat foto perkembangan proyek',
 
-        .sidebar {
-            width: 230px;
+'ar' =>
+'Augmented Reality',
 
-            position: fixed;
+'ar_desc' =>
+'Coba visualisasi renovasi rumah Anda',
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+],
 
-            padding:
-                20px 14px;
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458,
-                    #092843);
+'en' => [
 
-            color: white;
-        }
+'dashboard' =>
+'Dashboard',
 
+'welcome' =>
+'Welcome',
 
-        .brand {
-            padding:
-                5px 9px 24px;
+'my_projects' =>
+'My Projects',
 
-            display: flex;
+'ongoing' =>
+'Ongoing',
 
-            align-items: center;
+'view_detail' =>
+'View Details',
 
-            gap: 10px;
-        }
+'empty_project' =>
+'There are no projects connected to your account yet.',
 
+'schedule' =>
+'Schedule',
 
-        .brand-name {
-            font-size: 18px;
+'schedule_desc' =>
+'View your project work schedule',
 
-            font-weight: 700;
-        }
+'progress' =>
+'Progress',
 
+'progress_desc' =>
+'Monitor project progress',
 
-        /* LOGO */
+'documentation' =>
+'Documentation',
 
-        .ruangkita-logo {
-            width: 31px;
-            height: 31px;
+'documentation_desc' =>
+'View project progress photos',
 
-            position: relative;
-        }
+'ar' =>
+'Augmented Reality',
 
+'ar_desc' =>
+'Try visualizing your home renovation',
 
-        .ruangkita-logo .roof {
-            width: 20px;
-            height: 20px;
+],
 
-            position: absolute;
+];
 
-            left: 5px;
-            top: 2px;
 
-            border-left:
-                4px solid white;
+$dt =
+$dashboardTranslations[$dashboardLang]
+??
+$dashboardTranslations['id'];
 
-            border-top:
-                4px solid white;
+@endphp
 
-            transform:
-                rotate(45deg);
-        }
 
+@section(
+'title',
+$dt['dashboard'] . ' - RuangKita'
+)
 
-        .ruangkita-logo .house {
-            width: 19px;
-            height: 17px;
 
-            position: absolute;
+@push('styles')
 
-            left: 6px;
-            bottom: 2px;
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-            border-left:
-                4px solid white;
+    .dashboard-header {
 
-            border-right:
-                4px solid white;
+        margin-bottom: 22px;
+    }
 
-            border-bottom:
-                4px solid white;
-        }
 
+    .dashboard-header h1 {
 
-        .ruangkita-logo .door {
-            width: 6px;
-            height: 9px;
+        margin-bottom: 4px;
 
-            position: absolute;
+        color:
+            var(--text-heading);
 
-            left: 50%;
-            bottom: -1px;
+        font-size: 27px;
+    }
 
-            transform:
-                translateX(-50%);
 
-            border:
-                2px solid white;
+    .dashboard-header p {
 
-            border-bottom: none;
-        }
+        color:
+            var(--text-muted);
 
+        font-size: 13px;
+    }
 
-        .menu-item {
-            min-height: 42px;
 
-            padding:
-                0 13px;
+    /* =====================================================
+       SECTION
+    ===================================================== */
 
-            margin-bottom: 3px;
+    .section-title {
 
-            border-radius: 8px;
+        margin-bottom: 13px;
 
-            display: flex;
+        color:
+            var(--text-heading);
 
-            align-items: center;
+        font-size: 15px;
 
-            gap: 11px;
+        font-weight: 700;
+    }
 
-            text-decoration: none;
 
-            color: #d6e6f5;
+    /* =====================================================
+       PROJECT CARD
+    ===================================================== */
 
-            font-size: 13px;
+    .project-card {
 
-            transition: .2s;
-        }
+        margin-bottom: 22px;
 
+        padding: 18px;
 
-        .menu-item:hover {
-            background:
-                rgba(255, 255, 255, .08);
-        }
+        border:
+            1px solid var(--border);
 
+        border-radius: 13px;
 
-        .menu-item.active {
-            color: white;
+        background:
+            var(--card-bg);
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+        box-shadow:
+            var(--shadow);
+    }
 
 
-        .menu-icon {
-            width: 19px;
+    .project-content {
 
-            text-align: center;
-        }
+        display: grid;
 
+        grid-template-columns:
+            180px 1fr auto;
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        align-items: center;
 
-        .main {
-            width:
-                calc(100% - 230px);
+        gap: 18px;
+    }
 
-            margin-left: 230px;
-        }
 
+    .project-image {
 
-        /* =====================================================
-           TOP BAR
-        ===================================================== */
+        width: 180px;
+        height: 120px;
 
-        .topbar {
-            height: 66px;
+        border-radius: 10px;
 
-            background: white;
+        object-fit: cover;
 
-            border-bottom:
-                1px solid #e7edf3;
+        background:
+            linear-gradient(135deg,
+                #dbeaf7,
+                #edf5fa);
+    }
 
-            padding:
-                0 28px;
 
-            display: flex;
+    body.dark-mode .project-image {
 
-            align-items: center;
-            justify-content: space-between;
-        }
+        background:
+            linear-gradient(135deg,
+                #223746,
+                #172735);
+    }
 
 
-        .hamburger {
-            color: #526f87;
+    .project-info h3 {
 
-            font-size: 20px;
-        }
+        margin-bottom: 10px;
 
+        color:
+            var(--text-heading);
 
-        .user-area {
-            display: flex;
+        font-size: 16px;
+    }
 
-            align-items: center;
 
-            gap: 10px;
+    .project-meta {
 
-            font-size: 13px;
+        margin-bottom: 6px;
 
-            font-weight: 600;
-        }
+        color:
+            var(--text-muted);
 
+        font-size: 12px;
+    }
 
-        .avatar {
-            width: 33px;
-            height: 33px;
 
-            border-radius: 50%;
+    /* =====================================================
+       PROJECT STATUS
+    ===================================================== */
 
-            background: #e4eef7;
+    .project-status {
 
-            display: flex;
+        display: inline-flex;
 
-            align-items: center;
-            justify-content: center;
-        }
+        margin-left: 5px;
 
+        padding:
+            4px 8px;
 
-        /* =====================================================
-           CONTENT
-        ===================================================== */
+        border-radius: 15px;
 
-        .content {
-            padding:
-                28px 30px 40px;
-        }
+        background: #ddf8eb;
 
+        color: #158158;
 
-        .page-header {
-            margin-bottom: 22px;
-        }
+        font-size: 10px;
 
+        font-weight: 600;
+    }
 
-        .page-header h1 {
-            color: #14304a;
 
-            font-size: 27px;
+    body.dark-mode .project-status {
 
-            margin-bottom: 4px;
-        }
+        background: #163d31;
 
+        color: #77ddb0;
+    }
 
-        .page-header p {
-            color: #8395a7;
 
-            font-size: 13px;
-        }
+    /* =====================================================
+       PROJECT PROGRESS
+    ===================================================== */
 
+    .project-progress {
 
-        /* =====================================================
-           PROJECT CARD
-        ===================================================== */
+        margin-top: 12px;
 
-        .section-title {
-            margin-bottom: 13px;
+        display: flex;
 
-            font-size: 15px;
+        align-items: center;
 
-            font-weight: 700;
-        }
+        gap: 9px;
+    }
 
 
-        .project-card {
-            background: white;
+    .progress-track {
 
-            border:
-                1px solid #e7edf3;
+        width: 190px;
+        height: 8px;
 
-            border-radius: 13px;
+        overflow: hidden;
 
-            padding: 18px;
+        border-radius: 20px;
 
-            margin-bottom: 22px;
+        background: #e1e8ee;
+    }
+
+
+    body.dark-mode .progress-track {
+
+        background: #304352;
+    }
+
+
+    .progress-fill {
+
+        width: 0;
+
+        height: 100%;
+
+        border-radius: 20px;
+
+        background:
+            linear-gradient(90deg,
+                #1584df,
+                #1da3eb);
+
+        transition:
+            width .4s ease;
+    }
+
+
+    .progress-number {
+
+        color:
+            var(--primary);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    /* =====================================================
+       DETAIL BUTTON
+    ===================================================== */
+
+    .btn-detail {
+
+        height: 38px;
+
+        padding:
+            0 17px;
+
+        border-radius: 8px;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: white;
+
+        background:
+            linear-gradient(90deg,
+                #075ba0,
+                #087ac9);
+
+        text-decoration: none;
+
+        font-size: 12px;
+
+        font-weight: 600;
+
+        white-space: nowrap;
+
+        transition: .2s;
+    }
+
+
+    .btn-detail:hover {
+
+        opacity: .9;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    /* =====================================================
+       QUICK FEATURES
+    ===================================================== */
+
+    .quick-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4,
+                1fr);
+
+        gap: 14px;
+    }
+
+
+    .quick-card {
+
+        min-height: 105px;
+
+        padding: 17px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+
+        display: flex;
+
+        gap: 12px;
+
+        color:
+            var(--text-main);
+
+        text-decoration: none;
+
+        box-shadow:
+            var(--shadow);
+
+        transition: .2s;
+    }
+
+
+    .quick-card:hover {
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 9px 20px rgba(23,
+                54,
+                80,
+                .07);
+    }
+
+
+    body.dark-mode .quick-card:hover {
+
+        border-color: #3a566b;
+
+        box-shadow:
+            0 8px 20px rgba(0,
+                0,
+                0,
+                .18);
+    }
+
+
+    /* =====================================================
+       QUICK ICON
+    ===================================================== */
+
+    .quick-icon {
+
+        width: 42px;
+        height: 42px;
+
+        flex-shrink: 0;
+
+        border-radius: 10px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        font-size: 19px;
+    }
+
+
+    .quick-icon.blue {
+
+        color: #0679d5;
+
+        background: #e8f3ff;
+    }
+
+
+    .quick-icon.green {
+
+        color: #169260;
+
+        background: #e1faee;
+    }
+
+
+    .quick-icon.orange {
+
+        color: #e86b10;
+
+        background: #fff0e1;
+    }
+
+
+    .quick-icon.ar {
+
+        color: #1468c0;
+
+        background: #e5f1ff;
+    }
+
+
+    body.dark-mode .quick-icon.blue {
+
+        background: #18364e;
+    }
+
+
+    body.dark-mode .quick-icon.green {
+
+        background: #173d31;
+    }
+
+
+    body.dark-mode .quick-icon.orange {
+
+        background: #4a3020;
+    }
+
+
+    body.dark-mode .quick-icon.ar {
+
+        background: #18364e;
+    }
+
+
+    /* =====================================================
+       QUICK TEXT
+    ===================================================== */
+
+    .quick-title {
+
+        margin:
+            4px 0 5px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 13px;
+
+        font-weight: 700;
+    }
+
+
+    .quick-description {
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       EMPTY PROJECT
+    ===================================================== */
+
+    .empty-project {
+
+        margin-bottom: 20px;
+
+        padding: 30px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+
+        background:
+            var(--card-bg);
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 13px;
+
+        box-shadow:
+            var(--shadow);
+    }
+
+
+    /* =====================================================
+       RESPONSIVE DASHBOARD
+    ===================================================== */
+
+    @media(max-width: 1000px) {
+
+        .quick-grid {
+
+            grid-template-columns:
+                repeat(2,
+                    1fr);
         }
 
 
         .project-content {
-            display: grid;
 
             grid-template-columns:
-                180px 1fr auto;
-
-            align-items: center;
-
-            gap: 18px;
+                150px 1fr;
         }
 
 
         .project-image {
-            width: 180px;
-            height: 120px;
 
-            border-radius: 10px;
-
-            object-fit: cover;
-
-            background:
-                linear-gradient(135deg,
-                    #dbeaf7,
-                    #edf5fa);
+            width: 150px;
         }
 
 
-        .project-info h3 {
-            font-size: 16px;
+        .project-content .btn-detail {
 
-            margin-bottom: 10px;
+            grid-column: 2;
+
+            justify-self: start;
+        }
+
+    }
+
+
+    @media(max-width: 600px) {
+
+        .project-content {
+
+            display: block;
         }
 
 
-        .project-meta {
-            margin-bottom: 6px;
+        .project-image {
 
-            color: #73879a;
+            width: 100%;
+            height: 190px;
 
-            font-size: 12px;
-        }
-
-
-        .project-status {
-            display: inline-flex;
-
-            margin-left: 5px;
-
-            padding:
-                4px 8px;
-
-            border-radius: 15px;
-
-            background: #ddf8eb;
-
-            color: #158158;
-
-            font-size: 10px;
-
-            font-weight: 600;
-        }
-
-
-        /* PROGRESS */
-
-        .project-progress {
-            margin-top: 12px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 9px;
-        }
-
-
-        .progress-track {
-            width: 190px;
-            height: 8px;
-
-            overflow: hidden;
-
-            background: #e1e8ee;
-
-            border-radius: 20px;
-        }
-
-
-        .progress-fill {
-            height: 100%;
-
-            background:
-                linear-gradient(90deg,
-                    #1584df,
-                    #1da3eb);
-
-            border-radius: 20px;
-        }
-
-
-        .progress-number {
-            color: #0778d2;
-
-            font-size: 12px;
-
-            font-weight: 700;
+            margin-bottom: 15px;
         }
 
 
         .btn-detail {
-            display: inline-flex;
 
-            align-items: center;
-            justify-content: center;
-
-            height: 38px;
-
-            padding:
-                0 17px;
-
-            border-radius: 8px;
-
-            background:
-                linear-gradient(90deg,
-                    #075ba0,
-                    #087ac9);
-
-            text-decoration: none;
-
-            color: white;
-
-            font-size: 12px;
-
-            font-weight: 600;
+            margin-top: 15px;
         }
 
-
-        /* =====================================================
-           QUICK FEATURE
-        ===================================================== */
 
         .quick-grid {
-            display: grid;
 
             grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 14px;
+                1fr 1fr;
         }
 
 
-        .quick-card {
-            min-height: 105px;
+        .progress-track {
 
-            background: white;
+            width: 100%;
 
-            border:
-                1px solid #e7edf3;
-
-            border-radius: 12px;
-
-            padding: 17px;
-
-            display: flex;
-
-            gap: 12px;
-
-            text-decoration: none;
-
-            color: #19344d;
-
-            transition: .2s;
+            flex: 1;
         }
 
+    }
 
-        .quick-card:hover {
-            transform:
-                translateY(-2px);
 
-            box-shadow:
-                0 9px 20px rgba(23, 54, 80, .07);
+    @media(max-width: 420px) {
+
+        .quick-grid {
+
+            grid-template-columns:
+                1fr;
         }
 
+    }
+</style>
 
-        .quick-icon {
-            width: 42px;
-            height: 42px;
+@endpush
 
-            flex-shrink: 0;
 
-            border-radius: 10px;
 
-            display: flex;
+@section('content')
 
-            align-items: center;
-            justify-content: center;
 
-            font-size: 19px;
-        }
+{{-- =====================================================
+         HEADER
+    ====================================================== --}}
 
+<div class="dashboard-header">
 
-        .quick-icon.blue {
-            color: #0679d5;
-            background: #e8f3ff;
-        }
+    <h1>
 
+        {{ $dt['dashboard'] }}
 
-        .quick-icon.green {
-            color: #169260;
-            background: #e1faee;
-        }
+    </h1>
 
 
-        .quick-icon.orange {
-            color: #e86b10;
-            background: #fff0e1;
-        }
+    <p>
 
+        {{ $dt['welcome'] }},
 
-        .quick-icon.ar {
-            color: #1468c0;
-            background: #e5f1ff;
-        }
+        {{ auth()->user()->name }}!
 
+    </p>
 
-        .quick-title {
-            margin:
-                4px 0 5px;
+</div>
 
-            font-size: 13px;
 
-            font-weight: 700;
-        }
 
+{{-- =====================================================
+         PROJECTS
+    ====================================================== --}}
 
-        .quick-description {
-            color: #8293a3;
+<div class="section-title">
 
-            font-size: 11px;
+    {{ $dt['my_projects'] }}
 
-            line-height: 1.5;
-        }
+</div>
 
 
-        /* =====================================================
-           EMPTY
-        ===================================================== */
 
-        .empty-project {
-            padding: 30px;
+@forelse($projects as $project)
 
-            border:
-                1px solid #e7edf3;
 
-            border-radius: 12px;
+<div class="project-card">
 
-            background: white;
 
-            color: #8393a2;
+    <div class="project-content">
 
-            text-align: center;
 
-            font-size: 13px;
+        {{-- PROJECT IMAGE --}}
 
-            margin-bottom: 20px;
-        }
+        @if($project->cover_image)
 
+        <img
 
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
+            class="project-image"
 
-        @media(max-width: 1000px) {
+            src="{{
+                            asset(
+                                'storage/' .
+                                $project->cover_image
+                            )
+                        }}"
 
-            .quick-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
+            alt="{{
+                            $project->project_name
+                        }}">
 
+        @else
 
-            .project-content {
-                grid-template-columns:
-                    150px 1fr;
-            }
+        <div
+            class="project-image"></div>
 
+        @endif
 
-            .project-content .btn-detail {
-                grid-column:
-                    2;
-            }
 
-        }
 
+        {{-- PROJECT INFO --}}
 
-        @media(max-width: 850px) {
+        <div class="project-info">
 
-            .sidebar {
-                display: none;
-            }
 
+            <h3>
 
-            .main {
-                margin-left: 0;
+                {{
+                            $project
+                                ->project_name
+                        }}
 
-                width: 100%;
-            }
 
-        }
+                @if(
+                $project->status
+                ===
+                'ongoing'
+                )
 
+                <span
+                    class="project-status">
 
-        @media(max-width: 600px) {
+                    {{
+                                    $dt[
+                                        'ongoing'
+                                    ]
+                                }}
 
-            .content {
-                padding:
-                    20px 14px;
-            }
+                </span>
 
+                @endif
 
-            .project-content {
-                display: block;
-            }
+            </h3>
 
 
-            .project-image {
-                width: 100%;
 
-                height: 190px;
+            {{-- LOCATION --}}
 
-                margin-bottom: 15px;
-            }
+            <div class="project-meta">
 
+                ◉
 
-            .btn-detail {
-                margin-top: 15px;
-            }
+                {{
+                            $project->location
+                            ??
+                            '-'
+                        }}
 
+            </div>
 
-            .quick-grid {
-                grid-template-columns:
-                    1fr 1fr;
-            }
 
 
-            .topbar {
-                padding:
-                    0 17px;
-            }
+            {{-- DATE --}}
 
-        }
+            <div class="project-meta">
 
+                ▦
 
-        @media(max-width: 420px) {
 
-            .quick-grid {
-                grid-template-columns:
-                    1fr;
-            }
+                @if(
+                $project
+                ->start_date
+                )
 
-        }
-    </style>
+                {{
+                                \Carbon\Carbon
+                                    ::parse(
+                                        $project
+                                            ->start_date
+                                    )
+                                    ->format(
+                                        'd M Y'
+                                    )
+                            }}
 
-</head>
+                @else
 
+                -
 
-<body>
+                @endif
 
 
-    <div class="app">
+                &nbsp;–&nbsp;
 
 
-        <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+                @if(
+                $project
+                ->target_end_date
+                )
 
-        <aside class="sidebar">
+                {{
+                                \Carbon\Carbon
+                                    ::parse(
+                                        $project
+                                            ->target_end_date
+                                    )
+                                    ->format(
+                                        'd M Y'
+                                    )
+                            }}
 
+                @else
 
-            <div class="brand">
+                -
 
+                @endif
 
-                <div class="ruangkita-logo">
+            </div>
 
-                    <div class="roof"></div>
 
-                    <div class="house">
 
-                        <div class="door"></div>
+            {{-- PROGRESS --}}
 
-                    </div>
+            <div class="project-progress">
+
+
+                <div class="progress-track">
+
+                    <div
+
+                        class="progress-fill"
+
+                        data-progress="{{
+                                    $project
+                                        ->progress_percentage
+                                    ??
+                                    0
+                                }}"></div>
 
                 </div>
 
 
-                <span class="brand-name">
+                <span
+                    class="progress-number">
 
-                    RuangKita
+                    {{
+                                $project
+                                    ->progress_percentage
+                                ??
+                                0
+                            }}%
 
                 </span>
 
 
             </div>
 
-            <a
-                href="{{ route('client.dashboard') }}"
-                class="menu-item active">
 
-                <span class="menu-icon">
-                    ⌂
-                </span>
+        </div>
 
-                Dashboard
 
-            </a>
 
+        {{-- DETAIL --}}
 
-            <a href="{{ route('client.projects.index') }}"
-                class="menu-item">
+        <a
 
-                <span class="menu-icon">
-                    ▣
-                </span>
+            href="{{
+                        route(
+                            'client.projects.show',
+                            $project
+                        )
+                    }}"
 
-                Proyek Saya
+            class="btn-detail">
 
-            </a>
+            {{
+                        $dt[
+                            'view_detail'
+                        ]
+                    }}
 
-
-            <a
-                href="{{ route('client.schedule') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▦
-                </span>
-
-                Jadwal
-
-            </a>
-
-            <a
-                href="{{ route('client.progress') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ↗
-                </span>
-
-                Progress
-
-            </a>
-
-
-            <a
-                href="{{ route('client.documentation') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▧
-                </span>
-
-                Dokumentasi
-
-            </a>
-
-            <a
-                href="{{ route('client.costs') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ▤
-                </span>
-
-                Informasi Biaya
-
-            </a>
-
-            <a
-                href="{{ route('client.messages') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ✉
-                </span>
-
-                Pesan
-
-            </a>
-
-            <a
-                href="{{ route('client.ar') }}"
-                class="menu-item">
-
-                <span class="menu-icon">
-                    ◇
-                </span>
-
-                Augmented Reality
-
-            </a>
-
-
-            <a
-                href="{{ route('client.settings') }}"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-            </a>
-
-        </aside>
-
-
-
-        <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
-        <main class="main">
-
-
-            <!-- TOPBAR -->
-
-            <header class="topbar">
-
-
-                <div class="hamburger">
-
-                    ☰
-
-                </div>
-
-
-                <div class="user-area">
-
-
-                    <span>
-                        ♧
-                    </span>
-
-
-                    <div class="avatar">
-
-                        👤
-
-                    </div>
-
-
-                    <span>
-
-                        {{ auth()->user()->name }}
-
-                    </span>
-
-
-                    <span>
-
-                        ▾
-
-                    </span>
-
-
-                </div>
-
-
-            </header>
-
-
-
-            <!-- =====================================================
-             CONTENT
-        ====================================================== -->
-
-            <section class="content">
-
-
-                <div class="page-header">
-
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-
-                    <p>
-
-                        Selamat datang,
-                        {{ auth()->user()->name }}!
-
-                    </p>
-
-
-                </div>
-
-
-
-                <div class="section-title">
-
-                    Proyek Saya
-
-                </div>
-
-
-
-                <!-- =================================================
-                 PROJECT
-            ================================================== -->
-
-                @forelse($projects as $project)
-
-
-                <div class="project-card">
-
-
-                    <div class="project-content">
-
-
-                        @if($project->cover_image)
-
-
-                        <img
-                            class="project-image"
-
-                            src="{{
-                                    asset(
-                                        'storage/'
-                                        .
-                                        $project->cover_image
-                                    )
-                                }}"
-
-                            alt="{{
-                                    $project->project_name
-                                }}">
-
-
-                        @else
-
-
-                        <div class="project-image"></div>
-
-
-                        @endif
-
-
-
-                        <div class="project-info">
-
-
-                            <h3>
-
-                                {{ $project->project_name }}
-
-                                @if(
-                                $project->status
-                                ===
-                                'ongoing'
-                                )
-
-                                <span class="project-status">
-
-                                    Berjalan
-
-                                </span>
-
-                                @endif
-
-                            </h3>
-
-
-                            <div class="project-meta">
-
-                                ◉
-                                {{ $project->location }}
-
-                            </div>
-
-
-                            <div class="project-meta">
-
-                                ▦
-
-                                @if($project->start_date)
-
-                                {{
-                                        \Carbon\Carbon::parse(
-                                            $project->start_date
-                                        )->format('d M Y')
-                                    }}
-
-                                @else
-
-                                -
-
-                                @endif
-
-
-                                &nbsp;–&nbsp;
-
-
-                                @if(
-                                $project->target_end_date
-                                )
-
-                                {{
-                                        \Carbon\Carbon::parse(
-                                            $project->target_end_date
-                                        )->format('d M Y')
-                                    }}
-
-                                @else
-
-                                -
-
-                                @endif
-
-
-                            </div>
-
-
-                            <div class="project-progress">
-
-
-                                <div class="progress-track">
-
-
-                                    <div
-                                        class="progress-fill"
-                                        data-progress="{{ $project->progress_percentage }}">
-                                    </div>
-
-
-                                </div>
-
-
-                                <span class="progress-number">
-
-                                    {{ $project->progress_percentage }}%
-
-                                </span>
-
-
-                            </div>
-
-
-                        </div>
-
-
-
-                        <a
-                            href="{{ route('client.projects.show', $project) }}"
-                            class="btn-detail">
-
-                            Lihat Detail
-
-                        </a>
-
-
-                    </div>
-
-
-                </div>
-
-
-                @empty
-
-
-                <div class="empty-project">
-
-                    Belum ada proyek
-                    yang terhubung
-                    dengan akun Anda.
-
-                </div>
-
-
-                @endforelse
-
-
-                <!-- =================================================
-     QUICK FEATURES
-================================================== -->
-
-                <div class="quick-grid">
-
-
-                    <!-- JADWAL -->
-                    <a
-                        href="{{ route('client.schedule') }}"
-                        class="quick-card">
-
-                        <div class="quick-icon blue">
-                            ▦
-                        </div>
-
-                        <div>
-
-                            <div class="quick-title">
-                                Jadwal
-                            </div>
-
-                            <div class="quick-description">
-                                Lihat jadwal
-                                pekerjaan proyek
-                            </div>
-
-                        </div>
-
-                    </a>
-
-
-                    <!-- PROGRESS -->
-                    <a
-                        href="{{ route('client.progress') }}"
-                        class="quick-card">
-
-                        <div class="quick-icon green">
-                            ↗
-                        </div>
-
-                        <div>
-
-                            <div class="quick-title">
-                                Progress
-                            </div>
-
-                            <div class="quick-description">
-                                Pantau perkembangan proyek
-                            </div>
-
-                        </div>
-
-                    </a>
-
-
-                    <!-- DOKUMENTASI -->
-                    <a
-                        href="{{ route('client.documentation') }}"
-                        class="quick-card">
-
-                        <div class="quick-icon orange">
-                            ▧
-                        </div>
-
-                        <div>
-
-                            <div class="quick-title">
-                                Dokumentasi
-                            </div>
-
-                            <div class="quick-description">
-                                Lihat foto perkembangan proyek
-                            </div>
-
-                        </div>
-
-                    </a>
-
-
-                    <!-- AUGMENTED REALITY -->
-                    <a
-                        href="#"
-                        class="quick-card">
-
-                        <div class="quick-icon ar">
-                            ◇
-                        </div>
-
-                        <div>
-
-                            <div class="quick-title">
-                                Augmented Reality
-                            </div>
-
-                            <div class="quick-description">
-                                Coba visualisasi
-                                renovasi rumah Anda
-                            </div>
-
-                        </div>
-
-                    </a>
-
-
-                </div>
-
-
+        </a>
 
 
     </div>
 
 
-    </section>
+</div>
 
 
-    </main>
+@empty
 
-    <script>
-        document.querySelectorAll('.progress-fill').forEach(function(bar) {
-            const value = bar.dataset.progress ?? 0;
-            bar.style.width = value + '%';
-        });
-    </script>
 
-</body>
+<div class="empty-project">
 
-</html>
+    {{
+                $dt[
+                    'empty_project'
+                ]
+            }}
+
+</div>
+
+
+@endforelse
+
+
+
+{{-- =====================================================
+         QUICK FEATURES
+    ====================================================== --}}
+
+<div class="quick-grid">
+
+
+    {{-- SCHEDULE --}}
+
+    <a
+
+        href="{{
+                route(
+                    'client.schedule'
+                )
+            }}"
+
+        class="quick-card">
+
+        <div
+            class="
+                    quick-icon
+                    blue
+                ">
+
+            ▦
+
+        </div>
+
+
+        <div>
+
+            <div class="quick-title">
+
+                {{
+                        $dt[
+                            'schedule'
+                        ]
+                    }}
+
+            </div>
+
+
+            <div class="quick-description">
+
+                {{
+                        $dt[
+                            'schedule_desc'
+                        ]
+                    }}
+
+            </div>
+
+        </div>
+
+    </a>
+
+
+
+    {{-- PROGRESS --}}
+
+    <a
+
+        href="{{
+                route(
+                    'client.progress'
+                )
+            }}"
+
+        class="quick-card">
+
+        <div
+            class="
+                    quick-icon
+                    green
+                ">
+
+            ↗
+
+        </div>
+
+
+        <div>
+
+            <div class="quick-title">
+
+                {{
+                        $dt[
+                            'progress'
+                        ]
+                    }}
+
+            </div>
+
+
+            <div class="quick-description">
+
+                {{
+                        $dt[
+                            'progress_desc'
+                        ]
+                    }}
+
+            </div>
+
+        </div>
+
+    </a>
+
+
+
+    {{-- DOCUMENTATION --}}
+
+    <a
+
+        href="{{
+                route(
+                    'client.documentation'
+                )
+            }}"
+
+        class="quick-card">
+
+        <div
+            class="
+                    quick-icon
+                    orange
+                ">
+
+            ▧
+
+        </div>
+
+
+        <div>
+
+            <div class="quick-title">
+
+                {{
+                        $dt[
+                            'documentation'
+                        ]
+                    }}
+
+            </div>
+
+
+            <div class="quick-description">
+
+                {{
+                        $dt[
+                            'documentation_desc'
+                        ]
+                    }}
+
+            </div>
+
+        </div>
+
+    </a>
+
+
+
+    {{-- AUGMENTED REALITY --}}
+
+    <a
+
+        href="{{
+                route(
+                    'client.ar'
+                )
+            }}"
+
+        class="quick-card">
+
+        <div
+            class="
+                    quick-icon
+                    ar
+                ">
+
+            ◇
+
+        </div>
+
+
+        <div>
+
+            <div class="quick-title">
+
+                {{
+                        $dt[
+                            'ar'
+                        ]
+                    }}
+
+            </div>
+
+
+            <div class="quick-description">
+
+                {{
+                        $dt[
+                            'ar_desc'
+                        ]
+                    }}
+
+            </div>
+
+        </div>
+
+    </a>
+
+
+</div>
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    document
+        .querySelectorAll(
+            '.progress-fill'
+        )
+        .forEach(
+            function(bar) {
+
+                let value =
+                    parseFloat(
+                        bar.dataset.progress ??
+                        0
+                    );
+
+
+                if (
+                    Number.isNaN(
+                        value
+                    )
+                ) {
+
+                    value = 0;
+
+                }
+
+
+                value =
+                    Math.max(
+                        0,
+                        Math.min(
+                            100,
+                            value
+                        )
+                    );
+
+
+                bar.style.width =
+                    value + '%';
+
+            }
+        );
+</script>
+
+@endpush
