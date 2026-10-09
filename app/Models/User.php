@@ -2,33 +2,40 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable([
-    'name',
-    'email',
-    'password',
-    'role',
-    'phone',
-    'profile_photo',
-    'is_active',
-])]
-#[Hidden([
-    'password',
-    'remember_token',
-])]
-
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'phone',
+        'profile_photo',
+        'is_active',
+
+        'notify_messages',
+        'notify_progress',
+        'notify_schedule',
+        'notify_documentation',
+        'notify_cost',
+
+        'language',
+        'timezone',
+        'theme',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     public function client()
     {
@@ -40,17 +47,18 @@ class User extends Authenticatable
         return $this->hasMany(Project::class, 'admin_id');
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+
+            'notify_messages' => 'boolean',
+            'notify_progress' => 'boolean',
+            'notify_schedule' => 'boolean',
+            'notify_documentation' => 'boolean',
+            'notify_cost' => 'boolean',
         ];
     }
 }

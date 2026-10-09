@@ -505,23 +505,31 @@
                 Dokumentasi
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="{{ route('client.costs') }}" class="menu-item">
                 <span class="menu-icon">◉</span>
                 Informasi Biaya
             </a>
 
-            <a href="#" class="menu-item">
+            <a href="{{ route('client.messages') }}" class="menu-item">
                 <span class="menu-icon">✉</span>
                 Pesan
             </a>
 
-            <a href="#" class="menu-item">
+            <a
+                href="{{ route('client.ar', ['project' => $project->id]) }}"
+                class="menu-item">
+
                 <span class="menu-icon">◇</span>
+
                 Augmented Reality
             </a>
 
-            <a href="#" class="menu-item">
+            <a
+                href="{{ route('client.settings') }}"
+                class="menu-item">
+
                 <span class="menu-icon">⚙</span>
+
                 Pengaturan
             </a>
 
@@ -733,9 +741,11 @@
                         </a>
 
                         <a
-                            href="#"
+                            href="{{ route('client.costs', ['project' => $project->id]) }}"
                             class="tab-link">
+
                             Informasi Biaya
+
                         </a>
 
                     </div>

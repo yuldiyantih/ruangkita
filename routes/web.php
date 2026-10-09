@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ClientProjectController;
-
+use App\Http\Controllers\Admin\ArAssetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
 
         return redirect()->route('login');
     })->name('logout');
+
     // =========================
     // DASHBOARD
     // =========================
@@ -71,6 +72,19 @@ Route::middleware('auth')->group(function () {
         [DashboardController::class, 'admin']
     )->name('admin.dashboard');
 
+    // =========================
+    // ADMIN - AR ASSETS
+    // =========================
+
+    Route::prefix('admin')
+        ->name('admin.')
+        ->group(function () {
+
+            Route::resource(
+                'ar-assets',
+                ArAssetController::class
+            )->except(['show']);
+        });
 
     Route::get(
         '/client/dashboard',
@@ -137,4 +151,59 @@ Route::middleware('auth')->group(function () {
         '/client/documentation',
         [ClientProjectController::class, 'documentation']
     )->name('client.documentation');
+
+    Route::get(
+        '/client/costs',
+        [ClientProjectController::class, 'costs']
+    )->name('client.costs');
+
+    // =========================
+    // CLIENT - PESAN
+    // =========================
+
+    Route::get(
+        '/client/messages',
+        [ClientProjectController::class, 'messages']
+    )->name('client.messages');
+
+
+    Route::post(
+        '/client/messages',
+        [ClientProjectController::class, 'sendMessage']
+    )->name('client.messages.send');
+
+    // =========================
+    // CLIENT - AUGMENTED REALITY
+    // =========================
+    Route::get(
+        '/client/ar',
+        [ClientProjectController::class, 'ar']
+    )->name('client.ar');
+
+    // =========================
+    // CLIENT - PENGATURAN
+    // =========================
+
+    Route::get(
+        '/client/settings',
+        [ClientProjectController::class, 'settings']
+    )->name('client.settings');
+
+
+    Route::put(
+        '/client/settings/profile',
+        [ClientProjectController::class, 'updateProfile']
+    )->name('client.settings.profile');
+
+
+    Route::put(
+        '/client/settings/password',
+        [ClientProjectController::class, 'updatePassword']
+    )->name('client.settings.password');
+
+
+    Route::put(
+        '/client/settings/preferences',
+        [ClientProjectController::class, 'updatePreferences']
+    )->name('client.settings.preferences');
 });

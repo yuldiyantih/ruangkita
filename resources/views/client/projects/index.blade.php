@@ -742,11 +742,12 @@
                 Dokumentasi
             </a>
 
-            <a href="#"
+            <a
+                href="{{ route('client.costs') }}"
                 class="menu-item">
 
                 <span class="menu-icon">
-                    ◉
+                    ▤
                 </span>
 
                 Informasi Biaya
@@ -754,7 +755,8 @@
             </a>
 
 
-            <a href="#"
+            <a
+                href="{{ route('client.messages') }}"
                 class="menu-item">
 
                 <span class="menu-icon">
@@ -765,8 +767,8 @@
 
             </a>
 
-
-            <a href="#"
+            <a
+                href="{{ route('client.ar') }}"
                 class="menu-item">
 
                 <span class="menu-icon">
@@ -778,15 +780,13 @@
             </a>
 
 
-            <a href="#"
+            <a
+                href="{{ route('client.settings') }}"
                 class="menu-item">
 
-                <span class="menu-icon">
-                    ⚙
-                </span>
+                <span class="menu-icon">⚙</span>
 
                 Pengaturan
-
             </a>
 
 

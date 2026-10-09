@@ -83,4 +83,15 @@ class Project extends Model
     {
         return $this->hasMany(ArDesign::class);
     }
+
+    public function paymentStages()
+    {
+        return $this->hasMany(PaymentStage::class);
+    }
+
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
