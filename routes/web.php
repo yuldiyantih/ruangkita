@@ -6,6 +6,13 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ClientProjectController;
 use App\Http\Controllers\Admin\ArAssetController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\WorkController;
+use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\MaterialController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +97,189 @@ Route::middleware('auth')->group(function () {
         '/client/dashboard',
         [DashboardController::class, 'client']
     )->name('client.dashboard');
+
+    // =========================
+    // ADMIN - MENU CLIENT
+    // =========================
+
+    Route::get(
+        '/admin/clients',
+        [ClientController::class, 'index']
+    )->name('admin.clients.index');
+
+    Route::get(
+        '/admin/clients/create',
+        [ClientController::class, 'create']
+    )->name('admin.clients.create');
+
+    Route::post(
+        '/admin/clients',
+        [ClientController::class, 'store']
+    )->name('admin.clients.store');
+
+    Route::get(
+        '/admin/clients/{client}',
+        [ClientController::class, 'show']
+    )->name('admin.clients.show');
+
+    Route::get(
+        '/admin/clients/{client}/edit',
+        [ClientController::class, 'edit']
+    )->name('admin.clients.edit');
+
+    Route::put(
+        '/admin/clients/{client}',
+        [ClientController::class, 'update']
+    )->name('admin.clients.update');
+
+    Route::patch(
+        '/admin/clients/{client}/toggle-status',
+        [ClientController::class, 'toggleStatus']
+    )->name('admin.clients.toggle-status');
+
+    // =========================
+    // ADMIN - MENU PROYEK
+    // =========================
+
+    Route::get(
+        '/admin/projects',
+        [ProjectController::class, 'index']
+    )
+        ->name('admin.projects.index');
+
+    Route::get(
+        '/admin/projects/create',
+        [ProjectController::class, 'create']
+    )
+        ->name('admin.projects.create');
+
+    Route::post(
+        '/admin/projects',
+        [ProjectController::class, 'store']
+    )
+        ->name('admin.projects.store');
+
+    Route::get(
+        '/admin/projects/{project}',
+        [ProjectController::class, 'show']
+    )
+        ->name('admin.projects.show');
+
+    Route::get(
+        '/admin/projects/{project}/edit',
+        [ProjectController::class, 'edit']
+    )
+        ->name('admin.projects.edit');
+
+    Route::put(
+        '/admin/projects/{project}',
+        [ProjectController::class, 'update']
+    )
+        ->name('admin.projects.update');
+
+
+    // =========================
+    // ADMIN - MENU PEKERJAAN
+    // =========================
+
+    Route::get(
+        '/admin/works',
+        [WorkController::class, 'index']
+    )
+        ->name('admin.works.index');
+
+    Route::get(
+        '/admin/works/create',
+        [WorkController::class, 'create']
+    )
+        ->name('admin.works.create');
+
+    Route::post(
+        '/admin/works',
+        [WorkController::class, 'store']
+    )
+        ->name('admin.works.store');
+
+    Route::get(
+        '/admin/works/{work}',
+        [WorkController::class, 'show']
+    )
+        ->name('admin.works.show');
+
+    Route::get(
+        '/admin/works/{work}/edit',
+        [WorkController::class, 'edit']
+    )
+        ->name('admin.works.edit');
+
+    Route::put(
+        '/admin/works/{work}',
+        [WorkController::class, 'update']
+    )
+        ->name('admin.works.update');
+
+    // =========================
+    // ADMIN - MENU JADWAL
+    // =========================
+    Route::get(
+        '/admin/schedules',
+        [ScheduleController::class, 'index']
+    )
+        ->name('admin.schedules.index');
+
+    Route::get(
+        '/admin/schedules/create',
+        [ScheduleController::class, 'create']
+    )
+        ->name('admin.schedules.create');
+
+    Route::post(
+        '/admin/schedules',
+        [ScheduleController::class, 'store']
+    )
+        ->name('admin.schedules.store');
+
+    Route::get(
+        '/admin/schedules/{schedule}',
+        [ScheduleController::class, 'show']
+    )
+        ->name('admin.schedules.show');
+
+    Route::get(
+        '/admin/schedules/{schedule}/edit',
+        [ScheduleController::class, 'edit']
+    )
+        ->name('admin.schedules.edit');
+
+    Route::put(
+        '/admin/schedules/{schedule}',
+        [ScheduleController::class, 'update']
+    )
+        ->name('admin.schedules.update');
+
+    // =========================
+    // ADMIN - MENU MATERIAL    
+    // =========================
+    Route::get('/admin/materials', [MaterialController::class, 'index'])
+        ->name('admin.materials.index');
+
+    Route::get('/admin/materials/create', [MaterialController::class, 'create'])
+        ->name('admin.materials.create');
+
+    Route::post('/admin/materials', [MaterialController::class, 'store'])
+        ->name('admin.materials.store');
+
+    Route::get('/admin/materials/{material}', [MaterialController::class, 'show'])
+        ->name('admin.materials.show');
+
+    Route::get('/admin/materials/{material}/edit', [MaterialController::class, 'edit'])
+        ->name('admin.materials.edit');
+
+    Route::put('/admin/materials/{material}', [MaterialController::class, 'update'])
+        ->name('admin.materials.update');
+
+
+
 
 
     // =========================

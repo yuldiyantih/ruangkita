@@ -1,1523 +1,1274 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+@section(
+'title',
+'Dashboard Admin - RuangKita'
+)
 
-    <title>Dashboard Admin - RuangKita</title>
 
-    <style>
-        /* =====================================================
-           RESET
-        ===================================================== */
+@push('styles')
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+<style>
+    /* =====================================================
+       PAGE HEADER
+    ===================================================== */
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-        }
+    .dashboard-page-header {
 
+        margin-bottom: 22px;
+    }
 
-        body {
-            background: #f4f8fc;
-            color: #18334d;
-        }
 
+    .dashboard-page-header h1 {
 
-        /* =====================================================
-           APP
-        ===================================================== */
+        margin-bottom: 4px;
 
-        .app {
-            min-height: 100vh;
-            display: flex;
-        }
+        color:
+            var(--text-heading);
 
+        font-size: 27px;
+    }
 
-        /* =====================================================
-           SIDEBAR
-        ===================================================== */
 
-        .sidebar {
-            width: 230px;
+    .dashboard-page-header p {
 
-            min-height: 100vh;
+        color:
+            var(--text-muted);
 
-            position: fixed;
+        font-size: 13px;
+    }
 
-            top: 0;
-            left: 0;
 
-            padding: 20px 14px;
+    /* =====================================================
+       STATISTICS
+    ===================================================== */
 
-            background:
-                linear-gradient(180deg,
-                    #0d3458 0%,
-                    #092843 100%);
+    .dashboard-stats {
 
-            color: white;
+        margin-bottom: 21px;
 
-            overflow-y: auto;
-        }
+        display: grid;
 
+        grid-template-columns:
+            repeat(4,
+                minmax(0, 1fr));
 
-        /* =====================================================
-           BRAND
-        ===================================================== */
+        gap: 14px;
+    }
 
-        .brand {
-            display: flex;
-            align-items: center;
 
-            gap: 10px;
+    .dashboard-stat-card {
 
-            padding:
-                5px 9px 24px;
-        }
+        min-height: 82px;
 
+        padding: 15px;
 
-        .brand-name {
-            font-size: 18px;
-            font-weight: 700;
-        }
+        border:
+            1px solid var(--border);
 
+        border-radius: 12px;
 
-        /* =====================================================
-           LOGO RUANGKITA
-        ===================================================== */
+        display: flex;
 
-        .ruangkita-logo {
-            position: relative;
+        align-items: center;
 
-            width: 31px;
-            height: 31px;
+        gap: 12px;
 
-            flex-shrink: 0;
-        }
+        background:
+            var(--card-bg);
 
+        box-shadow:
+            var(--shadow);
+    }
 
-        .ruangkita-logo .roof {
-            position: absolute;
 
-            width: 20px;
-            height: 20px;
+    .dashboard-stat-icon {
 
-            left: 5px;
-            top: 2px;
+        width: 43px;
+        height: 43px;
 
-            border-left: 4px solid white;
-            border-top: 4px solid white;
+        flex-shrink: 0;
 
-            transform: rotate(45deg);
+        border-radius: 10px;
 
-            border-radius: 2px;
-        }
+        display: flex;
 
+        align-items: center;
+        justify-content: center;
 
-        .ruangkita-logo .house {
-            position: absolute;
+        font-size: 19px;
+    }
 
-            width: 19px;
-            height: 17px;
 
-            left: 6px;
-            bottom: 2px;
+    .dashboard-stat-icon.blue {
 
-            border-left: 4px solid white;
-            border-right: 4px solid white;
-            border-bottom: 4px solid white;
-        }
+        color: #0b73d1;
 
+        background: #e7f2ff;
+    }
 
-        .ruangkita-logo .door {
-            position: absolute;
 
-            width: 6px;
-            height: 9px;
+    .dashboard-stat-icon.green {
 
-            left: 50%;
-            bottom: -1px;
+        color: #119568;
 
-            transform: translateX(-50%);
+        background: #e1f9ef;
+    }
 
-            border:
-                2px solid white;
 
-            border-bottom: none;
-        }
+    .dashboard-stat-icon.purple {
 
+        color: #7834d4;
 
-        /* =====================================================
-           SIDEBAR MENU
-        ===================================================== */
+        background: #f0e8ff;
+    }
 
-        .menu-item {
-            width: 100%;
 
-            height: 42px;
+    .dashboard-stat-icon.orange {
 
-            padding:
-                0 13px;
+        color: #e66a13;
 
-            margin-bottom: 3px;
+        background: #fff0df;
+    }
 
-            border-radius: 8px;
 
-            display: flex;
-            align-items: center;
+    .dashboard-stat-label {
 
-            gap: 11px;
+        color:
+            var(--text-muted);
 
-            color: #d6e6f5;
+        font-size: 11px;
+    }
 
-            font-size: 13px;
 
-            text-decoration: none;
+    .dashboard-stat-value {
 
-            transition: .2s;
-        }
+        margin-top: 4px;
 
+        color:
+            var(--text-heading);
 
-        .menu-item:hover {
-            background:
-                rgba(255, 255, 255, .08);
+        font-size: 18px;
 
-            color: white;
-        }
+        font-weight: 700;
+    }
 
 
-        .menu-item.active {
-            color: white;
+    /* =====================================================
+       PANEL
+    ===================================================== */
 
-            background:
-                linear-gradient(90deg,
-                    #0665ac,
-                    #087acb);
-        }
+    .dashboard-panel {
 
+        margin-bottom: 20px;
 
-        .menu-icon {
-            width: 19px;
+        overflow: hidden;
 
-            text-align: center;
+        border:
+            1px solid var(--border);
 
-            font-size: 15px;
-        }
+        border-radius: 12px;
 
+        background:
+            var(--card-bg);
 
-        /* =====================================================
-           MAIN
-        ===================================================== */
+        box-shadow:
+            var(--shadow);
+    }
 
-        .main {
-            width:
-                calc(100% - 230px);
 
-            margin-left: 230px;
+    .dashboard-panel-header {
 
-            min-height: 100vh;
-        }
+        min-height: 52px;
 
+        padding:
+            0 18px;
 
-        /* =====================================================
-           TOPBAR
-        ===================================================== */
+        display: flex;
 
-        .topbar {
-            height: 66px;
+        align-items: center;
 
-            background: white;
+        justify-content: space-between;
 
-            border-bottom:
-                1px solid #e8eef4;
+        gap: 15px;
 
-            display: flex;
-            align-items: center;
+        border-bottom:
+            1px solid var(--border);
+    }
 
-            justify-content: space-between;
 
-            padding:
-                0 28px;
-        }
+    .dashboard-panel-header h3 {
 
+        color:
+            var(--text-heading);
 
-        .hamburger {
-            color: #506c84;
-            font-size: 21px;
-        }
+        font-size: 15px;
+    }
 
 
-        .top-right {
-            display: flex;
-            align-items: center;
+    .dashboard-panel-header a {
 
-            gap: 15px;
-        }
+        color:
+            var(--primary);
 
+        text-decoration: none;
 
-        .notification {
-            position: relative;
+        font-size: 12px;
 
-            font-size: 18px;
-        }
+        font-weight: 600;
+    }
 
 
-        .notification-dot {
-            width: 7px;
-            height: 7px;
+    .dashboard-panel-header a:hover {
 
-            position: absolute;
+        text-decoration: underline;
+    }
 
-            right: 0;
-            top: 0;
 
-            background: #ef4444;
+    /* =====================================================
+       TABLE
+    ===================================================== */
 
-            border:
-                2px solid white;
+    .dashboard-table-wrapper {
 
-            border-radius: 50%;
-        }
+        overflow-x: auto;
+    }
 
 
-        .profile {
-            display: flex;
-            align-items: center;
+    .dashboard-table {
 
-            gap: 8px;
+        width: 100%;
 
-            font-size: 13px;
-            font-weight: 600;
-        }
+        border-collapse: collapse;
+    }
 
 
-        .avatar {
-            width: 34px;
-            height: 34px;
+    .dashboard-table thead {
 
-            border-radius: 50%;
+        background: #f7fafc;
+    }
 
-            background: #deebf5;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .dashboard-table th {
 
+        padding:
+            10px 16px;
 
-        /* =====================================================
-           CONTENT
-        ===================================================== */
+        color: #758899;
 
-        .content {
-            padding:
-                27px 30px 40px;
-        }
+        text-align: left;
 
+        white-space: nowrap;
 
-        .page-header {
-            margin-bottom: 22px;
-        }
+        font-size: 11px;
 
+        font-weight: 600;
+    }
 
-        .page-header h1 {
-            color: #102d49;
 
-            font-size: 27px;
+    .dashboard-table td {
 
-            margin-bottom: 4px;
-        }
+        padding:
+            12px 16px;
 
+        border-top:
+            1px solid var(--border);
 
-        .page-header p {
-            color: #8496a7;
+        color:
+            var(--text-main);
 
-            font-size: 13px;
-        }
+        font-size: 12px;
+    }
 
 
-        /* =====================================================
-           STAT CARDS
-        ===================================================== */
+    .dashboard-project-name {
 
-        .stats {
-            display: grid;
+        color:
+            var(--text-heading);
+
+        font-weight: 600;
+    }
+
+
+    /* =====================================================
+       PROGRESS
+    ===================================================== */
+
+    .dashboard-progress-row {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 7px;
+    }
+
+
+    .dashboard-progress-track {
+
+        width: 85px;
+        height: 7px;
+
+        overflow: hidden;
+
+        border-radius: 30px;
+
+        background: #e4eaf0;
+    }
+
+
+    .dashboard-progress-fill {
+
+        width: 0;
+
+        height: 100%;
+
+        border-radius: 30px;
+
+        background:
+            linear-gradient(90deg,
+                #1384dc,
+                #22a3ed);
+
+        transition:
+            width .4s ease;
+    }
+
+
+    .dashboard-progress-number {
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       BADGES
+    ===================================================== */
+
+    .dashboard-badge {
+
+        padding:
+            5px 9px;
+
+        border-radius: 18px;
+
+        display: inline-flex;
+
+        white-space: nowrap;
+
+        font-size: 10px;
+
+        font-weight: 600;
+    }
+
+
+    .dashboard-badge-ongoing {
+
+        color: #117653;
+
+        background: #dff8ec;
+    }
+
+
+    .dashboard-badge-completed {
+
+        color: #0967b2;
+
+        background: #e3f1ff;
+    }
+
+
+    .dashboard-badge-planning {
+
+        color: #986300;
+
+        background: #fff2ce;
+    }
+
+
+    .dashboard-badge-paused {
+
+        color: #b55318;
+
+        background: #ffeadc;
+    }
+
+
+    /* =====================================================
+       BOTTOM GRID
+    ===================================================== */
+
+    .dashboard-bottom {
+
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.2fr) minmax(0, .8fr);
+
+        gap: 18px;
+    }
+
+
+    /* =====================================================
+       SCHEDULE
+    ===================================================== */
+
+    .dashboard-schedule-row {
+
+        padding:
+            13px 18px;
+
+        display: grid;
+
+        grid-template-columns:
+            92px minmax(0, 1fr) minmax(0, 1fr);
+
+        gap: 12px;
+
+        border-bottom:
+            1px solid var(--border);
+
+        font-size: 12px;
+    }
+
+
+    .dashboard-schedule-row:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .dashboard-schedule-date {
+
+        color: #eb9415;
+
+        font-weight: 600;
+    }
+
+
+    .dashboard-schedule-title {
+
+        color:
+            var(--text-main);
+    }
+
+
+    .dashboard-schedule-project {
+
+        color:
+            var(--text-muted);
+    }
+
+
+    /* =====================================================
+       WARNING
+    ===================================================== */
+
+    .dashboard-warning {
+
+        padding:
+            14px 17px;
+
+        display: flex;
+
+        gap: 11px;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+
+    .dashboard-warning:last-child {
+
+        border-bottom: none;
+    }
+
+
+    .dashboard-warning-icon {
+
+        width: 36px;
+        height: 36px;
+
+        flex-shrink: 0;
+
+        border-radius: 9px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        color: #e85a27;
+
+        background: #fff0e7;
+    }
+
+
+    .dashboard-warning-icon.yellow {
+
+        color: #d58b07;
+
+        background: #fff7db;
+    }
+
+
+    .dashboard-warning-title {
+
+        margin-bottom: 4px;
+
+        color:
+            var(--text-heading);
+
+        font-size: 12px;
+
+        font-weight: 600;
+    }
+
+
+    .dashboard-warning-text {
+
+        color:
+            var(--text-muted);
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       EMPTY DATA
+    ===================================================== */
+
+    .dashboard-empty-data {
+
+        padding: 23px;
+
+        color:
+            var(--text-muted);
+
+        text-align: center;
+
+        font-size: 12px;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
+    @media(max-width: 1100px) {
+
+        .dashboard-stats {
 
             grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 14px;
-
-            margin-bottom: 21px;
+                repeat(2, 1fr);
         }
 
+    }
 
-        .stat-card {
-            background: white;
 
-            min-height: 82px;
-
-            padding: 15px;
-
-            border-radius: 12px;
-
-            border:
-                1px solid #e7edf3;
-
-            display: flex;
-            align-items: center;
-
-            gap: 12px;
-        }
-
-
-        .stat-icon {
-            width: 43px;
-            height: 43px;
-
-            flex-shrink: 0;
-
-            border-radius: 10px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 19px;
-        }
-
-
-        .stat-icon.blue {
-            color: #0b73d1;
-            background: #e7f2ff;
-        }
-
-
-        .stat-icon.green {
-            color: #119568;
-            background: #e1f9ef;
-        }
-
-
-        .stat-icon.purple {
-            color: #7834d4;
-            background: #f0e8ff;
-        }
-
-
-        .stat-icon.orange {
-            color: #e66a13;
-            background: #fff0df;
-        }
-
-
-        .stat-label {
-            font-size: 11px;
-
-            color: #8294a5;
-        }
-
-
-        .stat-value {
-            margin-top: 4px;
-
-            color: #15324c;
-
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-
-        /* =====================================================
-           PANEL
-        ===================================================== */
-
-        .panel {
-            background: white;
-
-            border:
-                1px solid #e7edf3;
-
-            border-radius: 12px;
-
-            overflow: hidden;
-
-            margin-bottom: 20px;
-        }
-
-
-        .panel-header {
-            min-height: 52px;
-
-            padding:
-                0 18px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            border-bottom:
-                1px solid #edf2f6;
-        }
-
-
-        .panel-header h3 {
-            font-size: 15px;
-
-            color: #18344e;
-        }
-
-
-        .panel-header a {
-            text-decoration: none;
-
-            color: #0571c5;
-
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-
-        /* =====================================================
-           TABLE
-        ===================================================== */
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-
-        table {
-            width: 100%;
-
-            border-collapse: collapse;
-        }
-
-
-        thead {
-            background: #f7fafc;
-        }
-
-
-        th {
-            text-align: left;
-
-            padding:
-                10px 16px;
-
-            color: #758899;
-
-            font-size: 11px;
-
-            font-weight: 600;
-        }
-
-
-        td {
-            padding:
-                12px 16px;
-
-            border-top:
-                1px solid #edf2f6;
-
-            color: #2f485e;
-
-            font-size: 12px;
-        }
-
-
-        .progress-row {
-            display: flex;
-            align-items: center;
-
-            gap: 7px;
-        }
-
-
-        .progress-track {
-            width: 85px;
-            height: 7px;
-
-            overflow: hidden;
-
-            border-radius: 30px;
-
-            background: #e4eaf0;
-        }
-
-
-        .progress-fill {
-            height: 100%;
-
-            border-radius: 30px;
-
-            background:
-                linear-gradient(90deg,
-                    #1384dc,
-                    #22a3ed);
-        }
-
-
-        .progress-number {
-            color: #546b80;
-
-            font-size: 11px;
-        }
-
-
-        /* =====================================================
-           BADGE
-        ===================================================== */
-
-        .badge {
-            display: inline-flex;
-
-            padding:
-                5px 9px;
-
-            border-radius: 18px;
-
-            font-size: 10px;
-
-            font-weight: 600;
-        }
-
-
-        .badge-ongoing {
-            color: #117653;
-            background: #dff8ec;
-        }
-
-
-        .badge-completed {
-            color: #0967b2;
-            background: #e3f1ff;
-        }
-
-
-        .badge-planning {
-            color: #986300;
-            background: #fff2ce;
-        }
-
-
-        .badge-paused {
-            color: #b55318;
-            background: #ffeadc;
-        }
-
-
-        /* =====================================================
-           BOTTOM GRID
-        ===================================================== */
+    @media(max-width: 850px) {
 
         .dashboard-bottom {
-            display: grid;
 
             grid-template-columns:
-                1.2fr .8fr;
-
-            gap: 18px;
+                1fr;
         }
 
+    }
 
-        /* =====================================================
-           SCHEDULE
-        ===================================================== */
 
-        .schedule-row {
-            display: grid;
+    @media(max-width: 600px) {
+
+        .dashboard-stats {
 
             grid-template-columns:
-                92px 1fr 1fr;
-
-            gap: 12px;
-
-            padding:
-                13px 18px;
-
-            border-bottom:
-                1px solid #edf2f6;
-
-            font-size: 12px;
+                1fr;
         }
 
 
-        .schedule-row:last-child {
-            border-bottom: none;
+        .dashboard-schedule-row {
+
+            grid-template-columns:
+                1fr;
+
+            gap: 5px;
         }
 
+    }
+</style>
 
-        .schedule-date {
-            color: #eb9415;
+@endpush
 
-            font-weight: 600;
-        }
 
 
-        .schedule-project {
-            color: #8293a3;
-        }
+@section('content')
 
 
-        /* =====================================================
-           WARNING
-        ===================================================== */
+{{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
-        .warning {
-            padding:
-                14px 17px;
+<div class="dashboard-page-header">
 
-            display: flex;
 
-            gap: 11px;
+    <h1>
 
-            border-bottom:
-                1px solid #edf2f6;
-        }
+        Dashboard
 
+    </h1>
 
-        .warning:last-child {
-            border-bottom: none;
-        }
 
+    <p>
 
-        .warning-icon {
-            width: 36px;
-            height: 36px;
+        Selamat datang,
+        {{ auth()->user()->name }}!
 
-            flex-shrink: 0;
+    </p>
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
 
-            border-radius: 9px;
+</div>
 
-            color: #e85a27;
 
-            background: #fff0e7;
-        }
 
+{{-- =====================================================
+         STATISTICS
+    ====================================================== --}}
 
-        .warning-icon.yellow {
-            color: #d58b07;
+<div class="dashboard-stats">
 
-            background: #fff7db;
-        }
 
+    {{-- TOTAL PROJECT --}}
 
-        .warning-title {
-            color: #263e53;
+    <div class="dashboard-stat-card">
 
-            font-size: 12px;
 
-            font-weight: 600;
+        <div class="dashboard-stat-icon blue">
 
-            margin-bottom: 4px;
-        }
+            ▣
 
+        </div>
 
-        .warning-text {
-            color: #8393a1;
 
-            font-size: 11px;
+        <div>
 
-            line-height: 1.5;
-        }
+            <div class="dashboard-stat-label">
 
+                Total Proyek
 
-        .empty-data {
-            padding: 23px;
+            </div>
 
-            color: #8393a1;
+            <div class="dashboard-stat-value">
 
-            font-size: 12px;
+                {{ $totalProjects }}
 
-            text-align: center;
-        }
+            </div>
 
+        </div>
 
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
 
-        @media(max-width: 1100px) {
+    </div>
 
-            .stats {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
 
-        }
 
+    {{-- ONGOING PROJECT --}}
 
-        @media(max-width: 850px) {
+    <div class="dashboard-stat-card">
 
-            .sidebar {
-                display: none;
-            }
 
+        <div class="dashboard-stat-icon green">
 
-            .main {
-                width: 100%;
-                margin-left: 0;
-            }
+            ▰
 
+        </div>
 
-            .dashboard-bottom {
-                grid-template-columns:
-                    1fr;
-            }
 
-        }
+        <div>
 
+            <div class="dashboard-stat-label">
 
-        @media(max-width: 600px) {
+                Proyek Berjalan
 
-            .content {
-                padding:
-                    20px 14px;
-            }
+            </div>
 
+            <div class="dashboard-stat-value">
 
-            .stats {
-                grid-template-columns:
-                    1fr;
-            }
+                {{ $ongoingProjects }}
 
+            </div>
 
-            .topbar {
-                padding:
-                    0 17px;
-            }
+        </div>
 
 
-            .profile-name {
-                display: none;
-            }
+    </div>
 
-        }
-    </style>
 
-</head>
 
+    {{-- COMPLETED PROJECT --}}
 
-<body>
+    <div class="dashboard-stat-card">
 
 
-    <div class="app">
+        <div class="dashboard-stat-icon purple">
 
+            ✓
 
-        <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+        </div>
 
-        <aside class="sidebar">
 
+        <div>
 
-            <div class="brand">
+            <div class="dashboard-stat-label">
 
+                Proyek Selesai
 
-                <div class="ruangkita-logo">
+            </div>
 
-                    <div class="roof"></div>
+            <div class="dashboard-stat-value">
 
-                    <div class="house">
+                {{ $completedProjects }}
 
-                        <div class="door"></div>
+            </div>
 
-                    </div>
+        </div>
+
+
+    </div>
+
+
+
+    {{-- TOTAL EXPENSE --}}
+
+    <div class="dashboard-stat-card">
+
+
+        <div class="dashboard-stat-icon orange">
+
+            Rp
+
+        </div>
+
+
+        <div>
+
+            <div class="dashboard-stat-label">
+
+                Total Pengeluaran
+
+            </div>
+
+            <div class="dashboard-stat-value">
+
+                Rp
+                {{
+                        number_format(
+                            $totalExpenses,
+                            0,
+                            ',',
+                            '.'
+                        )
+                    }}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =====================================================
+         LATEST PROJECTS
+    ====================================================== --}}
+
+<div class="dashboard-panel">
+
+
+    <div class="dashboard-panel-header">
+
+
+        <h3>
+
+            Proyek Terbaru
+
+        </h3>
+
+
+        {{-- Route proyek akan kita aktifkan saat menu Proyek dibuat --}}
+
+        <a href="#">
+
+            Lihat Semua
+
+        </a>
+
+
+    </div>
+
+
+
+    <div class="dashboard-table-wrapper">
+
+
+        <table class="dashboard-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Nama Proyek
+                    </th>
+
+                    <th>
+                        Client
+                    </th>
+
+                    <th>
+                        Lokasi
+                    </th>
+
+                    <th>
+                        Progress
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                @forelse($latestProjects as $project)
+
+
+                <tr>
+
+
+                    <td class="dashboard-project-name">
+
+                        {{
+                                    $project->project_name
+                                    ??
+                                    '-'
+                                }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{
+                                    optional(
+                                        optional(
+                                            $project->client
+                                        )->user
+                                    )->name
+                                    ??
+                                    '-'
+                                }}
+
+                    </td>
+
+
+                    <td>
+
+                        {{
+                                    $project->location
+                                    ??
+                                    '-'
+                                }}
+
+                    </td>
+
+
+                    <td>
+
+
+                        <div class="dashboard-progress-row">
+
+
+                            <div class="dashboard-progress-track">
+
+                                <div
+                                    class="dashboard-progress-fill"
+                                    data-progress="{{
+                                                $project->progress_percentage
+                                                ??
+                                                0
+                                            }}"></div>
+
+                            </div>
+
+
+                            <span class="dashboard-progress-number">
+
+                                {{
+                                            $project->progress_percentage
+                                            ??
+                                            0
+                                        }}%
+
+                            </span>
+
+
+                        </div>
+
+
+                    </td>
+
+
+                    <td>
+
+
+                        @if($project->status === 'ongoing')
+
+                        <span
+                            class="
+                                            dashboard-badge
+                                            dashboard-badge-ongoing
+                                        ">
+
+                            Berjalan
+
+                        </span>
+
+
+                        @elseif($project->status === 'completed')
+
+                        <span
+                            class="
+                                            dashboard-badge
+                                            dashboard-badge-completed
+                                        ">
+
+                            Selesai
+
+                        </span>
+
+
+                        @elseif($project->status === 'paused')
+
+                        <span
+                            class="
+                                            dashboard-badge
+                                            dashboard-badge-paused
+                                        ">
+
+                            Ditunda
+
+                        </span>
+
+
+                        @else
+
+                        <span
+                            class="
+                                            dashboard-badge
+                                            dashboard-badge-planning
+                                        ">
+
+                            Perencanaan
+
+                        </span>
+
+                        @endif
+
+
+                    </td>
+
+
+                </tr>
+
+
+                @empty
+
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="dashboard-empty-data">
+
+                        Belum ada data proyek.
+
+                    </td>
+
+                </tr>
+
+
+                @endforelse
+
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+
+{{-- =====================================================
+         BOTTOM GRID
+    ====================================================== --}}
+
+<div class="dashboard-bottom">
+
+
+    {{-- =================================================
+             UPCOMING SCHEDULE
+        ================================================== --}}
+
+    <div class="dashboard-panel">
+
+
+        <div class="dashboard-panel-header">
+
+            <h3>
+
+                Jadwal Mendatang
+
+            </h3>
+
+        </div>
+
+
+        @forelse($upcomingSchedules as $schedule)
+
+
+        <div class="dashboard-schedule-row">
+
+
+            <div class="dashboard-schedule-date">
+
+                {{
+                            $schedule->start_date
+                            ?
+                            \Carbon\Carbon::parse(
+                                $schedule->start_date
+                            )->format('d M Y')
+                            :
+                            '-'
+                        }}
+
+            </div>
+
+
+            <div class="dashboard-schedule-title">
+
+                {{
+                            $schedule->title
+                            ??
+                            '-'
+                        }}
+
+            </div>
+
+
+            <div class="dashboard-schedule-project">
+
+                {{
+                            optional(
+                                $schedule->project
+                            )->project_name
+                            ??
+                            '-'
+                        }}
+
+            </div>
+
+
+        </div>
+
+
+        @empty
+
+
+        <div class="dashboard-empty-data">
+
+            Belum ada jadwal mendatang.
+
+        </div>
+
+
+        @endforelse
+
+
+    </div>
+
+
+
+    {{-- =================================================
+             WARNING
+        ================================================== --}}
+
+    <div class="dashboard-panel">
+
+
+        <div class="dashboard-panel-header">
+
+            <h3>
+
+                Peringatan
+
+            </h3>
+
+        </div>
+
+
+
+        <div class="dashboard-warning">
+
+
+            <div class="dashboard-warning-icon">
+
+                ⚠
+
+            </div>
+
+
+            <div>
+
+
+                <div class="dashboard-warning-title">
+
+                    Jadwal proyek bertabrakan
 
                 </div>
 
 
-                <span class="brand-name">
-                    RuangKita
-                </span>
+                <div class="dashboard-warning-text">
+
+                    Periksa kembali jadwal proyek
+                    yang berlangsung pada tanggal
+                    yang sama.
+
+                </div>
 
 
             </div>
 
 
-            <a
-                href="{{ route('admin.dashboard') }}"
-                class="menu-item active">
+        </div>
 
-                <span class="menu-icon">⌂</span>
 
-                Dashboard
 
-            </a>
+        <div class="dashboard-warning">
 
 
-            <a href="#"
-                class="menu-item">
+            <div
+                class="
+                        dashboard-warning-icon
+                        yellow
+                    ">
 
-                <span class="menu-icon">♙</span>
+                !
 
-                Client
+            </div>
 
-            </a>
 
+            <div>
 
-            <a href="#"
-                class="menu-item">
 
-                <span class="menu-icon">▣</span>
+                <div class="dashboard-warning-title">
 
-                Proyek
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">▤</span>
-
-                Pekerjaan
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">▦</span>
-
-                Jadwal
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">◆</span>
-
-                Material
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">▰</span>
-
-                Pengeluaran
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">◉</span>
-
-                Uang Pribadi
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">↗</span>
-
-                Progress
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">▧</span>
-
-                Dokumentasi
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">▥</span>
-
-                Laporan
-
-            </a>
-
-
-            <a href="#"
-                class="menu-item">
-
-                <span class="menu-icon">⚙</span>
-
-                Pengaturan
-
-            </a>
-
-
-        </aside>
-
-
-
-        <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
-        <main class="main">
-
-
-            <!-- TOPBAR -->
-
-            <header class="topbar">
-
-
-                <div class="hamburger">
-                    ☰
-                </div>
-
-
-                <div class="top-right">
-
-
-                    <div class="notification">
-
-                        ♧
-
-                        <span class="notification-dot"></span>
-
-                    </div>
-
-
-                    <div class="profile">
-
-                        <div class="avatar">
-                            👤
-                        </div>
-
-                        <span class="profile-name">
-                            {{ auth()->user()->name }}
-                        </span>
-
-                        <span>
-                            ▾
-                        </span>
-
-                    </div>
-
+                    Nota belum diunggah
 
                 </div>
 
 
-            </header>
+                <div class="dashboard-warning-text">
 
-
-
-            <!-- =====================================================
-             CONTENT
-        ====================================================== -->
-
-            <section class="content">
-
-
-                <div class="page-header">
-
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-
-                    <p>
-                        Selamat datang,
-                        {{ auth()->user()->name }}!
-                    </p>
-
+                    Periksa pengeluaran proyek
+                    yang belum memiliki bukti nota.
 
                 </div>
 
 
+            </div>
 
-                <!-- =================================================
-                 STATISTICS
-            ================================================== -->
 
-                <div class="stats">
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon blue">
-                            ▣
-                        </div>
-
-                        <div>
-
-                            <div class="stat-label">
-                                Total Proyek
-                            </div>
-
-                            <div class="stat-value">
-                                {{ $totalProjects }}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon green">
-                            ▰
-                        </div>
-
-                        <div>
-
-                            <div class="stat-label">
-                                Proyek Berjalan
-                            </div>
-
-                            <div class="stat-value">
-                                {{ $ongoingProjects }}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon purple">
-                            ✓
-                        </div>
-
-                        <div>
-
-                            <div class="stat-label">
-                                Proyek Selesai
-                            </div>
-
-                            <div class="stat-value">
-                                {{ $completedProjects }}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="stat-card">
-
-                        <div class="stat-icon orange">
-                            Rp
-                        </div>
-
-                        <div>
-
-                            <div class="stat-label">
-                                Total Pengeluaran
-                            </div>
-
-                            <div class="stat-value">
-
-                                Rp {{ number_format(
-                                $totalExpenses,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- =================================================
-                 PROJECT TERBARU
-            ================================================== -->
-
-                <div class="panel">
-
-
-                    <div class="panel-header">
-
-                        <h3>
-                            Proyek Terbaru
-                        </h3>
-
-                        <a href="#">
-                            Lihat Semua
-                        </a>
-
-                    </div>
-
-
-                    <div class="table-wrapper">
-
-
-                        <table>
-
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>Nama Proyek</th>
-
-                                    <th>Client</th>
-
-                                    <th>Lokasi</th>
-
-                                    <th>Progress</th>
-
-                                    <th>Status</th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-
-                                @forelse($latestProjects as $project)
-
-
-                                <tr>
-
-
-                                    <td>
-
-                                        {{ $project->project_name }}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {{
-                                        optional(
-                                            optional(
-                                                $project->client
-                                            )->user
-                                        )->name
-                                        ?? '-'
-                                    }}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {{ $project->location }}
-
-                                    </td>
-
-
-                                    <td>
-                                        <div class="progress-row">
-                                            <div class="progress-track">
-                                                <div
-                                                    class="progress-fill"
-                                                    data-progress="{{ $project->progress_percentage }}">
-                                                </div>
-                                            </div>
-
-                                            <span class="progress-number">
-                                                {{ $project->progress_percentage }}%
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>
-
-
-                                        @if(
-                                        $project->status
-                                        ===
-                                        'ongoing'
-                                        )
-
-                                        <span class="badge badge-ongoing">
-
-                                            Berjalan
-
-                                        </span>
-
-
-                                        @elseif(
-                                        $project->status
-                                        ===
-                                        'completed'
-                                        )
-
-                                        <span class="badge badge-completed">
-
-                                            Selesai
-
-                                        </span>
-
-
-                                        @elseif(
-                                        $project->status
-                                        ===
-                                        'paused'
-                                        )
-
-                                        <span class="badge badge-paused">
-
-                                            Ditunda
-
-                                        </span>
-
-
-                                        @else
-
-                                        <span class="badge badge-planning">
-
-                                            Perencanaan
-
-                                        </span>
-
-                                        @endif
-
-
-                                    </td>
-
-
-                                </tr>
-
-
-                                @empty
-
-
-                                <tr>
-
-                                    <td
-                                        colspan="5"
-                                        class="empty-data">
-
-                                        Belum ada data proyek.
-
-                                    </td>
-
-                                </tr>
-
-
-                                @endforelse
-
-
-                            </tbody>
-
-
-                        </table>
-
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- =================================================
-                 BOTTOM
-            ================================================== -->
-
-                <div class="dashboard-bottom">
-
-
-                    <!-- JADWAL -->
-
-                    <div class="panel">
-
-
-                        <div class="panel-header">
-
-                            <h3>
-                                Jadwal Mendatang
-                            </h3>
-
-                        </div>
-
-
-                        @forelse($upcomingSchedules as $schedule)
-
-                        <div class="schedule-row">
-
-
-                            <div class="schedule-date">
-
-                                {{
-                                    \Carbon\Carbon::parse(
-                                        $schedule->start_date
-                                    )->format('d M Y')
-                                }}
-
-                            </div>
-
-
-                            <div>
-
-                                {{ $schedule->title }}
-
-                            </div>
-
-
-                            <div class="schedule-project">
-
-                                {{
-                                    optional(
-                                        $schedule->project
-                                    )->project_name
-                                    ?? '-'
-                                }}
-
-                            </div>
-
-
-                        </div>
-
-
-                        @empty
-
-
-                        <div class="empty-data">
-
-                            Belum ada jadwal mendatang.
-
-                        </div>
-
-
-                        @endforelse
-
-
-                    </div>
-
-
-
-                    <!-- PERINGATAN -->
-
-                    <div class="panel">
-
-
-                        <div class="panel-header">
-
-                            <h3>
-                                Peringatan
-                            </h3>
-
-                        </div>
-
-
-                        <div class="warning">
-
-
-                            <div class="warning-icon">
-
-                                ⚠
-
-                            </div>
-
-
-                            <div>
-
-                                <div class="warning-title">
-
-                                    Jadwal proyek bertabrakan
-
-                                </div>
-
-                                <div class="warning-text">
-
-                                    Periksa kembali jadwal
-                                    proyek yang berlangsung
-                                    pada tanggal yang sama.
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-
-
-                        <div class="warning">
-
-
-                            <div class="warning-icon yellow">
-
-                                !
-
-                            </div>
-
-
-                            <div>
-
-                                <div class="warning-title">
-
-                                    Nota belum diunggah
-
-                                </div>
-
-                                <div class="warning-text">
-
-                                    Periksa pengeluaran
-                                    proyek yang belum
-                                    memiliki bukti nota.
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </section>
-
-
-        </main>
+        </div>
 
 
     </div>
 
-    <script>
-        document.querySelectorAll('.progress-fill').forEach(function(bar) {
-            const value = bar.dataset.progress ?? 0;
-            bar.style.width = value + '%';
-        });
-    </script>
-</body>
 
-</html>
+</div>
+
+
+@endsection
+
+
+
+@push('scripts')
+
+<script>
+    document.addEventListener(
+        'DOMContentLoaded',
+        function() {
+
+            const progressBars =
+                document.querySelectorAll(
+                    '.dashboard-progress-fill'
+                );
+
+
+            progressBars.forEach(
+                function(bar) {
+
+                    let value =
+                        parseFloat(
+                            bar.dataset.progress ??
+                            0
+                        );
+
+
+                    if (isNaN(value)) {
+
+                        value = 0;
+
+                    }
+
+
+                    value =
+                        Math.max(
+                            0,
+                            Math.min(
+                                100,
+                                value
+                            )
+                        );
+
+
+                    bar.style.width =
+                        value + '%';
+
+                }
+            );
+
+        }
+    );
+</script>
+
+@endpush
