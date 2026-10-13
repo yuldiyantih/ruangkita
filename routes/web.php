@@ -11,8 +11,8 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\WorkController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\MaterialController;
-
-
+use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\PersonalFundController;
 
 /*
 |--------------------------------------------------------------------------
@@ -278,7 +278,38 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/materials/{material}', [MaterialController::class, 'update'])
         ->name('admin.materials.update');
 
+    // =========================
+    //  ADMIN - PENGELUARAN
+    // =========================
+    Route::get('/admin/expenses', [ExpenseController::class, 'index'])
+        ->name('admin.expenses.index');
 
+    Route::get('/admin/expenses/create', [ExpenseController::class, 'create'])
+        ->name('admin.expenses.create');
+
+    Route::post('/admin/expenses', [ExpenseController::class, 'store'])
+        ->name('admin.expenses.store');
+
+
+    /* EXPORT - pdf} */
+
+    Route::get('/admin/expenses/export/excel', [ExpenseController::class, 'exportExcel'])
+        ->name('admin.expenses.export.excel');
+
+    Route::get('/admin/expenses/export/pdf', [ExpenseController::class, 'exportPdf'])
+        ->name('admin.expenses.export.pdf');
+
+    Route::get('/admin/expenses/{expense}', [ExpenseController::class, 'show'])
+        ->name('admin.expenses.show');
+
+    Route::get('/admin/expenses/{expense}/edit', [ExpenseController::class, 'edit'])
+        ->name('admin.expenses.edit');
+
+    Route::put('/admin/expenses/{expense}', [ExpenseController::class, 'update'])
+        ->name('admin.expenses.update');
+
+    Route::delete('/admin/expenses/{expense}', [ExpenseController::class, 'destroy'])
+        ->name('admin.expenses.destroy');
 
 
 
@@ -396,4 +427,40 @@ Route::middleware('auth')->group(function () {
         '/client/settings/preferences',
         [ClientProjectController::class, 'updatePreferences']
     )->name('client.settings.preferences');
+
+    // =========================
+    // ADMIN - UANG PRIBADI
+    // =========================
+
+    Route::get(
+        '/admin/personal-funds',
+        [PersonalFundController::class, 'index']
+    )->name('admin.personal-funds.index');
+
+    Route::get(
+        '/admin/personal-funds/export/excel',
+        [PersonalFundController::class, 'exportExcel']
+    )->name('admin.personal-funds.export.excel');
+
+    Route::get(
+        '/admin/personal-funds/export/pdf',
+        [PersonalFundController::class, 'exportPdf']
+    )->name('admin.personal-funds.export.pdf');
+
+    Route::get(
+        '/admin/personal-funds/{personalFund}',
+        [PersonalFundController::class, 'show']
+    )->name('admin.personal-funds.show');
+
+
+    Route::patch(
+        '/admin/personal-funds/{personalFund}/paid',
+        [PersonalFundController::class, 'markAsPaid']
+    )->name('admin.personal-funds.paid');
+
+
+    Route::patch(
+        '/admin/personal-funds/{personalFund}/unpaid',
+        [PersonalFundController::class, 'markAsUnpaid']
+    )->name('admin.personal-funds.unpaid');
 });

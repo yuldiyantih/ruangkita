@@ -2,32 +2,12 @@
 
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| CURRENT ADMIN
-|--------------------------------------------------------------------------
-*/
-
 $adminUser = Auth::user();
-
-
-/*
-|--------------------------------------------------------------------------
-| LANGUAGE
-|--------------------------------------------------------------------------
-*/
 
 $adminLang =
 $adminUser->language
 ??
 'id';
-
-
-/*
-|--------------------------------------------------------------------------
-| THEME
-|--------------------------------------------------------------------------
-*/
 
 $adminTheme =
 $adminUser->theme
@@ -35,111 +15,38 @@ $adminUser->theme
 'light';
 
 
-/*
-|--------------------------------------------------------------------------
-| GLOBAL TRANSLATION
-|--------------------------------------------------------------------------
-*/
-
 $adminTranslations = [
 
 'id' => [
-
-'dashboard' =>
-'Dashboard',
-
-'client' =>
-'Client',
-
-'projects' =>
-'Proyek',
-
-'works' =>
-'Pekerjaan',
-
-'schedule' =>
-'Jadwal',
-
-'materials' =>
-'Material',
-
-'expenses' =>
-'Pengeluaran',
-
-'personal_funds' =>
-'Uang Pribadi',
-
-'progress' =>
-'Progress',
-
-'documentation' =>
-'Dokumentasi',
-
-'reports' =>
-'Laporan',
-
-'settings' =>
-'Pengaturan',
-
-'logout' =>
-'Keluar',
-
-'profile' =>
-'Profil',
-
-'admin' =>
-'Admin',
-
+'dashboard' => 'Dashboard',
+'client' => 'Client',
+'projects' => 'Proyek',
+'works' => 'Pekerjaan',
+'schedule' => 'Jadwal',
+'materials' => 'Material',
+'expenses' => 'Pengeluaran',
+'personal_funds' => 'Uang Pribadi',
+'progress' => 'Progress',
+'documentation' => 'Dokumentasi',
+'reports' => 'Laporan',
+'settings' => 'Pengaturan',
+'logout' => 'Keluar',
 ],
 
-
 'en' => [
-
-'dashboard' =>
-'Dashboard',
-
-'client' =>
-'Clients',
-
-'projects' =>
-'Projects',
-
-'works' =>
-'Works',
-
-'schedule' =>
-'Schedule',
-
-'materials' =>
-'Materials',
-
-'expenses' =>
-'Expenses',
-
-'personal_funds' =>
-'Personal Funds',
-
-'progress' =>
-'Progress',
-
-'documentation' =>
-'Documentation',
-
-'reports' =>
-'Reports',
-
-'settings' =>
-'Settings',
-
-'logout' =>
-'Logout',
-
-'profile' =>
-'Profile',
-
-'admin' =>
-'Admin',
-
+'dashboard' => 'Dashboard',
+'client' => 'Clients',
+'projects' => 'Projects',
+'works' => 'Works',
+'schedule' => 'Schedule',
+'materials' => 'Materials',
+'expenses' => 'Expenses',
+'personal_funds' => 'Personal Funds',
+'progress' => 'Progress',
+'documentation' => 'Documentation',
+'reports' => 'Reports',
+'settings' => 'Settings',
+'logout' => 'Logout',
 ],
 
 ];
@@ -157,21 +64,17 @@ $adminTranslations['id'];
 
 <html lang="{{ $adminLang }}">
 
-
 <head>
 
     <meta charset="UTF-8">
-
 
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-
     <title>
         @yield('title', 'RuangKita Admin')
     </title>
-
 
 
     <style>
@@ -180,13 +83,9 @@ $adminTranslations['id'];
         ===================================================== */
 
         * {
-
             margin: 0;
-
             padding: 0;
-
-            box-sizing:
-                border-box;
+            box-sizing: border-box;
 
             font-family:
                 Arial,
@@ -195,100 +94,48 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
-           ROOT COLORS - LIGHT MODE
+           ROOT
         ===================================================== */
 
         :root {
 
-            --sidebar-width:
-                230px;
+            --sidebar-width: 230px;
+            --sidebar-collapsed: 78px;
 
-            --sidebar-collapsed:
-                78px;
+            --sidebar-bg-1: #0d3458;
+            --sidebar-bg-2: #092843;
 
+            --primary: #0877d4;
+            --primary-light: #078ee5;
+            --primary-soft: #e7f3ff;
 
-            --sidebar-bg-1:
-                #0d3458;
+            --body-bg: #f4f8fc;
+            --card-bg: #ffffff;
+            --topbar-bg: #ffffff;
+            --input-bg: #fbfdff;
 
-            --sidebar-bg-2:
-                #092843;
+            --text-main: #17334c;
+            --text-heading: #102e49;
+            --text-muted: #71869a;
 
+            --border: #e1e9ef;
 
-            --primary:
-                #0877d4;
+            --success: #14835c;
+            --success-bg: #ddf8eb;
 
-            --primary-light:
-                #078ee5;
+            --danger: #dc4c4c;
+            --danger-bg: #ffe7e7;
 
-            --primary-soft:
-                #e7f3ff;
-
-
-            --body-bg:
-                #f4f8fc;
-
-            --card-bg:
-                #ffffff;
-
-            --topbar-bg:
-                #ffffff;
-
-            --input-bg:
-                #fbfdff;
-
-
-            --text-main:
-                #17334c;
-
-            --text-heading:
-                #102e49;
-
-            --text-muted:
-                #71869a;
-
-
-            --border:
-                #e1e9ef;
-
-
-            --success:
-                #14835c;
-
-            --success-bg:
-                #ddf8eb;
-
-
-            --danger:
-                #dc4c4c;
-
-            --danger-bg:
-                #ffe7e7;
-
-
-            --warning:
-                #d97706;
-
-            --warning-bg:
-                #fff0cf;
-
+            --warning: #d97706;
+            --warning-bg: #fff0cf;
 
             --shadow:
-                0 4px 16px rgba(30,
-                    72,
-                    105,
-                    .05);
-
+                0 4px 16px rgba(30, 72, 105, .05);
 
             --shadow-md:
-                0 10px 28px rgba(20,
-                    55,
-                    85,
-                    .10);
-
+                0 10px 28px rgba(20, 55, 85, .10);
         }
-
 
 
         /* =====================================================
@@ -297,62 +144,29 @@ $adminTranslations['id'];
 
         body.dark-mode {
 
-            --body-bg:
-                #101923;
+            --body-bg: #101923;
+            --card-bg: #172735;
+            --topbar-bg: #152331;
+            --input-bg: #1b2d3c;
 
-            --card-bg:
-                #172735;
+            --text-main: #dce8f2;
+            --text-heading: #f2f7fb;
+            --text-muted: #94a9bb;
 
-            --topbar-bg:
-                #152331;
+            --border: #294052;
 
-            --input-bg:
-                #1b2d3c;
+            --primary-soft: #173a56;
 
-
-            --text-main:
-                #dce8f2;
-
-            --text-heading:
-                #f2f7fb;
-
-            --text-muted:
-                #94a9bb;
-
-
-            --border:
-                #294052;
-
-
-            --primary-soft:
-                #173a56;
-
-
-            --success-bg:
-                #183c31;
-
-            --danger-bg:
-                #47282d;
-
-            --warning-bg:
-                #49391e;
-
+            --success-bg: #183c31;
+            --danger-bg: #47282d;
+            --warning-bg: #49391e;
 
             --shadow:
-                0 4px 18px rgba(0,
-                    0,
-                    0,
-                    .16);
-
+                0 4px 18px rgba(0, 0, 0, .16);
 
             --shadow-md:
-                0 12px 30px rgba(0,
-                    0,
-                    0,
-                    .26);
-
+                0 12px 30px rgba(0, 0, 0, .26);
         }
-
 
 
         /* =====================================================
@@ -360,16 +174,11 @@ $adminTranslations['id'];
         ===================================================== */
 
         html {
-
-            scroll-behavior:
-                smooth;
+            scroll-behavior: smooth;
         }
 
-
         body {
-
-            min-height:
-                100vh;
+            min-height: 100vh;
 
             background:
                 var(--body-bg);
@@ -377,11 +186,9 @@ $adminTranslations['id'];
             color:
                 var(--text-main);
 
-            font-size:
-                15px;
+            font-size: 15px;
 
-            line-height:
-                1.5;
+            line-height: 1.5;
 
             transition:
                 background .25s ease,
@@ -389,17 +196,13 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
            APP
         ===================================================== */
 
         .admin-app {
-
-            min-height:
-                100vh;
+            min-height: 100vh;
         }
-
 
 
         /* =====================================================
@@ -408,48 +211,34 @@ $adminTranslations['id'];
 
         .admin-sidebar {
 
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
             width:
                 var(--sidebar-width);
 
-            position:
-                fixed;
-
-            top: 0;
-
-            left: 0;
-
-            bottom: 0;
-
-            z-index:
-                1000;
-
+            z-index: 1000;
 
             padding:
                 20px 14px;
 
+            overflow-x: hidden;
+            overflow-y: auto;
 
-            overflow-x:
-                hidden;
-
-            overflow-y:
-                auto;
-
+            color: white;
 
             background:
                 linear-gradient(180deg,
                     var(--sidebar-bg-1),
                     var(--sidebar-bg-2));
 
-
-            color:
-                white;
-
-
             transition:
                 width .25s ease,
                 padding .25s ease;
         }
-
 
 
         /* =====================================================
@@ -458,74 +247,53 @@ $adminTranslations['id'];
 
         .admin-brand {
 
-            min-height:
-                48px;
+            min-height: 48px;
 
             padding:
                 4px 8px 23px;
 
+            display: flex;
 
-            display:
-                flex;
+            align-items: center;
 
-            align-items:
-                center;
-
-            gap:
-                11px;
+            gap: 11px;
         }
 
 
         .admin-brand-name {
 
-            white-space:
-                nowrap;
+            white-space: nowrap;
 
-            font-size:
-                19px;
+            font-size: 19px;
 
-            font-weight:
-                700;
+            font-weight: 700;
         }
 
 
-
         /* =====================================================
-           RUANGKITA LOGO
+           LOGO
         ===================================================== */
 
         .ruangkita-logo {
 
-            position:
-                relative;
+            position: relative;
 
-            width:
-                35px;
+            width: 35px;
+            height: 35px;
 
-            height:
-                35px;
-
-            flex-shrink:
-                0;
+            flex-shrink: 0;
         }
 
 
         .ruangkita-logo .roof {
 
-            position:
-                absolute;
+            position: absolute;
 
-            width:
-                23px;
+            width: 23px;
+            height: 23px;
 
-            height:
-                23px;
-
-            left:
-                6px;
-
-            top:
-                2px;
+            left: 6px;
+            top: 2px;
 
             border-left:
                 4px solid white;
@@ -540,20 +308,13 @@ $adminTranslations['id'];
 
         .ruangkita-logo .house {
 
-            position:
-                absolute;
+            position: absolute;
 
-            width:
-                22px;
+            width: 22px;
+            height: 19px;
 
-            height:
-                19px;
-
-            left:
-                7px;
-
-            bottom:
-                2px;
+            left: 7px;
+            bottom: 2px;
 
             border-left:
                 4px solid white;
@@ -568,20 +329,13 @@ $adminTranslations['id'];
 
         .ruangkita-logo .door {
 
-            position:
-                absolute;
+            position: absolute;
 
-            width:
-                7px;
+            width: 7px;
+            height: 10px;
 
-            height:
-                10px;
-
-            left:
-                50%;
-
-            bottom:
-                -1px;
+            left: 50%;
+            bottom: -1px;
 
             transform:
                 translateX(-50%);
@@ -594,48 +348,33 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
-           SIDEBAR MENU
+           MENU
         ===================================================== */
 
         .admin-menu-item {
 
-            min-height:
-                44px;
+            min-height: 44px;
 
             padding:
                 0 13px;
 
-            margin-bottom:
-                4px;
+            margin-bottom: 4px;
 
+            border-radius: 8px;
 
-            border-radius:
-                8px;
+            display: flex;
 
+            align-items: center;
 
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                11px;
-
+            gap: 11px;
 
             color:
                 #d6e6f5;
 
+            text-decoration: none;
 
-            text-decoration:
-                none;
-
-
-            font-size:
-                14px;
-
+            font-size: 14px;
 
             transition:
                 background .2s ease,
@@ -646,20 +385,15 @@ $adminTranslations['id'];
         .admin-menu-item:hover {
 
             background:
-                rgba(255,
-                    255,
-                    255,
-                    .08);
+                rgba(255, 255, 255, .08);
 
-            color:
-                white;
+            color: white;
         }
 
 
         .admin-menu-item.active {
 
-            color:
-                white;
+            color: white;
 
             background:
                 linear-gradient(90deg,
@@ -667,39 +401,29 @@ $adminTranslations['id'];
                     #087acb);
 
             box-shadow:
-                0 4px 10px rgba(0,
-                    0,
-                    0,
-                    .10);
+                0 4px 10px rgba(0, 0, 0, .10);
         }
 
 
         .admin-menu-icon {
 
-            width:
-                21px;
+            width: 21px;
 
-            flex-shrink:
-                0;
+            flex-shrink: 0;
 
-            text-align:
-                center;
+            text-align: center;
 
-            font-size:
-                16px;
+            font-size: 16px;
         }
 
 
         .admin-menu-text {
-
-            white-space:
-                nowrap;
+            white-space: nowrap;
         }
 
 
-
         /* =====================================================
-           MAIN AREA
+           MAIN
         ===================================================== */
 
         .admin-main {
@@ -707,20 +431,15 @@ $adminTranslations['id'];
             width:
                 calc(100% - var(--sidebar-width));
 
-
-            min-height:
-                100vh;
-
+            min-height: 100vh;
 
             margin-left:
                 var(--sidebar-width);
-
 
             transition:
                 margin-left .25s ease,
                 width .25s ease;
         }
-
 
 
         /* =====================================================
@@ -729,46 +448,30 @@ $adminTranslations['id'];
 
         .admin-topbar {
 
-            height:
-                66px;
-
+            height: 66px;
 
             padding:
                 0 28px;
 
-
-            position:
-                sticky;
+            position: sticky;
 
             top: 0;
 
-            z-index:
-                900;
+            z-index: 900;
 
+            display: flex;
 
-            display:
-                flex;
-
-            align-items:
-                center;
+            align-items: center;
 
             justify-content:
                 space-between;
 
-
             background:
                 var(--topbar-bg);
 
-
             border-bottom:
                 1px solid var(--border);
-
-
-            transition:
-                background .25s ease,
-                border-color .25s ease;
         }
-
 
 
         /* =====================================================
@@ -777,48 +480,28 @@ $adminTranslations['id'];
 
         .admin-hamburger {
 
-            width:
-                40px;
+            width: 40px;
+            height: 40px;
 
-            height:
-                40px;
+            border: none;
 
+            border-radius: 9px;
 
-            border:
-                none;
+            display: flex;
 
-            border-radius:
-                9px;
+            align-items: center;
 
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
+            justify-content: center;
 
             background:
                 transparent;
 
-
             color:
                 var(--text-muted);
 
+            cursor: pointer;
 
-            cursor:
-                pointer;
-
-
-            font-size:
-                22px;
-
-
-            transition:
-                .2s ease;
+            font-size: 22px;
         }
 
 
@@ -832,15 +515,12 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
            PROFILE
         ===================================================== */
 
         .admin-profile {
-
-            position:
-                relative;
+            position: relative;
         }
 
 
@@ -849,45 +529,27 @@ $adminTranslations['id'];
             padding:
                 5px 8px;
 
+            border: none;
 
-            border:
-                none;
+            border-radius: 9px;
 
-            border-radius:
-                9px;
+            display: flex;
 
+            align-items: center;
 
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                9px;
-
+            gap: 9px;
 
             background:
                 transparent;
 
-
             color:
                 var(--text-main);
 
+            cursor: pointer;
 
-            cursor:
-                pointer;
+            font-size: 14px;
 
-
-            font-size:
-                14px;
-
-            font-weight:
-                700;
-
-
-            transition:
-                .2s ease;
+            font-weight: 700;
         }
 
 
@@ -898,84 +560,61 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
            AVATAR
         ===================================================== */
 
         .admin-avatar {
 
-            width:
-                36px;
+            width: 36px;
+            height: 36px;
 
-            height:
-                36px;
+            overflow: hidden;
 
+            border-radius: 50%;
 
-            overflow:
-                hidden;
+            display: flex;
 
+            align-items: center;
 
-            border-radius:
-                50%;
+            justify-content: center;
 
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
+            flex-shrink: 0;
 
             background:
                 var(--primary-soft);
 
-
             color:
                 var(--primary);
 
+            font-size: 14px;
 
-            font-size:
-                14px;
-
-            font-weight:
-                700;
+            font-weight: 700;
         }
 
 
         .admin-avatar img {
 
-            width:
-                100%;
+            width: 100%;
+            height: 100%;
 
-            height:
-                100%;
+            display: block;
 
-
-            display:
-                block;
-
-
-            object-fit:
-                cover;
+            object-fit: cover;
 
             object-position:
                 center top;
         }
 
 
+        .admin-profile-name {
+            white-space: nowrap;
+        }
 
-        /* =====================================================
-           PROFILE ARROW
-        ===================================================== */
 
         .admin-profile-arrow {
 
-            font-size:
-                10px;
+            font-size: 10px;
 
             transition:
                 transform .2s ease;
@@ -989,50 +628,34 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
            PROFILE DROPDOWN
         ===================================================== */
 
         .admin-profile-menu {
 
-            width:
-                230px;
+            width: 230px;
 
-
-            position:
-                absolute;
-
+            position: absolute;
 
             top:
                 calc(100% + 10px);
 
             right: 0;
 
+            z-index: 2000;
 
-            z-index:
-                2000;
+            display: none;
 
-
-            display:
-                none;
-
-
-            overflow:
-                hidden;
-
+            overflow: hidden;
 
             border:
                 1px solid var(--border);
 
-
-            border-radius:
-                12px;
-
+            border-radius: 12px;
 
             background:
                 var(--card-bg);
-
 
             box-shadow:
                 var(--shadow-md);
@@ -1040,9 +663,7 @@ $adminTranslations['id'];
 
 
         .admin-profile-menu.show {
-
-            display:
-                block;
+            display: block;
         }
 
 
@@ -1050,107 +671,79 @@ $adminTranslations['id'];
 
             padding:
                 15px 16px;
-
-
-            border-bottom:
-                1px solid var(--border);
         }
 
 
         .admin-profile-header strong {
 
-            display:
-                block;
-
+            display: block;
 
             color:
                 var(--text-heading);
 
-
-            font-size:
-                14px;
+            font-size: 14px;
         }
 
 
         .admin-profile-header span {
 
-            display:
-                block;
+            display: block;
 
+            margin-top: 4px;
 
-            margin-top:
-                4px;
-
-
-            overflow:
-                hidden;
-
+            overflow: hidden;
 
             color:
                 var(--text-muted);
 
+            font-size: 12px;
 
-            font-size:
-                12px;
-
-
-            white-space:
-                nowrap;
+            white-space: nowrap;
 
             text-overflow:
                 ellipsis;
         }
 
 
+        .admin-profile-divider {
+
+            height: 1px;
+
+            background:
+                var(--border);
+        }
+
+
         .admin-profile-item {
 
-            width:
-                100%;
+            width: 100%;
 
-
-            min-height:
-                44px;
-
+            min-height: 44px;
 
             padding:
                 0 15px;
 
+            border: none;
 
-            border:
-                none;
+            display: flex;
 
+            align-items: center;
 
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                10px;
-
+            gap: 10px;
 
             background:
                 transparent;
 
-
             color:
                 var(--text-main);
 
+            text-decoration: none;
 
-            text-decoration:
-                none;
+            text-align: left;
 
-            text-align:
-                left;
+            cursor: pointer;
 
-
-            cursor:
-                pointer;
-
-
-            font-size:
-                13px;
+            font-size: 13px;
         }
 
 
@@ -1171,17 +764,6 @@ $adminTranslations['id'];
         }
 
 
-        .admin-profile-divider {
-
-            height:
-                1px;
-
-            background:
-                var(--border);
-        }
-
-
-
         /* =====================================================
            CONTENT
         ===================================================== */
@@ -1193,9 +775,8 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
-           GLOBAL PAGE HEADER
+           PAGE HEADER
         ===================================================== */
 
         .admin-page-header {
@@ -1210,19 +791,14 @@ $adminTranslations['id'];
             margin:
                 0 0 6px 0;
 
-
             color:
                 var(--text-heading);
 
+            font-size: 28px;
 
-            font-size:
-                28px;
+            font-weight: 700;
 
-            font-weight:
-                700;
-
-            line-height:
-                1.25;
+            line-height: 1.25;
         }
 
 
@@ -1230,22 +806,17 @@ $adminTranslations['id'];
 
             margin: 0;
 
-
             color:
                 var(--text-muted);
 
+            font-size: 14px;
 
-            font-size:
-                14px;
-
-            line-height:
-                1.6;
+            line-height: 1.6;
         }
 
 
-
         /* =====================================================
-           GLOBAL BREADCRUMB
+           BREADCRUMB
         ===================================================== */
 
         .admin-breadcrumb {
@@ -1253,53 +824,32 @@ $adminTranslations['id'];
             width:
                 fit-content;
 
-
             margin-bottom:
                 14px;
-
 
             padding:
                 8px 12px;
 
+            display: flex;
 
-            display:
-                flex;
+            align-items: center;
 
-            align-items:
-                center;
+            gap: 8px;
 
-            gap:
-                8px;
-
-            flex-wrap:
-                wrap;
-
+            flex-wrap: wrap;
 
             border:
                 1px solid var(--border);
 
-
-            border-radius:
-                10px;
-
+            border-radius: 10px;
 
             background:
                 var(--card-bg);
 
-
-            box-shadow:
-                0 2px 6px rgba(0,
-                    0,
-                    0,
-                    .03);
-
-
             color:
                 var(--text-muted);
 
-
-            font-size:
-                13px;
+            font-size: 13px;
         }
 
 
@@ -1308,18 +858,14 @@ $adminTranslations['id'];
             color:
                 var(--primary);
 
-            text-decoration:
-                none;
+            text-decoration: none;
 
-            font-weight:
-                600;
+            font-weight: 600;
         }
 
 
         .admin-breadcrumb a:hover {
-
-            text-decoration:
-                underline;
+            text-decoration: underline;
         }
 
 
@@ -1328,8 +874,7 @@ $adminTranslations['id'];
             color:
                 var(--text-muted);
 
-            opacity:
-                .65;
+            opacity: .65;
         }
 
 
@@ -1338,14 +883,12 @@ $adminTranslations['id'];
             color:
                 var(--text-muted);
 
-            font-weight:
-                500;
+            font-weight: 500;
         }
 
 
-
         /* =====================================================
-           GLOBAL CARD
+           CARD
         ===================================================== */
 
         .admin-card {
@@ -1353,22 +896,13 @@ $adminTranslations['id'];
             border:
                 1px solid var(--border);
 
-
-            border-radius:
-                14px;
-
+            border-radius: 14px;
 
             background:
                 var(--card-bg);
 
-
             box-shadow:
                 var(--shadow);
-
-
-            transition:
-                background .25s ease,
-                border-color .25s ease;
         }
 
 
@@ -1377,37 +911,27 @@ $adminTranslations['id'];
             color:
                 var(--text-heading);
 
+            font-size: 18px;
 
-            font-size:
-                18px;
-
-            font-weight:
-                700;
+            font-weight: 700;
         }
 
 
-
         /* =====================================================
-           GLOBAL FORM CARD
+           FORM CARD
         ===================================================== */
 
         .admin-form-card {
 
-            padding:
-                24px;
-
+            padding: 24px;
 
             border:
                 1px solid var(--border);
 
-
-            border-radius:
-                14px;
-
+            border-radius: 14px;
 
             background:
                 var(--card-bg);
-
 
             box-shadow:
                 var(--shadow);
@@ -1419,134 +943,86 @@ $adminTranslations['id'];
             margin-bottom:
                 18px;
 
-
             color:
                 var(--text-heading);
 
+            font-size: 18px;
 
-            font-size:
-                18px;
-
-            font-weight:
-                700;
-        }
-
-
-
-        /* =====================================================
-           FORM GROUP
-        ===================================================== */
-
-        .admin-form-group {
-
-            display:
-                flex;
-
-            flex-direction:
-                column;
-
-            gap:
-                7px;
+            font-weight: 700;
         }
 
 
         .admin-form-grid {
 
-            display:
-                grid;
-
+            display: grid;
 
             grid-template-columns:
                 repeat(2,
-                    minmax(0,
-                        1fr));
+                    minmax(0, 1fr));
+
+            gap: 18px;
+        }
 
 
-            gap:
-                18px;
+        .admin-form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
         }
 
 
         .admin-form-group.full {
-
-            grid-column:
-                1 / -1;
+            grid-column: 1 / -1;
         }
 
-
-
-        /* =====================================================
-           FORM LABEL
-        ===================================================== */
 
         .admin-form-label {
 
             color:
                 var(--text-heading);
 
+            font-size: 14px;
 
-            font-size:
-                14px;
-
-            font-weight:
-                600;
+            font-weight: 600;
         }
 
 
         .admin-required {
-
             color:
                 var(--danger);
         }
 
 
-
-        /* =====================================================
-           FORM CONTROL
-        ===================================================== */
-
         .admin-form-control {
 
-            width:
-                100%;
+            width: 100%;
 
-
-            min-height:
-                46px;
-
+            min-height: 46px;
 
             padding:
                 11px 13px;
 
-
             border:
                 1px solid var(--border);
 
+            border-radius: 10px;
 
-            border-radius:
-                10px;
-
-
-            outline:
-                none;
-
+            outline: none;
 
             background:
                 var(--input-bg);
 
-
             color:
                 var(--text-main);
 
-
-            font-size:
-                14px;
-
+            font-size: 14px;
 
             transition:
                 border-color .2s ease,
-                box-shadow .2s ease,
-                background .25s ease;
+                box-shadow .2s ease;
         }
 
 
@@ -1555,8 +1031,7 @@ $adminTranslations['id'];
             color:
                 var(--text-muted);
 
-            opacity:
-                .72;
+            opacity: .72;
         }
 
 
@@ -1565,75 +1040,49 @@ $adminTranslations['id'];
             border-color:
                 var(--primary);
 
-
             box-shadow:
-                0 0 0 3px rgba(8,
-                    119,
-                    212,
-                    .12);
+                0 0 0 3px rgba(8, 119, 212, .12);
         }
 
 
         textarea.admin-form-control {
 
-            min-height:
-                110px;
+            min-height: 110px;
 
-            resize:
-                vertical;
+            resize: vertical;
         }
 
 
-
         /* =====================================================
-           GLOBAL BUTTON
+           BUTTON
         ===================================================== */
 
         .admin-btn {
 
-            min-height:
-                42px;
-
+            min-height: 42px;
 
             padding:
                 0 16px;
 
+            border: none;
 
-            border:
-                none;
+            border-radius: 9px;
 
+            display: inline-flex;
 
-            border-radius:
-                9px;
+            align-items: center;
 
+            justify-content: center;
 
-            display:
-                inline-flex;
+            gap: 7px;
 
-            align-items:
-                center;
+            text-decoration: none;
 
-            justify-content:
-                center;
+            cursor: pointer;
 
-            gap:
-                7px;
+            font-size: 14px;
 
-
-            text-decoration:
-                none;
-
-
-            cursor:
-                pointer;
-
-
-            font-size:
-                14px;
-
-            font-weight:
-                700;
-
+            font-weight: 700;
 
             transition:
                 transform .2s ease,
@@ -1649,9 +1098,6 @@ $adminTranslations['id'];
         }
 
 
-
-        /* PRIMARY */
-
         .admin-btn-primary {
 
             background:
@@ -1659,30 +1105,22 @@ $adminTranslations['id'];
                     var(--primary),
                     var(--primary-light));
 
-            color:
-                white;
+            color: white;
         }
 
 
         .admin-btn-primary:hover {
-
-            filter:
-                brightness(.96);
+            filter: brightness(.96);
         }
 
-
-
-        /* SECONDARY / BATAL */
 
         .admin-btn-secondary {
 
             border:
                 1px solid var(--border);
 
-
             background:
                 #eaf1f7;
-
 
             color:
                 #35546f;
@@ -1696,7 +1134,6 @@ $adminTranslations['id'];
         }
 
 
-
         body.dark-mode .admin-btn-secondary {
 
             background:
@@ -1706,16 +1143,6 @@ $adminTranslations['id'];
                 #d9e6f0;
         }
 
-
-        body.dark-mode .admin-btn-secondary:hover {
-
-            background:
-                #30495d;
-        }
-
-
-
-        /* WARNING */
 
         .admin-btn-warning {
 
@@ -1727,9 +1154,6 @@ $adminTranslations['id'];
         }
 
 
-
-        /* DANGER */
-
         .admin-btn-danger {
 
             background:
@@ -1739,9 +1163,6 @@ $adminTranslations['id'];
                 var(--danger);
         }
 
-
-
-        /* SUCCESS */
 
         .admin-btn-success {
 
@@ -1753,58 +1174,43 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
            FORM ACTIONS
         ===================================================== */
 
         .admin-form-actions {
 
-            margin-top:
-                22px;
+            margin-top: 22px;
 
+            display: flex;
 
-            display:
-                flex;
+            align-items: center;
 
-            align-items:
-                center;
+            justify-content: flex-end;
 
-            justify-content:
-                flex-end;
+            gap: 10px;
 
-            gap:
-                10px;
-
-            flex-wrap:
-                wrap;
+            flex-wrap: wrap;
         }
 
 
-
         /* =====================================================
-           GLOBAL TABLE
+           TABLE
         ===================================================== */
 
         .admin-table-wrapper {
-
-            overflow-x:
-                auto;
+            overflow-x: auto;
         }
 
 
         .admin-table {
 
-            width:
-                100%;
-
+            width: 100%;
 
             border-collapse:
                 collapse;
 
-
-            font-size:
-                14px;
+            font-size: 14px;
         }
 
 
@@ -1813,63 +1219,43 @@ $adminTranslations['id'];
             padding:
                 13px 14px;
 
-
             background:
-                rgba(120,
-                    145,
-                    165,
-                    .08);
-
+                rgba(120, 145, 165, .08);
 
             color:
                 var(--text-muted);
 
+            text-align: left;
 
-            text-align:
-                left;
+            white-space: nowrap;
 
-
-            white-space:
-                nowrap;
-
-
-            font-weight:
-                600;
+            font-weight: 600;
         }
 
 
         .admin-table td {
 
-            padding:
-                14px;
-
+            padding: 14px;
 
             border-bottom:
                 1px solid var(--border);
 
-
             color:
                 var(--text-main);
 
-
-            vertical-align:
-                middle;
+            vertical-align: middle;
         }
 
 
         .admin-table tbody tr:hover {
 
             background:
-                rgba(8,
-                    119,
-                    212,
-                    .025);
+                rgba(8, 119, 212, .025);
         }
 
 
-
         /* =====================================================
-           GLOBAL STATUS BADGE
+           BADGES
         ===================================================== */
 
         .admin-badge {
@@ -1877,30 +1263,19 @@ $adminTranslations['id'];
             padding:
                 6px 10px;
 
+            border-radius: 20px;
 
-            border-radius:
-                20px;
+            display: inline-flex;
 
+            align-items: center;
 
-            display:
-                inline-flex;
+            gap: 5px;
 
-            align-items:
-                center;
+            white-space: nowrap;
 
-            gap:
-                5px;
+            font-size: 11px;
 
-
-            white-space:
-                nowrap;
-
-
-            font-size:
-                11px;
-
-            font-weight:
-                700;
+            font-weight: 700;
         }
 
 
@@ -1944,88 +1319,60 @@ $adminTranslations['id'];
         }
 
 
-
         /* =====================================================
-           GLOBAL ALERT
+           ALERT
         ===================================================== */
 
         .admin-alert-success {
 
-            margin-bottom:
-                18px;
-
+            margin-bottom: 18px;
 
             padding:
                 13px 15px;
 
-
             border:
-                1px solid rgba(20,
-                    131,
-                    92,
-                    .25);
+                1px solid rgba(20, 131, 92, .25);
 
-
-            border-radius:
-                10px;
-
+            border-radius: 10px;
 
             background:
                 var(--success-bg);
 
-
             color:
                 var(--success);
 
+            font-size: 14px;
 
-            font-size:
-                14px;
-
-            font-weight:
-                500;
+            font-weight: 500;
         }
 
 
         .admin-alert-error {
 
-            margin-bottom:
-                18px;
-
+            margin-bottom: 18px;
 
             padding:
                 13px 15px;
 
-
             border:
-                1px solid rgba(220,
-                    76,
-                    76,
-                    .25);
+                1px solid rgba(220, 76, 76, .25);
 
-
-            border-radius:
-                10px;
-
+            border-radius: 10px;
 
             background:
                 var(--danger-bg);
 
-
             color:
                 var(--danger);
 
+            font-size: 14px;
 
-            font-size:
-                14px;
-
-            font-weight:
-                500;
+            font-weight: 500;
         }
 
 
-
         /* =====================================================
-           COLLAPSED SIDEBAR
+           SIDEBAR COLLAPSED
         ===================================================== */
 
         body.admin-sidebar-collapsed .admin-sidebar {
@@ -2040,7 +1387,6 @@ $adminTranslations['id'];
             width:
                 calc(100% - var(--sidebar-collapsed));
 
-
             margin-left:
                 var(--sidebar-collapsed);
         }
@@ -2048,101 +1394,76 @@ $adminTranslations['id'];
 
         body.admin-sidebar-collapsed .admin-brand {
 
-            justify-content:
-                center;
+            justify-content: center;
 
-
-            padding-left:
-                0;
-
-            padding-right:
-                0;
+            padding-left: 0;
+            padding-right: 0;
         }
 
 
         body.admin-sidebar-collapsed .admin-brand-name {
 
-            display:
-                none;
+            display: none;
         }
 
 
         body.admin-sidebar-collapsed .admin-menu-item {
 
-            padding-left:
-                0;
+            padding-left: 0;
+            padding-right: 0;
 
-            padding-right:
-                0;
+            justify-content: center;
 
-
-            justify-content:
-                center;
-
-
-            gap:
-                0;
+            gap: 0;
         }
 
 
         body.admin-sidebar-collapsed .admin-menu-text {
 
-            display:
-                none;
+            display: none;
         }
 
 
         body.admin-sidebar-collapsed .admin-menu-icon {
 
-            width:
-                24px;
+            width: 24px;
 
-            margin:
-                0;
+            margin: 0;
 
-
-            text-align:
-                center;
+            text-align: center;
         }
-
 
 
         /* =====================================================
            RESPONSIVE
         ===================================================== */
 
-        @media(max-width: 850px) {
+        @media(max-width:850px) {
 
             .admin-sidebar {
-
-                display:
-                    none;
+                display: none;
             }
 
 
             .admin-main {
 
-                width:
-                    100%;
+                width: 100%;
 
-                margin-left:
-                    0;
+                margin-left: 0;
             }
 
 
             body.admin-sidebar-collapsed .admin-main {
 
-                width:
-                    100%;
+                width: 100%;
 
-                margin-left:
-                    0;
+                margin-left: 0;
             }
 
         }
 
 
-        @media(max-width: 700px) {
+        @media(max-width:700px) {
 
             .admin-form-grid {
 
@@ -2160,7 +1481,7 @@ $adminTranslations['id'];
         }
 
 
-        @media(max-width: 600px) {
+        @media(max-width:600px) {
 
             .admin-content {
 
@@ -2178,15 +1499,13 @@ $adminTranslations['id'];
 
             .admin-profile-name {
 
-                display:
-                    none;
+                display: none;
             }
 
 
             .admin-page-title {
 
-                font-size:
-                    24px;
+                font-size: 24px;
             }
 
 
@@ -2199,34 +1518,21 @@ $adminTranslations['id'];
 
             .admin-form-actions .admin-btn {
 
-                width:
-                    100%;
+                width: 100%;
             }
 
         }
     </style>
 
 
-
-    {{-- =====================================================
-         PAGE SPECIFIC CSS
-    ====================================================== --}}
-
+    {{-- CSS KHUSUS HALAMAN --}}
     @stack('styles')
-
 
 </head>
 
 
-
 <body
-    class="{{
-        $adminTheme === 'dark'
-        ?
-        'dark-mode'
-        :
-        ''
-    }}">
+    class="{{ $adminTheme === 'dark' ? 'dark-mode' : '' }}">
 
 
     <div class="admin-app">
@@ -2234,7 +1540,7 @@ $adminTranslations['id'];
 
         {{-- =====================================================
          SIDEBAR
-    ====================================================== --}}
+    ===================================================== --}}
 
         <aside class="admin-sidebar">
 
@@ -2243,28 +1549,26 @@ $adminTranslations['id'];
 
             <div class="admin-brand">
 
-
                 <div class="ruangkita-logo">
 
                     <div class="roof"></div>
 
                     <div class="house">
-
                         <div class="door"></div>
-
                     </div>
 
                 </div>
 
 
                 <span class="admin-brand-name">
-
                     RuangKita
-
                 </span>
 
-
             </div>
+
+
+
+            {{-- DASHBOARD --}}
 
             <a href="{{ route('admin.dashboard') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -2272,11 +1576,19 @@ $adminTranslations['id'];
                 <span class="admin-menu-text">{{ $at['dashboard'] }}</span>
             </a>
 
+
+
+            {{-- CLIENT --}}
+
             <a href="{{ route('admin.clients.index') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}">
                 <span class="admin-menu-icon">♙</span>
                 <span class="admin-menu-text">{{ $at['client'] }}</span>
             </a>
+
+
+
+            {{-- PROJECT --}}
 
             <a href="{{ route('admin.projects.index') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
@@ -2284,11 +1596,19 @@ $adminTranslations['id'];
                 <span class="admin-menu-text">{{ $at['projects'] }}</span>
             </a>
 
+
+
+            {{-- WORK --}}
+
             <a href="{{ route('admin.works.index') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.works.*') ? 'active' : '' }}">
                 <span class="admin-menu-icon">▤</span>
                 <span class="admin-menu-text">{{ $at['works'] }}</span>
             </a>
+
+
+
+            {{-- SCHEDULE --}}
 
             <a href="{{ route('admin.schedules.index') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
@@ -2297,9 +1617,8 @@ $adminTranslations['id'];
             </a>
 
 
-            {{-- =================================================
-             MATERIAL
-        ================================================== --}}
+
+            {{-- MATERIAL --}}
 
             <a href="{{ route('admin.materials.index') }}"
                 class="admin-menu-item {{ request()->routeIs('admin.materials.*') ? 'active' : '' }}">
@@ -2308,135 +1627,64 @@ $adminTranslations['id'];
             </a>
 
 
-            {{-- =================================================
-             PENGELUARAN
-        ================================================== --}}
 
-            <a
-                href="#"
-                class="admin-menu-item">
+            {{-- EXPENSE --}}
 
-                <span class="admin-menu-icon">
-                    ▰
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['expenses'] }}
-
-                </span>
-
+            <a href="{{ route('admin.expenses.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.expenses.*') ? 'active' : '' }}">
+                <span class="admin-menu-icon">▰</span>
+                <span class="admin-menu-text">{{ $at['expenses'] }}</span>
             </a>
 
 
 
-            {{-- =================================================
-             UANG PRIBADI
-        ================================================== --}}
+            {{-- PERSONAL FUND --}}
 
-            <a
-                href="#"
-                class="admin-menu-item">
-
-                <span class="admin-menu-icon">
-                    ◎
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['personal_funds'] }}
-
-                </span>
-
+            <a href="{{ route('admin.personal-funds.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.personal-funds.*') ? 'active' : '' }}">
+                <span class="admin-menu-icon">◎</span>
+                <span class="admin-menu-text">{{ $at['personal_funds'] }}</span>
             </a>
 
 
 
-            {{-- =================================================
-             PROGRESS
-        ================================================== --}}
+            {{-- PROGRESS --}}
 
-            <a
-                href="#"
+            <a href="#"
                 class="admin-menu-item">
-
-                <span class="admin-menu-icon">
-                    ↗
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['progress'] }}
-
-                </span>
-
+                <span class="admin-menu-icon">↗</span>
+                <span class="admin-menu-text">{{ $at['progress'] }}</span>
             </a>
 
 
 
-            {{-- =================================================
-             DOKUMENTASI
-        ================================================== --}}
+            {{-- DOCUMENTATION --}}
 
-            <a
-                href="#"
+            <a href="#"
                 class="admin-menu-item">
-
-                <span class="admin-menu-icon">
-                    ▧
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['documentation'] }}
-
-                </span>
-
+                <span class="admin-menu-icon">▧</span>
+                <span class="admin-menu-text">{{ $at['documentation'] }}</span>
             </a>
 
 
 
-            {{-- =================================================
-             LAPORAN
-        ================================================== --}}
+            {{-- REPORT --}}
 
-            <a
-                href="#"
+            <a href="#"
                 class="admin-menu-item">
-
-                <span class="admin-menu-icon">
-                    ▥
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['reports'] }}
-
-                </span>
-
+                <span class="admin-menu-icon">▥</span>
+                <span class="admin-menu-text">{{ $at['reports'] }}</span>
             </a>
 
 
 
-            {{-- =================================================
-             PENGATURAN
-             Route nanti kita aktifkan saat modul settings Admin dibuat
-        ================================================== --}}
+            {{-- SETTINGS
+             ROUTE DIAKTIFKAN NANTI --}}
 
-            <a
-                href="#"
+            <a href="#"
                 class="admin-menu-item">
-
-                <span class="admin-menu-icon">
-                    ⚙
-                </span>
-
-                <span class="admin-menu-text">
-
-                    {{ $at['settings'] }}
-
-                </span>
-
+                <span class="admin-menu-icon">⚙</span>
+                <span class="admin-menu-text">{{ $at['settings'] }}</span>
             </a>
 
 
@@ -2446,7 +1694,7 @@ $adminTranslations['id'];
 
         {{-- =====================================================
          MAIN
-    ====================================================== --}}
+    ===================================================== --}}
 
         <main class="admin-main">
 
@@ -2465,17 +1713,19 @@ $adminTranslations['id'];
                     class="admin-hamburger"
                     id="adminSidebarToggle"
                     aria-label="Toggle sidebar">
-
                     ☰
-
                 </button>
 
 
 
-                {{-- PROFILE --}}
+                {{-- =================================================
+                 PROFILE
+            ================================================== --}}
 
                 <div class="admin-profile">
 
+
+                    {{-- PROFILE BUTTON --}}
 
                     <button
                         type="button"
@@ -2487,7 +1737,6 @@ $adminTranslations['id'];
 
                         <div class="admin-avatar">
 
-
                             @if(
                             $adminUser
                             &&
@@ -2495,24 +1744,15 @@ $adminTranslations['id'];
                             )
 
                             <img
-                                src="{{
-                                    asset(
-                                        'storage/' .
-                                        $adminUser->profile_photo
-                                    )
-                                }}"
-                                alt="{{
-                                    $adminUser->name
-                                }}">
+                                src="{{ asset('storage/' . $adminUser->profile_photo) }}"
+                                alt="{{ $adminUser->name }}">
 
                             @else
 
                             {{
                                 strtoupper(
                                     substr(
-                                        $adminUser->name
-                                        ??
-                                        'A',
+                                        $adminUser->name ?? 'A',
                                         0,
                                         1
                                     )
@@ -2520,7 +1760,6 @@ $adminTranslations['id'];
                             }}
 
                             @endif
-
 
                         </div>
 
@@ -2545,9 +1784,7 @@ $adminTranslations['id'];
                         <span
                             class="admin-profile-arrow"
                             id="adminProfileArrow">
-
                             ▾
-
                         </span>
 
 
@@ -2564,8 +1801,9 @@ $adminTranslations['id'];
                         id="adminProfileMenu">
 
 
-                        <div class="admin-profile-header">
+                        {{-- USER INFO --}}
 
+                        <div class="admin-profile-header">
 
                             <strong>
 
@@ -2588,34 +1826,11 @@ $adminTranslations['id'];
 
                             </span>
 
-
                         </div>
 
 
 
                         <div class="admin-profile-divider"></div>
-
-
-
-                        {{-- SETTINGS
-                         Nanti diaktifkan setelah route settings admin dibuat
-
-                    <a
-                        href="{{-- route('admin.settings') --}}"
-                        class="admin-profile-item"
-                        >
-
-                        ⚙
-
-                        <span>
-                            {{ $at['settings'] }}
-                        </span>
-
-                        </a>
-
-                        <div class="admin-profile-divider"></div>
-
-                        --}}
 
 
 
@@ -2630,17 +1845,15 @@ $adminTranslations['id'];
 
                             <button
                                 type="submit"
-                                class="
-                                admin-profile-item
-                                logout
-                            ">
-
-                                ↪
+                                class="admin-profile-item logout">
 
                                 <span>
+                                    ↪
+                                </span>
 
+
+                                <span>
                                     {{ $at['logout'] }}
-
                                 </span>
 
                             </button>
@@ -2686,17 +1899,13 @@ $adminTranslations['id'];
 
                 <div class="admin-alert-error">
 
-
                     @foreach($errors->all() as $error)
 
                     <div>
-
                         {{ $error }}
-
                     </div>
 
                     @endforeach
-
 
                 </div>
 
@@ -2729,11 +1938,9 @@ $adminTranslations['id'];
             function() {
 
 
-                /*
-                |--------------------------------------------------------------------------
-                | SIDEBAR COLLAPSE
-                |--------------------------------------------------------------------------
-                */
+                /* =====================================================
+                   SIDEBAR COLLAPSE
+                ===================================================== */
 
                 const sidebarToggle =
                     document.getElementById(
@@ -2765,7 +1972,6 @@ $adminTranslations['id'];
                             'click',
                             function() {
 
-
                                 document.body
                                     .classList
                                     .toggle(
@@ -2796,11 +2002,9 @@ $adminTranslations['id'];
 
 
 
-                /*
-                |--------------------------------------------------------------------------
-                | PROFILE DROPDOWN
-                |--------------------------------------------------------------------------
-                */
+                /* =====================================================
+                   PROFILE DROPDOWN
+                ===================================================== */
 
                 const profileButton =
                     document.getElementById(
@@ -2825,12 +2029,10 @@ $adminTranslations['id'];
                     profileMenu
                 ) {
 
-
                     profileButton
                         .addEventListener(
                             'click',
                             function(event) {
-
 
                                 event
                                     .stopPropagation();
@@ -2857,7 +2059,6 @@ $adminTranslations['id'];
                         );
 
 
-
                     profileMenu
                         .addEventListener(
                             'click',
@@ -2870,12 +2071,10 @@ $adminTranslations['id'];
                         );
 
 
-
                     document
                         .addEventListener(
                             'click',
                             function() {
-
 
                                 profileMenu
                                     .classList
@@ -2904,11 +2103,7 @@ $adminTranslations['id'];
     </script>
 
 
-
-    {{-- =========================================================
-     PAGE SPECIFIC SCRIPT
-========================================================= --}}
-
+    {{-- SCRIPT KHUSUS HALAMAN --}}
     @stack('scripts')
 
 
