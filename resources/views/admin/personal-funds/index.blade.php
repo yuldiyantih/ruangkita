@@ -716,57 +716,67 @@ $translations['id'];
     }
 
     .personal-export-actions {
-
         display: flex;
-
         align-items: center;
-
         gap: 8px;
-
         flex-wrap: wrap;
     }
 
 
     .personal-export-btn {
+        min-height: 42px;
+        padding: 0 18px;
 
-        min-height: 38px;
-
-        padding:
-            0 14px;
-
-        border-radius: 8px;
+        border: none;
+        border-radius: 10px;
 
         display: inline-flex;
-
         align-items: center;
-
         justify-content: center;
 
-        gap: 6px;
+        gap: 7px;
 
         text-decoration: none;
 
-        font-size: 12px;
+        cursor: pointer;
 
+        font-size: 11px;
         font-weight: 700;
+
+        transition:
+            transform .2s ease,
+            background .2s ease;
     }
 
+
+    /* EXCEL */
 
     .personal-export-btn.excel {
-
-        background: var(--success);
-
-        color: #fff;
+        background: #dcf7e9;
+        color: #087d4b;
     }
 
+
+    .personal-export-btn.excel:hover {
+        background: #c9f1dd;
+        color: #087d4b;
+        transform: translateY(-1px);
+    }
+
+
+    /* PDF */
 
     .personal-export-btn.pdf {
-
-        background: #dc3545;
-
-        color: #fff;
+        background: #ffe5e5;
+        color: #d9363e;
     }
 
+
+    .personal-export-btn.pdf:hover {
+        background: #ffd6d6;
+        color: #d9363e;
+        transform: translateY(-1px);
+    }
 
     /* =====================================================
        RESPONSIVE

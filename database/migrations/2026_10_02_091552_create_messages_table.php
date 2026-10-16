@@ -23,7 +23,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            $table->text('message_text');
+            $table->text('message_text')
+                ->nullable();
 
             $table->boolean('is_read')
                 ->default(false);

@@ -1,10 +1,214 @@
 @extends('layouts.admin')
 
 
+@php
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD LANGUAGE
+|--------------------------------------------------------------------------
+*/
+
+$pageLang = auth()->user()->language ?? 'id';
+
+
+$translations = [
+
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
+'id' => [
+
+'page_title' => 'Dashboard Admin',
+
+'title' => 'Dashboard',
+
+'welcome' => 'Selamat datang',
+
+/*
+| STATISTICS
+*/
+
+'total_projects' => 'Total Proyek',
+
+'ongoing_projects' => 'Proyek Berjalan',
+
+'completed_projects' => 'Proyek Selesai',
+
+'total_expenses' => 'Total Pengeluaran',
+
+/*
+| LATEST PROJECT
+*/
+
+'latest_projects' => 'Proyek Terbaru',
+
+'view_all' => 'Lihat Semua',
+
+'project_name' => 'Nama Proyek',
+
+'client' => 'Client',
+
+'location' => 'Lokasi',
+
+'progress' => 'Progress',
+
+'status' => 'Status',
+
+/*
+| PROJECT STATUS
+*/
+
+'ongoing' => 'Berjalan',
+
+'completed' => 'Selesai',
+
+'paused' => 'Ditunda',
+
+'planning' => 'Perencanaan',
+
+'no_projects' => 'Belum ada data proyek.',
+
+/*
+| SCHEDULE
+*/
+
+'upcoming_schedule' => 'Jadwal Mendatang',
+
+'no_schedule' => 'Belum ada jadwal mendatang.',
+
+/*
+| WARNING
+*/
+
+'warning' => 'Peringatan',
+
+'schedule_conflict_title' =>
+'Jadwal proyek bertabrakan',
+
+'schedule_conflict_text' =>
+'Periksa kembali jadwal proyek yang berlangsung pada tanggal yang sama.',
+
+'receipt_missing_title' =>
+'Nota belum diunggah',
+
+'receipt_missing_text' =>
+'Periksa pengeluaran proyek yang belum memiliki bukti nota.',
+
+],
+
+
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
+'en' => [
+
+'page_title' => 'Admin Dashboard',
+
+'title' => 'Dashboard',
+
+'welcome' => 'Welcome',
+
+/*
+| STATISTICS
+*/
+
+'total_projects' => 'Total Projects',
+
+'ongoing_projects' => 'Ongoing Projects',
+
+'completed_projects' => 'Completed Projects',
+
+'total_expenses' => 'Total Expenses',
+
+/*
+| LATEST PROJECT
+*/
+
+'latest_projects' => 'Latest Projects',
+
+'view_all' => 'View All',
+
+'project_name' => 'Project Name',
+
+'client' => 'Client',
+
+'location' => 'Location',
+
+'progress' => 'Progress',
+
+'status' => 'Status',
+
+/*
+| PROJECT STATUS
+*/
+
+'ongoing' => 'Ongoing',
+
+'completed' => 'Completed',
+
+'paused' => 'Paused',
+
+'planning' => 'Planning',
+
+'no_projects' => 'No project data available.',
+
+/*
+| SCHEDULE
+*/
+
+'upcoming_schedule' => 'Upcoming Schedule',
+
+'no_schedule' => 'No upcoming schedule.',
+
+/*
+| WARNING
+*/
+
+'warning' => 'Warnings',
+
+'schedule_conflict_title' =>
+'Project schedule conflict',
+
+'schedule_conflict_text' =>
+'Check project schedules that take place on the same date.',
+
+'receipt_missing_title' =>
+'Receipt has not been uploaded',
+
+'receipt_missing_text' =>
+'Check project expenses that do not yet have receipt evidence.',
+
+],
+
+];
+
+
+/*
+|--------------------------------------------------------------------------
+| ACTIVE TRANSLATION
+|--------------------------------------------------------------------------
+*/
+
+$dt =
+$translations[$pageLang]
+??
+$translations['id'];
+
+@endphp
+
+
 @section(
 'title',
-'Dashboard Admin - RuangKita'
+$dt['page_title'] . ' - RuangKita'
 )
+
 
 
 @push('styles')
@@ -15,13 +219,11 @@
     ===================================================== */
 
     .dashboard-page-header {
-
         margin-bottom: 22px;
     }
 
 
     .dashboard-page-header h1 {
-
         margin-bottom: 4px;
 
         color:
@@ -32,7 +234,6 @@
 
 
     .dashboard-page-header p {
-
         color:
             var(--text-muted);
 
@@ -40,12 +241,12 @@
     }
 
 
+
     /* =====================================================
        STATISTICS
     ===================================================== */
 
     .dashboard-stats {
-
         margin-bottom: 21px;
 
         display: grid;
@@ -59,7 +260,6 @@
 
 
     .dashboard-stat-card {
-
         min-height: 82px;
 
         padding: 15px;
@@ -84,8 +284,8 @@
 
 
     .dashboard-stat-icon {
-
         width: 43px;
+
         height: 43px;
 
         flex-shrink: 0;
@@ -95,6 +295,7 @@
         display: flex;
 
         align-items: center;
+
         justify-content: center;
 
         font-size: 19px;
@@ -102,7 +303,6 @@
 
 
     .dashboard-stat-icon.blue {
-
         color: #0b73d1;
 
         background: #e7f2ff;
@@ -110,7 +310,6 @@
 
 
     .dashboard-stat-icon.green {
-
         color: #119568;
 
         background: #e1f9ef;
@@ -118,7 +317,6 @@
 
 
     .dashboard-stat-icon.purple {
-
         color: #7834d4;
 
         background: #f0e8ff;
@@ -126,7 +324,6 @@
 
 
     .dashboard-stat-icon.orange {
-
         color: #e66a13;
 
         background: #fff0df;
@@ -134,7 +331,6 @@
 
 
     .dashboard-stat-label {
-
         color:
             var(--text-muted);
 
@@ -143,7 +339,6 @@
 
 
     .dashboard-stat-value {
-
         margin-top: 4px;
 
         color:
@@ -155,12 +350,12 @@
     }
 
 
+
     /* =====================================================
        PANEL
     ===================================================== */
 
     .dashboard-panel {
-
         margin-bottom: 20px;
 
         overflow: hidden;
@@ -179,7 +374,6 @@
 
 
     .dashboard-panel-header {
-
         min-height: 52px;
 
         padding:
@@ -199,7 +393,6 @@
 
 
     .dashboard-panel-header h3 {
-
         color:
             var(--text-heading);
 
@@ -208,7 +401,6 @@
 
 
     .dashboard-panel-header a {
-
         color:
             var(--primary);
 
@@ -221,9 +413,9 @@
 
 
     .dashboard-panel-header a:hover {
-
         text-decoration: underline;
     }
+
 
 
     /* =====================================================
@@ -231,13 +423,11 @@
     ===================================================== */
 
     .dashboard-table-wrapper {
-
         overflow-x: auto;
     }
 
 
     .dashboard-table {
-
         width: 100%;
 
         border-collapse: collapse;
@@ -245,17 +435,17 @@
 
 
     .dashboard-table thead {
-
-        background: #f7fafc;
+        background:
+            rgba(120, 145, 165, .07);
     }
 
 
     .dashboard-table th {
-
         padding:
             10px 16px;
 
-        color: #758899;
+        color:
+            var(--text-muted);
 
         text-align: left;
 
@@ -268,7 +458,6 @@
 
 
     .dashboard-table td {
-
         padding:
             12px 16px;
 
@@ -283,7 +472,6 @@
 
 
     .dashboard-project-name {
-
         color:
             var(--text-heading);
 
@@ -291,12 +479,12 @@
     }
 
 
+
     /* =====================================================
        PROGRESS
     ===================================================== */
 
     .dashboard-progress-row {
-
         display: flex;
 
         align-items: center;
@@ -306,8 +494,8 @@
 
 
     .dashboard-progress-track {
-
         width: 85px;
+
         height: 7px;
 
         overflow: hidden;
@@ -319,7 +507,6 @@
 
 
     .dashboard-progress-fill {
-
         width: 0;
 
         height: 100%;
@@ -337,7 +524,6 @@
 
 
     .dashboard-progress-number {
-
         color:
             var(--text-muted);
 
@@ -345,12 +531,12 @@
     }
 
 
+
     /* =====================================================
        BADGES
     ===================================================== */
 
     .dashboard-badge {
-
         padding:
             5px 9px;
 
@@ -367,7 +553,6 @@
 
 
     .dashboard-badge-ongoing {
-
         color: #117653;
 
         background: #dff8ec;
@@ -375,7 +560,6 @@
 
 
     .dashboard-badge-completed {
-
         color: #0967b2;
 
         background: #e3f1ff;
@@ -383,7 +567,6 @@
 
 
     .dashboard-badge-planning {
-
         color: #986300;
 
         background: #fff2ce;
@@ -391,11 +574,11 @@
 
 
     .dashboard-badge-paused {
-
         color: #b55318;
 
         background: #ffeadc;
     }
+
 
 
     /* =====================================================
@@ -403,7 +586,6 @@
     ===================================================== */
 
     .dashboard-bottom {
-
         display: grid;
 
         grid-template-columns:
@@ -413,12 +595,12 @@
     }
 
 
+
     /* =====================================================
        SCHEDULE
     ===================================================== */
 
     .dashboard-schedule-row {
-
         padding:
             13px 18px;
 
@@ -437,13 +619,11 @@
 
 
     .dashboard-schedule-row:last-child {
-
         border-bottom: none;
     }
 
 
     .dashboard-schedule-date {
-
         color: #eb9415;
 
         font-weight: 600;
@@ -451,17 +631,16 @@
 
 
     .dashboard-schedule-title {
-
         color:
             var(--text-main);
     }
 
 
     .dashboard-schedule-project {
-
         color:
             var(--text-muted);
     }
+
 
 
     /* =====================================================
@@ -469,7 +648,6 @@
     ===================================================== */
 
     .dashboard-warning {
-
         padding:
             14px 17px;
 
@@ -483,14 +661,13 @@
 
 
     .dashboard-warning:last-child {
-
         border-bottom: none;
     }
 
 
     .dashboard-warning-icon {
-
         width: 36px;
+
         height: 36px;
 
         flex-shrink: 0;
@@ -500,6 +677,7 @@
         display: flex;
 
         align-items: center;
+
         justify-content: center;
 
         color: #e85a27;
@@ -509,7 +687,6 @@
 
 
     .dashboard-warning-icon.yellow {
-
         color: #d58b07;
 
         background: #fff7db;
@@ -517,7 +694,6 @@
 
 
     .dashboard-warning-title {
-
         margin-bottom: 4px;
 
         color:
@@ -530,7 +706,6 @@
 
 
     .dashboard-warning-text {
-
         color:
             var(--text-muted);
 
@@ -540,12 +715,12 @@
     }
 
 
+
     /* =====================================================
        EMPTY DATA
     ===================================================== */
 
     .dashboard-empty-data {
-
         padding: 23px;
 
         color:
@@ -557,6 +732,7 @@
     }
 
 
+
     /* =====================================================
        RESPONSIVE
     ===================================================== */
@@ -564,7 +740,6 @@
     @media(max-width: 1100px) {
 
         .dashboard-stats {
-
             grid-template-columns:
                 repeat(2, 1fr);
         }
@@ -575,7 +750,6 @@
     @media(max-width: 850px) {
 
         .dashboard-bottom {
-
             grid-template-columns:
                 1fr;
         }
@@ -586,14 +760,12 @@
     @media(max-width: 600px) {
 
         .dashboard-stats {
-
             grid-template-columns:
                 1fr;
         }
 
 
         .dashboard-schedule-row {
-
             grid-template-columns:
                 1fr;
 
@@ -611,34 +783,30 @@
 
 
 {{-- =====================================================
-         PAGE HEADER
-    ====================================================== --}}
+     PAGE HEADER
+===================================================== --}}
 
 <div class="dashboard-page-header">
 
-
     <h1>
-
-        Dashboard
-
+        {{ $dt['title'] }}
     </h1>
 
 
     <p>
 
-        Selamat datang,
+        {{ $dt['welcome'] }},
         {{ auth()->user()->name }}!
 
     </p>
-
 
 </div>
 
 
 
 {{-- =====================================================
-         STATISTICS
-    ====================================================== --}}
+     STATISTICS
+===================================================== --}}
 
 <div class="dashboard-stats">
 
@@ -647,30 +815,23 @@
 
     <div class="dashboard-stat-card">
 
-
         <div class="dashboard-stat-icon blue">
-
             ▣
-
         </div>
 
 
         <div>
 
             <div class="dashboard-stat-label">
-
-                Total Proyek
-
+                {{ $dt['total_projects'] }}
             </div>
 
+
             <div class="dashboard-stat-value">
-
                 {{ $totalProjects }}
-
             </div>
 
         </div>
-
 
     </div>
 
@@ -680,30 +841,23 @@
 
     <div class="dashboard-stat-card">
 
-
         <div class="dashboard-stat-icon green">
-
             ▰
-
         </div>
 
 
         <div>
 
             <div class="dashboard-stat-label">
-
-                Proyek Berjalan
-
+                {{ $dt['ongoing_projects'] }}
             </div>
 
+
             <div class="dashboard-stat-value">
-
                 {{ $ongoingProjects }}
-
             </div>
 
         </div>
-
 
     </div>
 
@@ -713,30 +867,23 @@
 
     <div class="dashboard-stat-card">
 
-
         <div class="dashboard-stat-icon purple">
-
             ✓
-
         </div>
 
 
         <div>
 
             <div class="dashboard-stat-label">
-
-                Proyek Selesai
-
+                {{ $dt['completed_projects'] }}
             </div>
 
+
             <div class="dashboard-stat-value">
-
                 {{ $completedProjects }}
-
             </div>
 
         </div>
-
 
     </div>
 
@@ -746,38 +893,33 @@
 
     <div class="dashboard-stat-card">
 
-
         <div class="dashboard-stat-icon orange">
-
             Rp
-
         </div>
 
 
         <div>
 
             <div class="dashboard-stat-label">
-
-                Total Pengeluaran
-
+                {{ $dt['total_expenses'] }}
             </div>
+
 
             <div class="dashboard-stat-value">
 
                 Rp
                 {{
-                        number_format(
-                            $totalExpenses,
-                            0,
-                            ',',
-                            '.'
-                        )
-                    }}
+                    number_format(
+                        $totalExpenses,
+                        0,
+                        ',',
+                        '.'
+                    )
+                }}
 
             </div>
 
         </div>
-
 
     </div>
 
@@ -787,8 +929,8 @@
 
 
 {{-- =====================================================
-         LATEST PROJECTS
-    ====================================================== --}}
+     LATEST PROJECTS
+===================================================== --}}
 
 <div class="dashboard-panel">
 
@@ -797,18 +939,12 @@
 
 
         <h3>
-
-            Proyek Terbaru
-
+            {{ $dt['latest_projects'] }}
         </h3>
 
 
-        {{-- Route proyek akan kita aktifkan saat menu Proyek dibuat --}}
-
-        <a href="#">
-
-            Lihat Semua
-
+        <a href="{{ route('admin.projects.index') }}">
+            {{ $dt['view_all'] }}
         </a>
 
 
@@ -827,23 +963,23 @@
                 <tr>
 
                     <th>
-                        Nama Proyek
+                        {{ $dt['project_name'] }}
                     </th>
 
                     <th>
-                        Client
+                        {{ $dt['client'] }}
                     </th>
 
                     <th>
-                        Lokasi
+                        {{ $dt['location'] }}
                     </th>
 
                     <th>
-                        Progress
+                        {{ $dt['progress'] }}
                     </th>
 
                     <th>
-                        Status
+                        {{ $dt['status'] }}
                     </th>
 
                 </tr>
@@ -856,17 +992,16 @@
 
                 @forelse($latestProjects as $project)
 
-
                 <tr>
 
 
                     <td class="dashboard-project-name">
 
                         {{
-                                    $project->project_name
-                                    ??
-                                    '-'
-                                }}
+                                $project->project_name
+                                ??
+                                '-'
+                            }}
 
                     </td>
 
@@ -874,14 +1009,14 @@
                     <td>
 
                         {{
+                                optional(
                                     optional(
-                                        optional(
-                                            $project->client
-                                        )->user
-                                    )->name
-                                    ??
-                                    '-'
-                                }}
+                                        $project->client
+                                    )->user
+                                )->name
+                                ??
+                                '-'
+                            }}
 
                     </td>
 
@@ -889,10 +1024,10 @@
                     <td>
 
                         {{
-                                    $project->location
-                                    ??
-                                    '-'
-                                }}
+                                $project->location
+                                ??
+                                '-'
+                            }}
 
                     </td>
 
@@ -908,10 +1043,11 @@
                                 <div
                                     class="dashboard-progress-fill"
                                     data-progress="{{
-                                                $project->progress_percentage
-                                                ??
-                                                0
-                                            }}"></div>
+                                            $project->progress_percentage
+                                            ??
+                                            0
+                                        }}">
+                                </div>
 
                             </div>
 
@@ -919,10 +1055,10 @@
                             <span class="dashboard-progress-number">
 
                                 {{
-                                            $project->progress_percentage
-                                            ??
-                                            0
-                                        }}%
+                                        $project->progress_percentage
+                                        ??
+                                        0
+                                    }}%
 
                             </span>
 
@@ -940,11 +1076,11 @@
 
                         <span
                             class="
-                                            dashboard-badge
-                                            dashboard-badge-ongoing
-                                        ">
+                                        dashboard-badge
+                                        dashboard-badge-ongoing
+                                    ">
 
-                            Berjalan
+                            {{ $dt['ongoing'] }}
 
                         </span>
 
@@ -953,11 +1089,11 @@
 
                         <span
                             class="
-                                            dashboard-badge
-                                            dashboard-badge-completed
-                                        ">
+                                        dashboard-badge
+                                        dashboard-badge-completed
+                                    ">
 
-                            Selesai
+                            {{ $dt['completed'] }}
 
                         </span>
 
@@ -966,11 +1102,11 @@
 
                         <span
                             class="
-                                            dashboard-badge
-                                            dashboard-badge-paused
-                                        ">
+                                        dashboard-badge
+                                        dashboard-badge-paused
+                                    ">
 
-                            Ditunda
+                            {{ $dt['paused'] }}
 
                         </span>
 
@@ -979,11 +1115,11 @@
 
                         <span
                             class="
-                                            dashboard-badge
-                                            dashboard-badge-planning
-                                        ">
+                                        dashboard-badge
+                                        dashboard-badge-planning
+                                    ">
 
-                            Perencanaan
+                            {{ $dt['planning'] }}
 
                         </span>
 
@@ -1005,7 +1141,7 @@
                         colspan="5"
                         class="dashboard-empty-data">
 
-                        Belum ada data proyek.
+                        {{ $dt['no_projects'] }}
 
                     </td>
 
@@ -1029,15 +1165,15 @@
 
 
 {{-- =====================================================
-         BOTTOM GRID
-    ====================================================== --}}
+     BOTTOM GRID
+===================================================== --}}
 
 <div class="dashboard-bottom">
 
 
     {{-- =================================================
-             UPCOMING SCHEDULE
-        ================================================== --}}
+         UPCOMING SCHEDULE
+    ================================================== --}}
 
     <div class="dashboard-panel">
 
@@ -1045,10 +1181,13 @@
         <div class="dashboard-panel-header">
 
             <h3>
-
-                Jadwal Mendatang
-
+                {{ $dt['upcoming_schedule'] }}
             </h3>
+
+
+            <a href="{{ route('admin.schedules.index') }}">
+                {{ $dt['view_all'] }}
+            </a>
 
         </div>
 
@@ -1061,15 +1200,21 @@
 
             <div class="dashboard-schedule-date">
 
+                @if($schedule->start_date)
+
                 {{
-                            $schedule->start_date
-                            ?
                             \Carbon\Carbon::parse(
                                 $schedule->start_date
-                            )->format('d M Y')
-                            :
-                            '-'
+                            )
+                            ->locale($pageLang)
+                            ->translatedFormat('d M Y')
                         }}
+
+                @else
+
+                -
+
+                @endif
 
             </div>
 
@@ -1077,10 +1222,10 @@
             <div class="dashboard-schedule-title">
 
                 {{
-                            $schedule->title
-                            ??
-                            '-'
-                        }}
+                        $schedule->title
+                        ??
+                        '-'
+                    }}
 
             </div>
 
@@ -1088,12 +1233,12 @@
             <div class="dashboard-schedule-project">
 
                 {{
-                            optional(
-                                $schedule->project
-                            )->project_name
-                            ??
-                            '-'
-                        }}
+                        optional(
+                            $schedule->project
+                        )->project_name
+                        ??
+                        '-'
+                    }}
 
             </div>
 
@@ -1106,7 +1251,7 @@
 
         <div class="dashboard-empty-data">
 
-            Belum ada jadwal mendatang.
+            {{ $dt['no_schedule'] }}
 
         </div>
 
@@ -1119,8 +1264,8 @@
 
 
     {{-- =================================================
-             WARNING
-        ================================================== --}}
+         WARNING
+    ================================================== --}}
 
     <div class="dashboard-panel">
 
@@ -1128,22 +1273,20 @@
         <div class="dashboard-panel-header">
 
             <h3>
-
-                Peringatan
-
+                {{ $dt['warning'] }}
             </h3>
 
         </div>
 
 
 
+        {{-- SCHEDULE WARNING --}}
+
         <div class="dashboard-warning">
 
 
             <div class="dashboard-warning-icon">
-
                 ⚠
-
             </div>
 
 
@@ -1152,16 +1295,14 @@
 
                 <div class="dashboard-warning-title">
 
-                    Jadwal proyek bertabrakan
+                    {{ $dt['schedule_conflict_title'] }}
 
                 </div>
 
 
                 <div class="dashboard-warning-text">
 
-                    Periksa kembali jadwal proyek
-                    yang berlangsung pada tanggal
-                    yang sama.
+                    {{ $dt['schedule_conflict_text'] }}
 
                 </div>
 
@@ -1173,14 +1314,16 @@
 
 
 
+        {{-- RECEIPT WARNING --}}
+
         <div class="dashboard-warning">
 
 
             <div
                 class="
-                        dashboard-warning-icon
-                        yellow
-                    ">
+                    dashboard-warning-icon
+                    yellow
+                ">
 
                 !
 
@@ -1192,15 +1335,14 @@
 
                 <div class="dashboard-warning-title">
 
-                    Nota belum diunggah
+                    {{ $dt['receipt_missing_title'] }}
 
                 </div>
 
 
                 <div class="dashboard-warning-text">
 
-                    Periksa pengeluaran proyek
-                    yang belum memiliki bukti nota.
+                    {{ $dt['receipt_missing_text'] }}
 
                 </div>
 
@@ -1228,6 +1370,7 @@
         'DOMContentLoaded',
         function() {
 
+
             const progressBars =
                 document.querySelectorAll(
                     '.dashboard-progress-fill'
@@ -1237,6 +1380,7 @@
             progressBars.forEach(
                 function(bar) {
 
+
                     let value =
                         parseFloat(
                             bar.dataset.progress ??
@@ -1245,9 +1389,7 @@
 
 
                     if (isNaN(value)) {
-
                         value = 0;
-
                     }
 
 
@@ -1266,6 +1408,7 @@
 
                 }
             );
+
 
         }
     );

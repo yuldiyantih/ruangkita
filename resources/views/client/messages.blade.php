@@ -1352,60 +1352,103 @@ $mt['title'] . ' - RuangKita'
 
                     @if($message->attachment_path)
 
-                    <a
+                    <div class="attachment-preview">
 
-                        href="{{
-                                            asset(
-                                                'storage/' .
-                                                $message
-                                                    ->attachment_path
-                                            )
-                                        }}"
+                        {{-- FOTO --}}
+                        @if(
+                        $message->attachment_type
+                        &&
+                        str_starts_with(
+                        $message->attachment_type,
+                        'image/'
+                        )
+                        )
 
-                        target="_blank"
+                        <a
+                            href="{{ asset('storage/' . $message->attachment_path) }}"
+                            target="_blank">
 
-                        class="attachment-card">
+                            <img
+                                src="{{ asset('storage/' . $message->attachment_path) }}"
+                                alt="{{ $message->attachment_name ?? 'Foto' }}"
+                                style="
+                        max-width: 260px;
+                        max-height: 220px;
+                        border-radius: 10px;
+                        object-fit: cover;
+                        display: block;
+                    ">
+
+                        </a>
 
 
-                        <div class="attachment-icon">
+                        {{-- VIDEO --}}
+                        @elseif(
+                        $message->attachment_type
+                        &&
+                        str_starts_with(
+                        $message->attachment_type,
+                        'video/'
+                        )
+                        )
 
-                            📎
+                        <video
+                            controls
+                            style="
+                    width: 300px;
+                    max-width: 100%;
+                    border-radius: 10px;
+                ">
 
-                        </div>
+                            <source
+                                src="{{ asset('storage/' . $message->attachment_path) }}"
+                                type="{{ $message->attachment_type }}">
+
+                        </video>
 
 
-                        <div>
+                        {{-- DOKUMEN --}}
+                        @else
 
+                        <a
+                            href="{{ asset('storage/' . $message->attachment_path) }}"
+                            target="_blank"
+                            class="attachment-card">
 
-                            <div class="attachment-name">
+                            <div class="attachment-icon">
+                                📎
+                            </div>
 
-                                {{
-                                                    $mt[
-                                                        'attachment'
-                                                    ]
-                                                }}
+                            <div>
+
+                                <div class="attachment-name">
+
+                                    {{
+                            $message->attachment_name
+                            ??
+                            basename(
+                                $message->attachment_path
+                            )
+                        }}
+
+                                </div>
+
+                                <div
+                                    style="
+                            font-size: 9px;
+                            color: #7a8ea0;
+                            margin-top: 3px;
+                        ">
+                                    Klik untuk membuka
+                                </div>
 
                             </div>
 
+                        </a>
 
-                            <div
-                                class="
-                                                    attachment-description
-                                                ">
+                        @endif
 
-                                {{
-                                                    $mt[
-                                                        'open_attachment'
-                                                    ]
-                                                }}
-
-                            </div>
-
-
-                        </div>
-
-
-                    </a>
+                    </div>
 
                     @endif
 
@@ -1565,11 +1608,10 @@ $mt['title'] . ' - RuangKita'
                 📎
 
                 <input
-
                     type="file"
-
-                    name="attachment">
-
+                    name="attachment"
+                    id="attachment"
+                    accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.webm,.pdf,.doc,.docx,.xls,.xlsx,.zip">
             </label>
 
 

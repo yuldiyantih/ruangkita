@@ -1,10 +1,180 @@
 @extends('layouts.admin')
 
 
+@php
+
+$pageLang =
+auth()->user()->language
+??
+'id';
+
+
+$translations = [
+
+'id' => [
+
+'page_title' =>
+'Tambah Jadwal',
+
+'schedule_data' =>
+'Data Jadwal',
+
+'add_schedule' =>
+'Tambah Jadwal',
+
+'subtitle' =>
+'Tambahkan jadwal baru ke proyek RuangKita.',
+
+'schedule_information' =>
+'Informasi Jadwal',
+
+'project' =>
+'Proyek',
+
+'select_project' =>
+'Pilih Proyek',
+
+'work' =>
+'Pekerjaan',
+
+'without_work' =>
+'Tanpa Pekerjaan Terkait',
+
+'schedule_title' =>
+'Judul Jadwal',
+
+'schedule_title_placeholder' =>
+'Contoh: Pemasangan Keramik Lantai',
+
+'start_date' =>
+'Tanggal Mulai',
+
+'end_date' =>
+'Tanggal Selesai',
+
+'status' =>
+'Status',
+
+'planned' =>
+'Akan Datang',
+
+'ongoing' =>
+'Sedang Berjalan',
+
+'completed' =>
+'Selesai',
+
+'delayed' =>
+'Terlambat',
+
+'cancelled' =>
+'Dibatalkan',
+
+'description' =>
+'Deskripsi',
+
+'description_placeholder' =>
+'Masukkan keterangan jadwal',
+
+'cancel' =>
+'Batal',
+
+'save' =>
+'Simpan Jadwal',
+
+],
+
+
+'en' => [
+
+'page_title' =>
+'Add Schedule',
+
+'schedule_data' =>
+'Schedule Data',
+
+'add_schedule' =>
+'Add Schedule',
+
+'subtitle' =>
+'Add a new schedule to a RuangKita project.',
+
+'schedule_information' =>
+'Schedule Information',
+
+'project' =>
+'Project',
+
+'select_project' =>
+'Select Project',
+
+'work' =>
+'Work',
+
+'without_work' =>
+'No Related Work',
+
+'schedule_title' =>
+'Schedule Title',
+
+'schedule_title_placeholder' =>
+'Example: Floor Tile Installation',
+
+'start_date' =>
+'Start Date',
+
+'end_date' =>
+'End Date',
+
+'status' =>
+'Status',
+
+'planned' =>
+'Upcoming',
+
+'ongoing' =>
+'Ongoing',
+
+'completed' =>
+'Completed',
+
+'delayed' =>
+'Delayed',
+
+'cancelled' =>
+'Cancelled',
+
+'description' =>
+'Description',
+
+'description_placeholder' =>
+'Enter schedule description',
+
+'cancel' =>
+'Cancel',
+
+'save' =>
+'Save Schedule',
+
+],
+
+];
+
+
+$st =
+$translations[$pageLang]
+??
+$translations['id'];
+
+@endphp
+
+
+
 @section(
 'title',
-'Tambah Jadwal - RuangKita'
+$st['page_title'] . ' - RuangKita'
 )
+
 
 
 @section('content')
@@ -13,35 +183,64 @@
 <div style="max-width:1050px;">
 
 
+    {{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
+
     <div class="admin-breadcrumb">
 
+
         <a href="{{ route('admin.schedules.index') }}">
-            Data Jadwal
+
+            {{ $st['schedule_data'] }}
+
         </a>
+
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
 
+
         <span class="admin-breadcrumb-current">
-            Tambah Jadwal
+
+            {{ $st['add_schedule'] }}
+
         </span>
+
 
     </div>
 
+
+
+    {{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
     <div class="admin-page-header">
 
+
         <h1 class="admin-page-title">
-            Tambah Jadwal
+
+            {{ $st['add_schedule'] }}
+
         </h1>
 
+
         <p class="admin-page-subtitle">
-            Tambahkan jadwal baru ke proyek RuangKita.
+
+            {{ $st['subtitle'] }}
+
         </p>
+
 
     </div>
 
+
+
+    {{-- =====================================================
+         FORM
+    ====================================================== --}}
 
     <form
         method="POST"
@@ -51,20 +250,35 @@
         @csrf
 
 
+
         <div class="admin-form-title">
-            Informasi Jadwal
+
+            {{ $st['schedule_information'] }}
+
         </div>
+
 
 
         <div class="admin-form-grid">
 
 
+            {{-- =================================================
+                 PROJECT
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Proyek
-                    <span class="admin-required">*</span>
+
+                    {{ $st['project'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="project_id"
@@ -72,8 +286,11 @@
                     class="admin-form-control"
                     required>
 
+
                     <option value="">
-                        Pilih Proyek
+
+                        {{ $st['select_project'] }}
+
                     </option>
 
 
@@ -83,8 +300,7 @@
                         value="{{ $project->id }}"
                         @selected(
                         old('project_id')==$project->id
-                        )
-                        >
+                        )>
 
                         {{ $project->project_name }}
 
@@ -92,24 +308,38 @@
 
                     @endforeach
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 WORK
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Pekerjaan
+
+                    {{ $st['work'] }}
+
                 </label>
+
 
                 <select
                     name="work_id"
                     id="scheduleWork"
                     class="admin-form-control">
 
+
                     <option value="">
-                        Tanpa Pekerjaan Terkait
+
+                        {{ $st['without_work'] }}
+
                     </option>
 
 
@@ -120,8 +350,7 @@
                         data-project="{{ $work->project_id }}"
                         @selected(
                         old('work_id')==$work->id
-                        )
-                        >
+                        )>
 
                         {{ $work->work_name }}
 
@@ -129,35 +358,62 @@
 
                     @endforeach
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 TITLE
+            ================================================== --}}
+
             <div class="admin-form-group full">
 
+
                 <label class="admin-form-label">
-                    Judul Jadwal
-                    <span class="admin-required">*</span>
+
+                    {{ $st['schedule_title'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     type="text"
                     name="title"
                     value="{{ old('title') }}"
                     class="admin-form-control"
-                    placeholder="Contoh: Pemasangan Keramik Lantai"
+                    placeholder="{{ $st['schedule_title_placeholder'] }}"
                     required>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 START DATE
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Tanggal Mulai
-                    <span class="admin-required">*</span>
+
+                    {{ $st['start_date'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     type="date"
@@ -166,14 +422,24 @@
                     class="admin-form-control"
                     required>
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 END DATE
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Tanggal Selesai
+
+                    {{ $st['end_date'] }}
+
                 </label>
+
 
                 <input
                     type="date"
@@ -181,20 +447,34 @@
                     value="{{ old('end_date') }}"
                     class="admin-form-control">
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 STATUS
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Status
-                    <span class="admin-required">*</span>
+
+                    {{ $st['status'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="status"
                     class="admin-form-control"
                     required>
+
 
                     <option
                         value="planned"
@@ -202,56 +482,82 @@
                         old( 'status' , 'planned'
                         )==='planned'
                         )>
-                        Akan Datang
+
+                        {{ $st['planned'] }}
+
                     </option>
+
 
                     <option
                         value="ongoing"
                         @selected(
                         old('status')==='ongoing'
                         )>
-                        Sedang Berjalan
+
+                        {{ $st['ongoing'] }}
+
                     </option>
+
 
                     <option
                         value="completed"
                         @selected(
                         old('status')==='completed'
                         )>
-                        Selesai
+
+                        {{ $st['completed'] }}
+
                     </option>
+
 
                     <option
                         value="delayed"
                         @selected(
                         old('status')==='delayed'
                         )>
-                        Terlambat
+
+                        {{ $st['delayed'] }}
+
                     </option>
+
 
                     <option
                         value="cancelled"
                         @selected(
                         old('status')==='cancelled'
                         )>
-                        Dibatalkan
+
+                        {{ $st['cancelled'] }}
+
                     </option>
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 DESCRIPTION
+            ================================================== --}}
+
             <div class="admin-form-group full">
 
+
                 <label class="admin-form-label">
-                    Deskripsi
+
+                    {{ $st['description'] }}
+
                 </label>
+
 
                 <textarea
                     name="description"
                     class="admin-form-control"
-                    placeholder="Masukkan keterangan jadwal">{{ old('description') }}</textarea>
+                    placeholder="{{ $st['description_placeholder'] }}">{{ old('description') }}</textarea>
+
 
             </div>
 
@@ -259,7 +565,13 @@
         </div>
 
 
+
+        {{-- =====================================================
+             ACTIONS
+        ====================================================== --}}
+
         <div class="admin-form-actions">
+
 
             <a
                 href="{{ route('admin.schedules.index') }}"
@@ -267,8 +579,11 @@
                     admin-btn
                     admin-btn-secondary
                 ">
-                Batal
+
+                {{ $st['cancel'] }}
+
             </a>
+
 
             <button
                 type="submit"
@@ -276,8 +591,11 @@
                     admin-btn
                     admin-btn-primary
                 ">
-                Simpan Jadwal
+
+                {{ $st['save'] }}
+
             </button>
+
 
         </div>
 
@@ -299,10 +617,12 @@
         'DOMContentLoaded',
         function() {
 
+
             const projectSelect =
                 document.getElementById(
                     'scheduleProject'
                 );
+
 
             const workSelect =
                 document.getElementById(
@@ -310,7 +630,9 @@
                 );
 
 
+
             function filterWorks() {
+
 
                 const projectId =
                     projectSelect.value;
@@ -322,9 +644,11 @@
                     .forEach(
                         function(option) {
 
+
                             if (!option.value) {
 
-                                option.hidden = false;
+                                option.hidden =
+                                    false;
 
                                 return;
 
@@ -358,6 +682,7 @@
             }
 
 
+
             projectSelect.addEventListener(
                 'change',
                 filterWorks
@@ -365,6 +690,7 @@
 
 
             filterWorks();
+
 
         }
     );

@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 
 
-@section(
-'title',
-'Detail Client - RuangKita'
-)
-
-
 @php
 
 $pageLang =
@@ -17,10 +11,22 @@ auth()->user()->language
 
 $translations = [
 
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
 'id' => [
 
-'data_client' => 'Data Client',
-'detail_client' => 'Detail Client',
+'page_title' =>
+'Detail Client',
+
+'data_client' =>
+'Data Client',
+
+'detail_client' =>
+'Detail Client',
 
 'subtitle' =>
 'Informasi lengkap client dan proyek yang dimiliki.',
@@ -97,10 +103,22 @@ $translations = [
 ],
 
 
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
 'en' => [
 
-'data_client' => 'Clients',
-'detail_client' => 'Client Detail',
+'page_title' =>
+'Client Detail',
+
+'data_client' =>
+'Clients',
+
+'detail_client' =>
+'Client Detail',
 
 'subtitle' =>
 'Complete client information and associated projects.',
@@ -187,6 +205,14 @@ $translations['id'];
 @endphp
 
 
+
+@section(
+'title',
+$dt['page_title'] . ' - RuangKita'
+)
+
+
+
 @push('styles')
 
 <style>
@@ -195,7 +221,6 @@ $translations['id'];
     ===================================================== */
 
     .client-detail-header {
-
         margin-bottom: 22px;
 
         display: flex;
@@ -208,12 +233,12 @@ $translations['id'];
     }
 
 
+
     /* =====================================================
        PROFILE
     ===================================================== */
 
     .client-profile-card {
-
         margin-bottom: 18px;
 
         padding: 22px;
@@ -230,7 +255,6 @@ $translations['id'];
 
 
     .client-profile-avatar {
-
         width: 90px;
         height: 90px;
 
@@ -257,7 +281,6 @@ $translations['id'];
 
 
     .client-profile-avatar img {
-
         width: 100%;
         height: 100%;
 
@@ -271,7 +294,6 @@ $translations['id'];
 
 
     .client-profile-name {
-
         margin-bottom: 7px;
 
         color:
@@ -284,7 +306,6 @@ $translations['id'];
 
 
     .client-profile-meta {
-
         margin-bottom: 5px;
 
         color:
@@ -294,12 +315,12 @@ $translations['id'];
     }
 
 
+
     /* =====================================================
        INFO SUMMARY
     ===================================================== */
 
     .client-info-grid {
-
         margin-bottom: 18px;
 
         display: grid;
@@ -313,13 +334,11 @@ $translations['id'];
 
 
     .client-info-card {
-
         padding: 19px;
     }
 
 
     .info-label {
-
         margin-bottom: 7px;
 
         color:
@@ -330,7 +349,6 @@ $translations['id'];
 
 
     .info-value {
-
         color:
             var(--text-heading);
 
@@ -340,12 +358,12 @@ $translations['id'];
     }
 
 
+
     /* =====================================================
        DETAIL PANEL
     ===================================================== */
 
     .detail-panel {
-
         margin-bottom: 18px;
 
         padding: 20px;
@@ -353,7 +371,6 @@ $translations['id'];
 
 
     .detail-panel-title {
-
         margin-bottom: 16px;
 
         color:
@@ -366,7 +383,6 @@ $translations['id'];
 
 
     .detail-row {
-
         padding:
             12px 0;
 
@@ -385,21 +401,17 @@ $translations['id'];
 
 
     .detail-row:last-child {
-
-        border-bottom:
-            none;
+        border-bottom: none;
     }
 
 
     .detail-label {
-
         color:
             var(--text-muted);
     }
 
 
     .detail-value {
-
         color:
             var(--text-main);
 
@@ -407,12 +419,12 @@ $translations['id'];
     }
 
 
+
     /* =====================================================
        PROJECT
     ===================================================== */
 
     .project-name {
-
         color:
             var(--text-heading);
 
@@ -421,7 +433,6 @@ $translations['id'];
 
 
     .empty-project {
-
         padding:
             32px 15px;
 
@@ -434,6 +445,7 @@ $translations['id'];
     }
 
 
+
     /* =====================================================
        RESPONSIVE
     ===================================================== */
@@ -441,21 +453,18 @@ $translations['id'];
     @media(max-width: 950px) {
 
         .client-info-grid {
-
             grid-template-columns:
                 1fr 1fr;
         }
 
 
         .client-profile-card {
-
             grid-template-columns:
                 90px 1fr;
         }
 
 
         .client-profile-status {
-
             grid-column:
                 1 / -1;
         }
@@ -466,7 +475,6 @@ $translations['id'];
     @media(max-width: 650px) {
 
         .client-detail-header {
-
             align-items:
                 flex-start;
 
@@ -476,7 +484,6 @@ $translations['id'];
 
 
         .client-profile-card {
-
             grid-template-columns:
                 1fr;
 
@@ -486,28 +493,24 @@ $translations['id'];
 
 
         .client-profile-avatar {
-
             margin:
                 0 auto;
         }
 
 
         .client-profile-status {
-
             grid-column:
                 auto;
         }
 
 
         .client-info-grid {
-
             grid-template-columns:
                 1fr;
         }
 
 
         .detail-row {
-
             grid-template-columns:
                 1fr;
 
@@ -525,8 +528,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         BREADCRUMB
-    ====================================================== --}}
+     BREADCRUMB
+===================================================== --}}
 
 <div class="admin-breadcrumb">
 
@@ -557,8 +560,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         HEADER
-    ====================================================== --}}
+     HEADER
+===================================================== --}}
 
 <div class="client-detail-header">
 
@@ -587,9 +590,9 @@ $translations['id'];
     <a
         href="{{ route('admin.clients.edit', $client) }}"
         class="
-                admin-btn
-                admin-btn-warning
-            ">
+            admin-btn
+            admin-btn-warning
+        ">
 
         ✎ {{ $dt['edit_client'] }}
 
@@ -601,8 +604,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         PROFILE
-    ====================================================== --}}
+     PROFILE
+===================================================== --}}
 
 <div class="admin-card client-profile-card">
 
@@ -614,28 +617,30 @@ $translations['id'];
 
         <img
             src="{{
-                        asset(
-                            'storage/' .
-                            $client->user->profile_photo
-                        )
-                    }}"
+                    asset(
+                        'storage/' .
+                        $client->user->profile_photo
+                    )
+                }}"
             alt="{{
-                        $client->user->name
-                    }}">
+                    $client->user->name
+                    ??
+                    'Client'
+                }}">
 
         @else
 
         {{
-                    strtoupper(
-                        substr(
-                            $client->user->name
-                            ??
-                            'C',
-                            0,
-                            1
-                        )
+                strtoupper(
+                    substr(
+                        $client->user->name
+                        ??
+                        'C',
+                        0,
+                        1
                     )
-                }}
+                )
+            }}
 
         @endif
 
@@ -650,10 +655,10 @@ $translations['id'];
         <div class="client-profile-name">
 
             {{
-                    $client->user->name
-                    ??
-                    '-'
-                }}
+                $client->user->name
+                ??
+                '-'
+            }}
 
         </div>
 
@@ -662,10 +667,10 @@ $translations['id'];
 
             ✉
             {{
-                    $client->user->email
-                    ??
-                    '-'
-                }}
+                $client->user->email
+                ??
+                '-'
+            }}
 
         </div>
 
@@ -674,10 +679,10 @@ $translations['id'];
 
             ☎
             {{
-                    $client->user->phone
-                    ??
-                    '-'
-                }}
+                $client->user->phone
+                ??
+                '-'
+            }}
 
         </div>
 
@@ -693,9 +698,9 @@ $translations['id'];
 
         <span
             class="
-                        admin-badge
-                        admin-badge-success
-                    ">
+                    admin-badge
+                    admin-badge-success
+                ">
 
             ● {{ $dt['active'] }}
 
@@ -705,9 +710,9 @@ $translations['id'];
 
         <span
             class="
-                        admin-badge
-                        admin-badge-danger
-                    ">
+                    admin-badge
+                    admin-badge-danger
+                ">
 
             ● {{ $dt['inactive'] }}
 
@@ -724,8 +729,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         SUMMARY
-    ====================================================== --}}
+     SUMMARY
+===================================================== --}}
 
 <div class="client-info-grid">
 
@@ -743,10 +748,10 @@ $translations['id'];
         <div class="info-value">
 
             {{
-                    $client
-                        ->projects
-                        ->count()
-                }}
+                $client
+                    ->projects
+                    ->count()
+            }}
 
         </div>
 
@@ -768,14 +773,14 @@ $translations['id'];
         <div class="info-value">
 
             {{
-                    $client
-                        ->projects
-                        ->where(
-                            'status',
-                            'ongoing'
-                        )
-                        ->count()
-                }}
+                $client
+                    ->projects
+                    ->where(
+                        'status',
+                        'ongoing'
+                    )
+                    ->count()
+            }}
 
         </div>
 
@@ -797,14 +802,14 @@ $translations['id'];
         <div class="info-value">
 
             {{
-                    $client
-                        ->projects
-                        ->where(
-                            'status',
-                            'completed'
-                        )
-                        ->count()
-                }}
+                $client
+                    ->projects
+                    ->where(
+                        'status',
+                        'completed'
+                    )
+                    ->count()
+            }}
 
         </div>
 
@@ -817,8 +822,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         CLIENT INFORMATION
-    ====================================================== --}}
+     CLIENT INFORMATION
+===================================================== --}}
 
 <div class="admin-card detail-panel">
 
@@ -833,27 +838,31 @@ $translations['id'];
 
     <div class="detail-row">
 
+
         <div class="detail-label">
 
             {{ $dt['client_name'] }}
 
         </div>
 
+
         <div class="detail-value">
 
             {{
-                    $client->user->name
-                    ??
-                    '-'
-                }}
+                $client->user->name
+                ??
+                '-'
+            }}
 
         </div>
+
 
     </div>
 
 
 
     <div class="detail-row">
+
 
         <div class="detail-label">
 
@@ -861,21 +870,24 @@ $translations['id'];
 
         </div>
 
+
         <div class="detail-value">
 
             {{
-                    $client->user->email
-                    ??
-                    '-'
-                }}
+                $client->user->email
+                ??
+                '-'
+            }}
 
         </div>
+
 
     </div>
 
 
 
     <div class="detail-row">
+
 
         <div class="detail-label">
 
@@ -883,21 +895,24 @@ $translations['id'];
 
         </div>
 
+
         <div class="detail-value">
 
             {{
-                    $client->user->phone
-                    ??
-                    '-'
-                }}
+                $client->user->phone
+                ??
+                '-'
+            }}
 
         </div>
+
 
     </div>
 
 
 
     <div class="detail-row">
+
 
         <div class="detail-label">
 
@@ -905,15 +920,17 @@ $translations['id'];
 
         </div>
 
+
         <div class="detail-value">
 
             {{
-                    $client->address
-                    ??
-                    '-'
-                }}
+                $client->address
+                ??
+                '-'
+            }}
 
         </div>
+
 
     </div>
 
@@ -921,21 +938,24 @@ $translations['id'];
 
     <div class="detail-row">
 
+
         <div class="detail-label">
 
             {{ $dt['notes'] }}
 
         </div>
 
+
         <div class="detail-value">
 
             {{
-                    $client->notes
-                    ??
-                    '-'
-                }}
+                $client->notes
+                ??
+                '-'
+            }}
 
         </div>
+
 
     </div>
 
@@ -945,8 +965,8 @@ $translations['id'];
 
 
 {{-- =====================================================
-         PROJECT LIST
-    ====================================================== --}}
+     PROJECT LIST
+===================================================== --}}
 
 <div class="admin-card detail-panel">
 
@@ -972,15 +992,25 @@ $translations['id'];
 
                 <tr>
 
-                    <th>{{ $dt['no'] }}</th>
+                    <th>
+                        {{ $dt['no'] }}
+                    </th>
 
-                    <th>{{ $dt['project_name'] }}</th>
+                    <th>
+                        {{ $dt['project_name'] }}
+                    </th>
 
-                    <th>{{ $dt['location'] }}</th>
+                    <th>
+                        {{ $dt['location'] }}
+                    </th>
 
-                    <th>{{ $dt['progress'] }}</th>
+                    <th>
+                        {{ $dt['progress'] }}
+                    </th>
 
-                    <th>{{ $dt['status'] }}</th>
+                    <th>
+                        {{ $dt['status'] }}
+                    </th>
 
                 </tr>
 
@@ -1057,50 +1087,46 @@ $translations['id'];
                     </td>
 
 
-
                     <td class="project-name">
 
                         {{
-                                        $project->project_name
-                                        ??
-                                        '-'
-                                    }}
+                                    $project->project_name
+                                    ??
+                                    '-'
+                                }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                        $project->location
-                                        ??
-                                        '-'
-                                    }}
+                                    $project->location
+                                    ??
+                                    '-'
+                                }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                        $project->progress_percentage
-                                        ??
-                                        0
-                                    }}%
+                                    $project->progress_percentage
+                                    ??
+                                    0
+                                }}%
 
                     </td>
-
 
 
                     <td>
 
                         <span
                             class="
-                                            admin-badge
-                                            {{ $projectStatusClass }}
-                                        ">
+                                        admin-badge
+                                        {{ $projectStatusClass }}
+                                    ">
 
                             {{ $projectStatusLabel }}
 

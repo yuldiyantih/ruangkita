@@ -217,6 +217,7 @@ class ClientProjectController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
+
         $client = $user->client;
 
         if (!$client) {
@@ -229,22 +230,25 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | Semua proyek milik client
+    | SEMUA PROJECT MILIK CLIENT
     |--------------------------------------------------------------------------
     */
 
-        $projects = $client->projects()
+        $projects =
+            $client
+            ->projects()
             ->latest()
             ->get();
 
 
         /*
     |--------------------------------------------------------------------------
-    | Tentukan proyek aktif
+    | PILIH PROJECT AKTIF
     |--------------------------------------------------------------------------
     */
 
         $selectedProject = null;
+
 
         if ($projects->count() > 0) {
 
@@ -272,7 +276,7 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | Load dokumentasi proyek terpilih
+    | LOAD DOCUMENTATION PROJECT
     |--------------------------------------------------------------------------
     */
 
@@ -280,41 +284,13 @@ class ClientProjectController extends Controller
 
             $selectedProject->load([
 
-                'areas' => function ($query) {
-
-                    $query->orderBy(
-                        'area_name'
-                    );
-                },
-
-
-                'areas.documentations' => function ($query) {
+                'documentations' =>
+                function ($query) {
 
                     $query
                         ->where(
                             'is_visible_to_client',
                             true
-                        )
-                        ->orderBy(
-                            'photo_date',
-                            'asc'
-                        )
-                        ->orderBy(
-                            'created_at',
-                            'asc'
-                        );
-                },
-
-
-                'documentations' => function ($query) {
-
-                    $query
-                        ->where(
-                            'is_visible_to_client',
-                            true
-                        )
-                        ->with(
-                            'projectArea'
                         )
                         ->orderByDesc(
                             'photo_date'
@@ -330,7 +306,7 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | Statistik
+    | STATISTIK DOCUMENTATION
     |--------------------------------------------------------------------------
     */
 
@@ -338,11 +314,11 @@ class ClientProjectController extends Controller
 
             'total' => 0,
 
-            'photo' => 0,
+            'before' => 0,
 
-            'video' => 0,
+            'during' => 0,
 
-            'document' => 0,
+            'after' => 0,
 
         ];
 
@@ -358,29 +334,29 @@ class ClientProjectController extends Controller
                 $documents->count();
 
 
-            $documentationStats['photo'] =
+            $documentationStats['before'] =
                 $documents
                 ->where(
-                    'media_type',
-                    'photo'
+                    'category',
+                    'before'
                 )
                 ->count();
 
 
-            $documentationStats['video'] =
+            $documentationStats['during'] =
                 $documents
                 ->where(
-                    'media_type',
-                    'video'
+                    'category',
+                    'during'
                 )
                 ->count();
 
 
-            $documentationStats['document'] =
+            $documentationStats['after'] =
                 $documents
                 ->where(
-                    'media_type',
-                    'document'
+                    'category',
+                    'after'
                 )
                 ->count();
         }
@@ -576,6 +552,7 @@ class ClientProjectController extends Controller
         );
     }
 
+
     public function messages()
     {
         $user = Auth::user();
@@ -584,6 +561,12 @@ class ClientProjectController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
+
+        /*
+    |--------------------------------------------------------------------------
+    | DATA CLIENT
+    |--------------------------------------------------------------------------
+    */
 
         $client = $user->client;
 
@@ -597,23 +580,52 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | PROJECT CLIENT
+    | PROJECT MILIK CLIENT
     |--------------------------------------------------------------------------
     */
 
-        $projects = $client->projects()
+        $projects = $client
+            ->projects()
             ->latest()
             ->get();
 
 
         /*
     |--------------------------------------------------------------------------
+    | PROJECT TERPILIH
+    |--------------------------------------------------------------------------
+    */
+
+        $selectedProject = null;
+
+        if ($projects->count() > 0) {
+
+            $requestedProjectId =
+                request('project');
+
+
+            if ($requestedProjectId) {
+
+                $selectedProject =
+                    $projects->firstWhere(
+                        'id',
+                        (int) $requestedProjectId
+                    );
+            }
+
+
+            if (!$selectedProject) {
+
+                $selectedProject =
+                    $projects->first();
+            }
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
     | TEAM / ADMIN
     |--------------------------------------------------------------------------
-    |
-    | Untuk sementara semua akun role admin
-    | dianggap sebagai Tim Proyek.
-    |
     */
 
         $teamMembers = User::query()
@@ -625,12 +637,11 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | USER / PERCAKAPAN AKTIF
+    | ADMIN TERPILIH
     |--------------------------------------------------------------------------
     */
 
         $selectedUser = null;
-
 
         if ($teamMembers->count() > 0) {
 
@@ -665,9 +676,23 @@ class ClientProjectController extends Controller
         $chatMessages = collect();
 
 
-        if ($selectedUser) {
+        if (
+            $selectedUser
+            &&
+            $selectedProject
+        ) {
 
             $chatMessages = Message::query()
+                ->with([
+                    'sender',
+                    'receiver',
+                    'project',
+                ])
+
+                ->where(
+                    'project_id',
+                    $selectedProject->id
+                )
 
                 ->where(function ($query) use (
                     $user,
@@ -675,66 +700,68 @@ class ClientProjectController extends Controller
                 ) {
 
                     $query
-                        ->where(
-                            'sender_id',
-                            $user->id
-                        )
-                        ->where(
-                            'receiver_id',
-                            $selectedUser->id
-                        );
+                        ->where(function ($subQuery) use (
+                            $user,
+                            $selectedUser
+                        ) {
+
+                            $subQuery
+                                ->where(
+                                    'sender_id',
+                                    $user->id
+                                )
+                                ->where(
+                                    'receiver_id',
+                                    $selectedUser->id
+                                );
+                        })
+
+                        ->orWhere(function ($subQuery) use (
+                            $user,
+                            $selectedUser
+                        ) {
+
+                            $subQuery
+                                ->where(
+                                    'sender_id',
+                                    $selectedUser->id
+                                )
+                                ->where(
+                                    'receiver_id',
+                                    $user->id
+                                );
+                        });
                 })
 
-                ->orWhere(function ($query) use (
-                    $user,
-                    $selectedUser
-                ) {
-
-                    $query
-                        ->where(
-                            'sender_id',
-                            $selectedUser->id
-                        )
-                        ->where(
-                            'receiver_id',
-                            $user->id
-                        );
-                })
-
-                ->with([
-                    'sender',
-                    'receiver'
-                ])
-
-                ->orderBy('created_at')
+                ->orderBy('sent_at')
                 ->get();
 
 
             /*
         |--------------------------------------------------------------------------
-        | TANDAI SUDAH DIBACA
+        | TANDAI PESAN SEBAGAI SUDAH DIBACA
         |--------------------------------------------------------------------------
         */
 
             Message::query()
-
+                ->where(
+                    'project_id',
+                    $selectedProject->id
+                )
                 ->where(
                     'sender_id',
                     $selectedUser->id
                 )
-
                 ->where(
                     'receiver_id',
                     $user->id
                 )
-
                 ->where(
                     'is_read',
                     false
                 )
-
                 ->update([
-                    'is_read' => true
+                    'is_read' => true,
                 ]);
         }
 
@@ -747,67 +774,88 @@ class ClientProjectController extends Controller
 
         $conversations =
             $teamMembers->map(
-                function ($member) use ($user) {
+                function ($member) use (
+                    $user,
+                    $selectedProject
+                ) {
+
+                    $lastMessage = null;
+                    $unread = 0;
 
 
-                    $lastMessage =
-                        Message::query()
+                    if ($selectedProject) {
 
-                        ->where(function ($query) use (
-                            $user,
-                            $member
-                        ) {
+                        $lastMessage =
+                            Message::query()
 
-                            $query
-                                ->where(
-                                    'sender_id',
-                                    $user->id
-                                )
-                                ->where(
-                                    'receiver_id',
-                                    $member->id
-                                );
-                        })
+                            ->where(
+                                'project_id',
+                                $selectedProject->id
+                            )
 
-                        ->orWhere(function ($query) use (
-                            $user,
-                            $member
-                        ) {
+                            ->where(function ($query) use (
+                                $user,
+                                $member
+                            ) {
 
-                            $query
-                                ->where(
-                                    'sender_id',
-                                    $member->id
-                                )
-                                ->where(
-                                    'receiver_id',
-                                    $user->id
-                                );
-                        })
+                                $query
+                                    ->where(function ($subQuery) use (
+                                        $user,
+                                        $member
+                                    ) {
 
-                        ->latest()
-                        ->first();
+                                        $subQuery
+                                            ->where(
+                                                'sender_id',
+                                                $user->id
+                                            )
+                                            ->where(
+                                                'receiver_id',
+                                                $member->id
+                                            );
+                                    })
+
+                                    ->orWhere(function ($subQuery) use (
+                                        $user,
+                                        $member
+                                    ) {
+
+                                        $subQuery
+                                            ->where(
+                                                'sender_id',
+                                                $member->id
+                                            )
+                                            ->where(
+                                                'receiver_id',
+                                                $user->id
+                                            );
+                                    });
+                            })
+
+                            ->latest('sent_at')
+                            ->first();
 
 
-                    $unread =
-                        Message::query()
-
-                        ->where(
-                            'sender_id',
-                            $member->id
-                        )
-
-                        ->where(
-                            'receiver_id',
-                            $user->id
-                        )
-
-                        ->where(
-                            'is_read',
-                            false
-                        )
-
-                        ->count();
+                        $unread =
+                            Message::query()
+                            ->where(
+                                'project_id',
+                                $selectedProject->id
+                            )
+                            ->where(
+                                'sender_id',
+                                $member->id
+                            )
+                            ->where(
+                                'receiver_id',
+                                $user->id
+                            )
+                            ->where(
+                                'is_read',
+                                false
+                            )
+                            ->count();
+                    }
 
 
                     return [
@@ -823,13 +871,13 @@ class ClientProjectController extends Controller
             'client.messages',
             compact(
                 'projects',
+                'selectedProject',
                 'conversations',
                 'selectedUser',
                 'chatMessages'
             )
         );
     }
-
     public function sendMessage(Request $request)
     {
         $user = Auth::user();
@@ -839,6 +887,12 @@ class ClientProjectController extends Controller
         }
 
 
+        /*
+    |--------------------------------------------------------------------------
+    | VALIDASI
+    |--------------------------------------------------------------------------
+    */
+
         $validated = $request->validate([
 
             'receiver_id' => [
@@ -847,7 +901,7 @@ class ClientProjectController extends Controller
             ],
 
             'project_id' => [
-                'nullable',
+                'required',
                 'exists:projects,id',
             ],
 
@@ -860,8 +914,8 @@ class ClientProjectController extends Controller
             'attachment' => [
                 'nullable',
                 'file',
-                'max:10240',
-                'mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx,zip',
+                'max:20480',
+                'mimes:jpg,jpeg,png,webp,mp4,mov,webm,pdf,doc,docx,xls,xlsx,zip',
             ],
 
         ]);
@@ -869,7 +923,7 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | PESAN ATAU ATTACHMENT HARUS ADA
+    | PESAN ATAU ATTACHMENT WAJIB ADA
     |--------------------------------------------------------------------------
     */
 
@@ -882,7 +936,7 @@ class ClientProjectController extends Controller
             return back()
                 ->withErrors([
                     'message_text' =>
-                    'Tulis pesan atau lampirkan file.'
+                    'Tulis pesan atau lampirkan file.',
                 ])
                 ->withInput();
         }
@@ -890,33 +944,91 @@ class ClientProjectController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | VALIDASI RECEIVER
+    | DATA CLIENT
     |--------------------------------------------------------------------------
     */
 
-        $receiver = User::query()
-            ->where('id', $validated['receiver_id'])
-            ->where('role', 'admin')
+        $client = $user->client;
+
+        if (!$client) {
+
+            abort(
+                403,
+                'Data client tidak ditemukan.'
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | VALIDASI PROJECT MILIK CLIENT
+    |--------------------------------------------------------------------------
+    */
+
+        $project = $client
+            ->projects()
+            ->where(
+                'id',
+                $validated['project_id']
+            )
             ->firstOrFail();
 
 
         /*
     |--------------------------------------------------------------------------
-    | UPLOAD ATTACHMENT
+    | VALIDASI RECEIVER HARUS ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+        $receiver = User::query()
+            ->where(
+                'id',
+                $validated['receiver_id']
+            )
+            ->where(
+                'role',
+                'admin'
+            )
+            ->firstOrFail();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | ATTACHMENT
     |--------------------------------------------------------------------------
     */
 
         $attachmentPath = null;
+        $attachmentName = null;
+        $attachmentType = null;
+        $attachmentSize = null;
+
 
         if ($request->hasFile('attachment')) {
 
+            $file =
+                $request->file(
+                    'attachment'
+                );
+
+
             $attachmentPath =
-                $request
-                ->file('attachment')
-                ->store(
+                $file->store(
                     'messages',
                     'public'
                 );
+
+
+            $attachmentName =
+                $file->getClientOriginalName();
+
+
+            $attachmentType =
+                $file->getMimeType();
+
+
+            $attachmentSize =
+                $file->getSize();
         }
 
 
@@ -929,8 +1041,7 @@ class ClientProjectController extends Controller
         Message::create([
 
             'project_id' =>
-            $validated['project_id']
-                ?? null,
+            $project->id,
 
             'sender_id' =>
             $user->id,
@@ -945,6 +1056,15 @@ class ClientProjectController extends Controller
             'attachment_path' =>
             $attachmentPath,
 
+            'attachment_name' =>
+            $attachmentName,
+
+            'attachment_type' =>
+            $attachmentType,
+
+            'attachment_size' =>
+            $attachmentSize,
+
             'is_read' =>
             false,
 
@@ -954,13 +1074,23 @@ class ClientProjectController extends Controller
         ]);
 
 
+        /*
+    |--------------------------------------------------------------------------
+    | KEMBALI KE CHAT
+    |--------------------------------------------------------------------------
+    */
+
         return redirect()
             ->route(
                 'client.messages',
                 [
                     'user' =>
-                    $receiver->id
+                    $receiver->id,
                 ]
+            )
+            ->with(
+                'success',
+                'Pesan berhasil dikirim.'
             );
     }
 

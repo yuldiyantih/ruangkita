@@ -1,10 +1,198 @@
 @extends('layouts.admin')
 
 
+@php
+
+$pageLang =
+auth()->user()->language
+??
+'id';
+
+
+$translations = [
+
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
+'id' => [
+
+'page_title' =>
+'Edit Pekerjaan',
+
+'work_data' =>
+'Data Pekerjaan',
+
+'work_detail' =>
+'Detail Pekerjaan',
+
+'edit_work' =>
+'Edit Pekerjaan',
+
+'subtitle' =>
+'Perbarui informasi pekerjaan proyek.',
+
+'work_information' =>
+'Informasi Pekerjaan',
+
+'project' =>
+'Proyek',
+
+'work_name' =>
+'Nama Pekerjaan',
+
+'method_type' =>
+'Metode Pekerjaan',
+
+'daily' =>
+'Harian',
+
+'contract' =>
+'Borongan',
+
+'status' =>
+'Status',
+
+'planned' =>
+'Belum Dimulai',
+
+'ongoing' =>
+'Berjalan',
+
+'completed' =>
+'Selesai',
+
+'cancelled' =>
+'Dibatalkan',
+
+'volume' =>
+'Volume',
+
+'unit' =>
+'Satuan',
+
+'unit_price' =>
+'Harga Satuan',
+
+'duration' =>
+'Durasi Pekerjaan',
+
+'total_cost' =>
+'Total Biaya',
+
+'visible_to_client' =>
+'Tampilkan pekerjaan ini kepada Client',
+
+'cancel' =>
+'Batal',
+
+'save' =>
+'Simpan Perubahan',
+
+],
+
+
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
+'en' => [
+
+'page_title' =>
+'Edit Work',
+
+'work_data' =>
+'Work Data',
+
+'work_detail' =>
+'Work Detail',
+
+'edit_work' =>
+'Edit Work',
+
+'subtitle' =>
+'Update the project work information.',
+
+'work_information' =>
+'Work Information',
+
+'project' =>
+'Project',
+
+'work_name' =>
+'Work Name',
+
+'method_type' =>
+'Work Method',
+
+'daily' =>
+'Daily',
+
+'contract' =>
+'Contract',
+
+'status' =>
+'Status',
+
+'planned' =>
+'Not Started',
+
+'ongoing' =>
+'Ongoing',
+
+'completed' =>
+'Completed',
+
+'cancelled' =>
+'Cancelled',
+
+'volume' =>
+'Volume',
+
+'unit' =>
+'Unit',
+
+'unit_price' =>
+'Unit Price',
+
+'duration' =>
+'Work Duration',
+
+'total_cost' =>
+'Total Cost',
+
+'visible_to_client' =>
+'Show this work to the Client',
+
+'cancel' =>
+'Cancel',
+
+'save' =>
+'Save Changes',
+
+],
+
+];
+
+
+$wt =
+$translations[$pageLang]
+??
+$translations['id'];
+
+@endphp
+
+
+
 @section(
 'title',
-'Edit Pekerjaan - RuangKita'
+$wt['page_title'] . ' - RuangKita'
 )
+
 
 
 @section('content')
@@ -13,45 +201,76 @@
 <div style="max-width: 1050px;">
 
 
+    {{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
+
     <div class="admin-breadcrumb">
 
+
         <a href="{{ route('admin.works.index') }}">
-            Data Pekerjaan
+
+            {{ $wt['work_data'] }}
+
         </a>
+
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
+
 
         <a href="{{ route('admin.works.show', $work) }}">
-            Detail Pekerjaan
+
+            {{ $wt['work_detail'] }}
+
         </a>
+
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
 
+
         <span class="admin-breadcrumb-current">
-            Edit Pekerjaan
+
+            {{ $wt['edit_work'] }}
+
         </span>
+
 
     </div>
 
 
+
+    {{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
     <div class="admin-page-header">
 
+
         <h1 class="admin-page-title">
-            Edit Pekerjaan
+
+            {{ $wt['edit_work'] }}
+
         </h1>
 
+
         <p class="admin-page-subtitle">
-            Perbarui informasi pekerjaan proyek.
+
+            {{ $wt['subtitle'] }}
+
         </p>
+
 
     </div>
 
 
+
+    {{-- =====================================================
+         FORM
+    ====================================================== --}}
 
     <form
         method="POST"
@@ -62,25 +281,41 @@
         @method('PUT')
 
 
+
         <div class="admin-form-title">
-            Informasi Pekerjaan
+
+            {{ $wt['work_information'] }}
+
         </div>
+
 
 
         <div class="admin-form-grid">
 
 
+            {{-- =================================================
+                 PROJECT
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Proyek
-                    <span class="admin-required">*</span>
+
+                    {{ $wt['project'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="project_id"
                     class="admin-form-control"
                     required>
+
 
                     @foreach($projects as $project)
 
@@ -89,11 +324,8 @@
                         @selected(
                         old( 'project_id' ,
                         $work->project_id
-                        )
-                        ==
-                        $project->id
-                        )
-                        >
+                        ) == $project->id
+                        )>
 
                         {{ $project->project_name }}
 
@@ -101,17 +333,31 @@
 
                     @endforeach
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 WORK NAME
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Nama Pekerjaan
-                    <span class="admin-required">*</span>
+
+                    {{ $wt['work_name'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     type="text"
@@ -125,126 +371,164 @@
                     class="admin-form-control"
                     required>
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 METHOD
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Metode Pekerjaan
-                    <span class="admin-required">*</span>
+
+                    {{ $wt['method_type'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="method_type"
                     class="admin-form-control"
                     required>
 
+
                     <option
                         value="daily"
                         @selected(
                         old( 'method_type' ,
                         $work->method_type
-                        )
-                        ===
-                        'daily'
-                        )
-                        >
-                        Harian
+                        ) === 'daily'
+                        )>
+
+                        {{ $wt['daily'] }}
+
                     </option>
+
 
                     <option
                         value="contract"
                         @selected(
                         old( 'method_type' ,
                         $work->method_type
-                        )
-                        ===
-                        'contract'
-                        )
-                        >
-                        Borongan
+                        ) === 'contract'
+                        )>
+
+                        {{ $wt['contract'] }}
+
                     </option>
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 STATUS
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Status
-                    <span class="admin-required">*</span>
+
+                    {{ $wt['status'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="status"
                     class="admin-form-control"
                     required>
 
+
                     <option
                         value="planned"
                         @selected(
                         old( 'status' ,
                         $work->status
-                        )
-                        ===
-                        'planned'
-                        )
-                        >
-                        Belum Dimulai
+                        ) === 'planned'
+                        )>
+
+                        {{ $wt['planned'] }}
+
                     </option>
+
 
                     <option
                         value="ongoing"
                         @selected(
                         old( 'status' ,
                         $work->status
-                        )
-                        ===
-                        'ongoing'
-                        )
-                        >
-                        Berjalan
+                        ) === 'ongoing'
+                        )>
+
+                        {{ $wt['ongoing'] }}
+
                     </option>
+
 
                     <option
                         value="completed"
                         @selected(
                         old( 'status' ,
                         $work->status
-                        )
-                        ===
-                        'completed'
-                        )
-                        >
-                        Selesai
+                        ) === 'completed'
+                        )>
+
+                        {{ $wt['completed'] }}
+
                     </option>
+
 
                     <option
                         value="cancelled"
                         @selected(
                         old( 'status' ,
                         $work->status
-                        )
-                        ===
-                        'cancelled'
-                        )
-                        >
-                        Dibatalkan
+                        ) === 'cancelled'
+                        )>
+
+                        {{ $wt['cancelled'] }}
+
                     </option>
 
+
                 </select>
+
 
             </div>
 
 
+
+            {{-- =================================================
+                 VOLUME
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Volume
+
+                    {{ $wt['volume'] }}
+
                 </label>
+
 
                 <input
                     type="number"
@@ -260,14 +544,24 @@
                     }}"
                     class="admin-form-control">
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 UNIT
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Satuan
+
+                    {{ $wt['unit'] }}
+
                 </label>
+
 
                 <input
                     type="text"
@@ -280,14 +574,24 @@
                     }}"
                     class="admin-form-control">
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 UNIT PRICE
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Harga Satuan
+
+                    {{ $wt['unit_price'] }}
+
                 </label>
+
 
                 <input
                     type="number"
@@ -303,14 +607,24 @@
                     }}"
                     class="admin-form-control">
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 DURATION
+            ================================================== --}}
+
             <div class="admin-form-group">
 
+
                 <label class="admin-form-label">
-                    Durasi Pekerjaan
+
+                    {{ $wt['duration'] }}
+
                 </label>
+
 
                 <input
                     type="number"
@@ -324,14 +638,24 @@
                     }}"
                     class="admin-form-control">
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 TOTAL COST
+            ================================================== --}}
+
             <div class="admin-form-group full">
 
+
                 <label class="admin-form-label">
-                    Total Biaya
+
+                    {{ $wt['total_cost'] }}
+
                 </label>
+
 
                 <input
                     type="text"
@@ -339,10 +663,17 @@
                     class="admin-form-control"
                     readonly>
 
+
             </div>
 
 
+
+            {{-- =================================================
+                 VISIBILITY
+            ================================================== --}}
+
             <div class="admin-form-group full">
+
 
                 <label
                     style="
@@ -352,6 +683,7 @@
                         cursor:pointer;
                     ">
 
+
                     <input
                         type="checkbox"
                         name="is_visible_to_client"
@@ -360,14 +692,20 @@
                         old( 'is_visible_to_client' ,
                         $work->is_visible_to_client
                     )
-                    )
-                    >
+                    )>
 
-                    <span class="admin-form-label">
-                        Tampilkan pekerjaan ini kepada Client
+
+                    <span
+                        class="admin-form-label"
+                        style="margin:0;">
+
+                        {{ $wt['visible_to_client'] }}
+
                     </span>
 
+
                 </label>
+
 
             </div>
 
@@ -376,7 +714,12 @@
 
 
 
+        {{-- =====================================================
+             ACTIONS
+        ====================================================== --}}
+
         <div class="admin-form-actions">
+
 
             <a
                 href="{{ route('admin.works.show', $work) }}"
@@ -384,8 +727,11 @@
                     admin-btn
                     admin-btn-secondary
                 ">
-                Batal
+
+                {{ $wt['cancel'] }}
+
             </a>
+
 
             <button
                 type="submit"
@@ -393,8 +739,11 @@
                     admin-btn
                     admin-btn-primary
                 ">
-                Simpan Perubahan
+
+                {{ $wt['save'] }}
+
             </button>
+
 
         </div>
 
@@ -416,15 +765,18 @@
         'DOMContentLoaded',
         function() {
 
+
             const volume =
                 document.getElementById(
                     'workVolume'
                 );
 
+
             const unitPrice =
                 document.getElementById(
                     'workUnitPrice'
                 );
+
 
             const preview =
                 document.getElementById(
@@ -432,13 +784,16 @@
                 );
 
 
+
             function calculateTotal() {
+
 
                 const volumeValue =
                     parseFloat(
                         volume.value ||
                         0
                     );
+
 
                 const priceValue =
                     parseFloat(
@@ -462,7 +817,9 @@
                     )
                     .format(total);
 
+
             }
+
 
 
             volume.addEventListener(
@@ -478,6 +835,7 @@
 
 
             calculateTotal();
+
 
         }
     );

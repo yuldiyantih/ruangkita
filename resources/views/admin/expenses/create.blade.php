@@ -1,48 +1,342 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Pengeluaran - RuangKita')
+
+@php
+
+$pageLang =
+auth()->user()->language
+??
+'id';
+
+
+$translations = [
+
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
+'id' => [
+
+'page_title' =>
+'Tambah Pengeluaran',
+
+'expense_data' =>
+'Data Pengeluaran',
+
+'add_expense' =>
+'Tambah Pengeluaran',
+
+'subtitle' =>
+'Tambahkan transaksi pengeluaran baru untuk proyek RuangKita.',
+
+'error_title' =>
+'Data belum dapat disimpan.',
+
+'expense_information' =>
+'Informasi Pengeluaran',
+
+'project' =>
+'Proyek',
+
+'select_project' =>
+'Pilih Proyek',
+
+'related_material' =>
+'Material Terkait',
+
+'without_material' =>
+'Tanpa Material Terkait',
+
+'expense_date' =>
+'Tanggal Pengeluaran',
+
+'store_supplier' =>
+'Toko / Supplier',
+
+'store_placeholder' =>
+'Contoh: Toko Bangunan Jaya',
+
+'category' =>
+'Kategori',
+
+'select_category' =>
+'Pilih Kategori',
+
+'category_material' =>
+'Material',
+
+'category_labor' =>
+'Upah',
+
+'category_transport' =>
+'Transportasi',
+
+'category_equipment' =>
+'Peralatan',
+
+'category_other' =>
+'Lain-lain',
+
+'funding_source' =>
+'Sumber Dana',
+
+'project_fund' =>
+'Dana Proyek',
+
+'personal_fund' =>
+'Uang Pribadi',
+
+'amount' =>
+'Jumlah Pengeluaran',
+
+'receipt' =>
+'Bukti Pengeluaran',
+
+'receipt_help' =>
+'JPG, JPEG, PNG, atau PDF. Maksimal 5 MB.',
+
+'description' =>
+'Keterangan',
+
+'description_placeholder' =>
+'Contoh: Pembelian semen Portland 50 zak',
+
+'visible_to_client' =>
+'Tampilkan pengeluaran ini kepada Client',
+
+'cancel' =>
+'Batal',
+
+'save' =>
+'Simpan Pengeluaran',
+
+],
+
+
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
+'en' => [
+
+'page_title' =>
+'Add Expense',
+
+'expense_data' =>
+'Expense Data',
+
+'add_expense' =>
+'Add Expense',
+
+'subtitle' =>
+'Add a new expense transaction for a RuangKita project.',
+
+'error_title' =>
+'The data could not be saved.',
+
+'expense_information' =>
+'Expense Information',
+
+'project' =>
+'Project',
+
+'select_project' =>
+'Select Project',
+
+'related_material' =>
+'Related Material',
+
+'without_material' =>
+'No Related Material',
+
+'expense_date' =>
+'Expense Date',
+
+'store_supplier' =>
+'Store / Supplier',
+
+'store_placeholder' =>
+'Example: Jaya Building Store',
+
+'category' =>
+'Category',
+
+'select_category' =>
+'Select Category',
+
+'category_material' =>
+'Material',
+
+'category_labor' =>
+'Labor',
+
+'category_transport' =>
+'Transportation',
+
+'category_equipment' =>
+'Equipment',
+
+'category_other' =>
+'Other',
+
+'funding_source' =>
+'Funding Source',
+
+'project_fund' =>
+'Project Fund',
+
+'personal_fund' =>
+'Personal Fund',
+
+'amount' =>
+'Expense Amount',
+
+'receipt' =>
+'Expense Receipt',
+
+'receipt_help' =>
+'JPG, JPEG, PNG, or PDF. Maximum 5 MB.',
+
+'description' =>
+'Description',
+
+'description_placeholder' =>
+'Example: Purchase of 50 bags of Portland cement',
+
+'visible_to_client' =>
+'Show this expense to the Client',
+
+'cancel' =>
+'Cancel',
+
+'save' =>
+'Save Expense',
+
+],
+
+];
+
+
+$et =
+$translations[$pageLang]
+??
+$translations['id'];
+
+@endphp
+
+
+
+@section(
+'title',
+$et['page_title'] . ' - RuangKita'
+)
+
 
 
 @section('content')
 
+
 <div style="max-width: 1050px;">
 
+
+    {{-- =====================================================
+         BREADCRUMB
+    ====================================================== --}}
+
     <div class="admin-breadcrumb">
+
+
         <a href="{{ route('admin.expenses.index') }}">
-            Data Pengeluaran
+
+            {{ $et['expense_data'] }}
+
         </a>
 
-        <span class="admin-breadcrumb-separator">/</span>
+
+        <span class="admin-breadcrumb-separator">
+            /
+        </span>
+
 
         <span class="admin-breadcrumb-current">
-            Tambah Pengeluaran
+
+            {{ $et['add_expense'] }}
+
         </span>
+
+
     </div>
 
+
+
+    {{-- =====================================================
+         PAGE HEADER
+    ====================================================== --}}
 
     <div class="admin-page-header">
+
+
         <h1 class="admin-page-title">
-            Tambah Pengeluaran
+
+            {{ $et['add_expense'] }}
+
         </h1>
 
+
         <p class="admin-page-subtitle">
-            Tambahkan transaksi pengeluaran baru untuk proyek RuangKita.
+
+            {{ $et['subtitle'] }}
+
         </p>
+
+
     </div>
 
+
+
+    {{-- =====================================================
+         VALIDATION ERROR
+    ====================================================== --}}
 
     @if($errors->any())
-    <div class="admin-alert-error" style="margin-bottom:18px;">
-        <strong>Data belum dapat disimpan.</strong>
+
+    <div
+        class="admin-alert-error"
+        style="margin-bottom:18px;">
+
+        <strong>
+
+            {{ $et['error_title'] }}
+
+        </strong>
+
 
         <ul style="margin:8px 0 0 18px;">
+
             @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
+
+            <li>
+                {{ $error }}
+            </li>
+
             @endforeach
+
         </ul>
+
+
     </div>
+
     @endif
 
+
+
+    {{-- =====================================================
+         FORM
+    ====================================================== --}}
 
     <form
         method="POST"
@@ -53,80 +347,151 @@
         @csrf
 
 
+
         <div class="admin-form-title">
-            Informasi Pengeluaran
+
+            {{ $et['expense_information'] }}
+
         </div>
+
 
 
         <div class="admin-form-grid">
 
-            {{-- PROJECT --}}
+
+            {{-- =================================================
+                 PROJECT
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Proyek
-                    <span class="admin-required">*</span>
+
+                    {{ $et['project'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="project_id"
                     id="expenseProject"
                     class="admin-form-control"
                     required>
+
+
                     <option value="">
-                        Pilih Proyek
+
+                        {{ $et['select_project'] }}
+
                     </option>
 
+
                     @foreach($projects as $project)
+
                     <option
                         value="{{ $project->id }}"
                         @selected(
                         old('project_id')==$project->id
-                        )
-                        >
+                        )>
+
                         {{ $project->project_name }}
+
                         -
-                        {{ optional($project->client)->user->name ?? '-' }}
+
+                        {{
+                                optional(
+                                    optional(
+                                        $project->client
+                                    )->user
+                                )->name
+                                ??
+                                '-'
+                            }}
+
                     </option>
+
                     @endforeach
+
+
                 </select>
+
+
             </div>
 
 
-            {{-- MATERIAL --}}
+
+            {{-- =================================================
+                 MATERIAL
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Material Terkait
+
+                    {{ $et['related_material'] }}
+
                 </label>
+
 
                 <select
                     name="material_id"
                     id="expenseMaterial"
                     class="admin-form-control">
+
+
                     <option value="">
-                        Tanpa Material Terkait
+
+                        {{ $et['without_material'] }}
+
                     </option>
 
+
                     @foreach($materials as $material)
+
                     <option
                         value="{{ $material->id }}"
                         data-project="{{ $material->project_id }}"
                         @selected(
                         old('material_id')==$material->id
-                        )
-                        >
+                        )>
+
                         {{ $material->material_name }}
+
                     </option>
+
                     @endforeach
+
+
                 </select>
+
+
             </div>
 
 
-            {{-- DATE --}}
+
+            {{-- =================================================
+                 DATE
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Tanggal Pengeluaran
-                    <span class="admin-required">*</span>
+
+                    {{ $et['expense_date'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     type="date"
@@ -134,103 +499,204 @@
                     value="{{ old('expense_date') }}"
                     class="admin-form-control"
                     required>
+
+
             </div>
 
 
-            {{-- STORE --}}
+
+            {{-- =================================================
+                 STORE / SUPPLIER
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Toko / Supplier
+
+                    {{ $et['store_supplier'] }}
+
                 </label>
+
 
                 <input
                     type="text"
                     name="store_name"
                     value="{{ old('store_name') }}"
                     class="admin-form-control"
-                    placeholder="Contoh: Toko Bangunan Jaya">
+                    placeholder="{{ $et['store_placeholder'] }}">
+
+
             </div>
 
 
-            {{-- CATEGORY --}}
+
+            {{-- =================================================
+                 CATEGORY
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Kategori
-                    <span class="admin-required">*</span>
+
+                    {{ $et['category'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="category"
                     id="expenseCategory"
                     class="admin-form-control"
                     required>
+
+
                     <option value="">
-                        Pilih Kategori
+
+                        {{ $et['select_category'] }}
+
                     </option>
 
-                    <option value="material"
-                        @selected(old('category')==='material' )}>
-                        Material
+
+                    <option
+                        value="material"
+                        @selected(
+                        old('category')==='material'
+                        )>
+
+                        {{ $et['category_material'] }}
+
                     </option>
 
-                    <option value="labor"
-                        @selected(old('category')==='labor' )}>
-                        Upah
+
+                    <option
+                        value="labor"
+                        @selected(
+                        old('category')==='labor'
+                        )>
+
+                        {{ $et['category_labor'] }}
+
                     </option>
 
-                    <option value="transport"
-                        @selected(old('category')==='transport' )}>
-                        Transportasi
+
+                    <option
+                        value="transport"
+                        @selected(
+                        old('category')==='transport'
+                        )>
+
+                        {{ $et['category_transport'] }}
+
                     </option>
 
-                    <option value="equipment"
-                        @selected(old('category')==='equipment' )}>
-                        Peralatan
+
+                    <option
+                        value="equipment"
+                        @selected(
+                        old('category')==='equipment'
+                        )>
+
+                        {{ $et['category_equipment'] }}
+
                     </option>
 
-                    <option value="other"
-                        @selected(old('category')==='other' )}>
-                        Lain-lain
+
+                    <option
+                        value="other"
+                        @selected(
+                        old('category')==='other'
+                        )>
+
+                        {{ $et['category_other'] }}
+
                     </option>
+
+
                 </select>
+
+
             </div>
 
 
-            {{-- FUNDING SOURCE --}}
+
+            {{-- =================================================
+                 FUNDING SOURCE
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Sumber Dana
-                    <span class="admin-required">*</span>
+
+                    {{ $et['funding_source'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <select
                     name="funding_source"
                     id="expenseFundingSource"
                     class="admin-form-control"
                     required>
-                    <option value="project"
+
+
+                    <option
+                        value="project"
                         @selected(
-                        old('funding_source', 'project' )==='project'
+                        old( 'funding_source' , 'project'
+                        )==='project'
                         )>
-                        Dana Proyek
+
+                        {{ $et['project_fund'] }}
+
                     </option>
 
-                    <option value="personal"
+
+                    <option
+                        value="personal"
                         @selected(
                         old('funding_source')==='personal'
                         )>
-                        Uang Pribadi
+
+                        {{ $et['personal_fund'] }}
+
                     </option>
+
+
                 </select>
+
+
             </div>
 
 
-            {{-- AMOUNT --}}
+
+            {{-- =================================================
+                 AMOUNT
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Jumlah Pengeluaran
-                    <span class="admin-required">*</span>
+
+                    {{ $et['amount'] }}
+
+                    <span class="admin-required">
+                        *
+                    </span>
+
                 </label>
+
 
                 <input
                     type="number"
@@ -240,14 +706,25 @@
                     min="0"
                     step="0.01"
                     required>
+
+
             </div>
 
 
-            {{-- RECEIPT --}}
+
+            {{-- =================================================
+                 RECEIPT
+            ================================================== --}}
+
             <div class="admin-form-group">
+
+
                 <label class="admin-form-label">
-                    Bukti Pengeluaran
+
+                    {{ $et['receipt'] }}
+
                 </label>
+
 
                 <input
                     type="file"
@@ -256,28 +733,54 @@
                     class="admin-form-control"
                     accept=".jpg,.jpeg,.png,.pdf">
 
-                <small style="color:var(--text-muted);">
-                    JPG, JPEG, PNG, atau PDF. Maksimal 5 MB.
+
+                <small
+                    style="
+                        color:
+                            var(--text-muted);
+                    ">
+
+                    {{ $et['receipt_help'] }}
+
                 </small>
+
+
             </div>
 
 
-            {{-- DESCRIPTION --}}
+
+            {{-- =================================================
+                 DESCRIPTION
+            ================================================== --}}
+
             <div class="admin-form-group full">
+
+
                 <label class="admin-form-label">
-                    Keterangan
+
+                    {{ $et['description'] }}
+
                 </label>
+
 
                 <textarea
                     name="description"
                     class="admin-form-control"
                     rows="4"
-                    placeholder="Contoh: Pembelian semen Portland 50 zak">{{ old('description') }}</textarea>
+                    placeholder="{{ $et['description_placeholder'] }}">{{ old('description') }}</textarea>
+
+
             </div>
 
 
-            {{-- VISIBILITY --}}
+
+            {{-- =================================================
+                 VISIBILITY
+            ================================================== --}}
+
             <div class="admin-form-group full">
+
+
                 <label
                     style="
                         display:flex;
@@ -285,132 +788,244 @@
                         gap:10px;
                         cursor:pointer;
                     ">
+
+
                     <input
                         type="checkbox"
                         name="is_visible_to_client"
                         value="1"
                         @checked(
-                        old('is_visible_to_client', false)
+                        old( 'is_visible_to_client' ,
+                        false
+                        )
                         )>
 
-                    <span class="admin-form-label" style="margin:0;">
-                        Tampilkan pengeluaran ini kepada Client
+
+                    <span
+                        class="admin-form-label"
+                        style="margin:0;">
+
+                        {{ $et['visible_to_client'] }}
+
                     </span>
+
+
                 </label>
+
+
             </div>
+
 
         </div>
 
+
+
+        {{-- =====================================================
+             ACTIONS
+        ====================================================== --}}
 
         <div class="admin-form-actions">
 
+
             <a
                 href="{{ route('admin.expenses.index') }}"
-                class="admin-btn admin-btn-secondary">
-                Batal
+                class="
+                    admin-btn
+                    admin-btn-secondary
+                ">
+
+                {{ $et['cancel'] }}
+
             </a>
+
 
             <button
                 type="submit"
-                class="admin-btn admin-btn-primary">
-                Simpan Pengeluaran
+                class="
+                    admin-btn
+                    admin-btn-primary
+                ">
+
+                {{ $et['save'] }}
+
             </button>
+
 
         </div>
 
+
     </form>
+
 
 </div>
 
+
 @endsection
+
 
 
 @push('scripts')
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        const projectSelect =
-            document.getElementById('expenseProject');
-
-        const materialSelect =
-            document.getElementById('expenseMaterial');
-
-        const categorySelect =
-            document.getElementById('expenseCategory');
+    document.addEventListener(
+        'DOMContentLoaded',
+        function() {
 
 
-        function filterMaterials() {
-
-            const projectId =
-                projectSelect.value;
-
-
-            Array.from(materialSelect.options)
-                .forEach(function(option) {
-
-                    if (!option.value) {
-                        option.hidden = false;
-                        return;
-                    }
-
-                    option.hidden =
-                        option.dataset.project !== projectId;
-                });
+            const projectSelect =
+                document.getElementById(
+                    'expenseProject'
+                );
 
 
-            const selected =
-                materialSelect.selectedOptions[0];
+            const materialSelect =
+                document.getElementById(
+                    'expenseMaterial'
+                );
 
 
-            if (
-                selected &&
-                selected.value &&
-                selected.hidden
-            ) {
-                materialSelect.value = '';
+            const categorySelect =
+                document.getElementById(
+                    'expenseCategory'
+                );
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | FILTER MATERIAL BY PROJECT
+            |--------------------------------------------------------------------------
+            */
+
+            function filterMaterials() {
+
+
+                const projectId =
+                    projectSelect.value;
+
+
+                Array.from(
+                        materialSelect.options
+                    )
+                    .forEach(
+                        function(option) {
+
+
+                            if (!option.value) {
+
+                                option.hidden =
+                                    false;
+
+                                return;
+
+                            }
+
+
+                            option.hidden =
+                                option.dataset.project !==
+                                projectId;
+
+                        }
+                    );
+
+
+                const selected =
+                    materialSelect
+                    .selectedOptions[0];
+
+
+                if (
+                    selected &&
+                    selected.value &&
+                    selected.hidden
+                ) {
+
+                    materialSelect.value =
+                        '';
+
+                }
+
             }
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HANDLE CATEGORY
+            |--------------------------------------------------------------------------
+            */
+
+            function handleCategory() {
+
+
+                const category =
+                    categorySelect.value;
+
+
+                if (
+                    category !==
+                    'material'
+                ) {
+
+                    materialSelect.value =
+                        '';
+
+                }
+
+
+                materialSelect.disabled =
+                    category !==
+                    'material';
+
+
+                if (
+                    category ===
+                    'material'
+                ) {
+
+                    materialSelect.disabled =
+                        false;
+
+                    filterMaterials();
+
+                }
+
+            }
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | EVENTS
+            |--------------------------------------------------------------------------
+            */
+
+            projectSelect.addEventListener(
+                'change',
+                filterMaterials
+            );
+
+
+            categorySelect.addEventListener(
+                'change',
+                handleCategory
+            );
+
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | INITIAL STATE
+            |--------------------------------------------------------------------------
+            */
+
+            filterMaterials();
+
+            handleCategory();
+
+
         }
-
-
-        function handleCategory() {
-
-            const category =
-                categorySelect.value;
-
-
-            if (category !== 'material') {
-                materialSelect.value = '';
-            }
-
-
-            materialSelect.disabled =
-                category !== 'material';
-
-
-            if (category === 'material') {
-                materialSelect.disabled = false;
-                filterMaterials();
-            }
-        }
-
-
-        projectSelect.addEventListener(
-            'change',
-            filterMaterials
-        );
-
-
-        categorySelect.addEventListener(
-            'change',
-            handleCategory
-        );
-
-
-        filterMaterials();
-        handleCategory();
-
-    });
+    );
 </script>
 
 @endpush

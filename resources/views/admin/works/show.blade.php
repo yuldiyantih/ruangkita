@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 
 
-@section(
-'title',
-'Detail Pekerjaan - RuangKita'
-)
-
-
 @php
 
 $pageLang =
@@ -17,68 +11,168 @@ auth()->user()->language
 
 $translations = [
 
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
 'id' => [
 
-'works' => 'Data Pekerjaan',
-'detail' => 'Detail Pekerjaan',
-'subtitle' => 'Informasi lengkap pekerjaan pada proyek.',
-'edit' => 'Edit Pekerjaan',
+'page_title' =>
+'Detail Pekerjaan',
 
-'project' => 'Proyek',
-'client' => 'Client',
-'method' => 'Metode',
-'volume' => 'Volume',
-'unit_price' => 'Harga Satuan',
-'duration' => 'Durasi',
-'total_cost' => 'Total Biaya',
-'status' => 'Status',
-'visibility' => 'Tampilan Client',
+'works' =>
+'Data Pekerjaan',
 
-'daily' => 'Harian',
-'contract' => 'Borongan',
+'detail' =>
+'Detail Pekerjaan',
 
-'planned' => 'Belum Dimulai',
-'ongoing' => 'Berjalan',
-'completed' => 'Selesai',
-'cancelled' => 'Dibatalkan',
+'subtitle' =>
+'Informasi lengkap pekerjaan pada proyek.',
 
-'visible' => 'Ditampilkan ke Client',
-'hidden' => 'Disembunyikan dari Client',
+'edit' =>
+'Edit Pekerjaan',
 
-'schedule_count' => 'Jumlah Jadwal',
+'project' =>
+'Proyek',
+
+'client' =>
+'Client',
+
+'method' =>
+'Metode',
+
+'volume' =>
+'Volume',
+
+'unit_price' =>
+'Harga Satuan',
+
+'duration' =>
+'Durasi',
+
+'day' =>
+'hari',
+
+'total_cost' =>
+'Total Biaya',
+
+'status' =>
+'Status',
+
+'visibility' =>
+'Tampilan Client',
+
+'daily' =>
+'Harian',
+
+'contract' =>
+'Borongan',
+
+'planned' =>
+'Belum Dimulai',
+
+'ongoing' =>
+'Berjalan',
+
+'completed' =>
+'Selesai',
+
+'cancelled' =>
+'Dibatalkan',
+
+'visible' =>
+'Ditampilkan ke Client',
+
+'hidden' =>
+'Disembunyikan dari Client',
+
+'schedule_count' =>
+'Jumlah Jadwal',
 
 ],
 
 
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
 'en' => [
 
-'works' => 'Works',
-'detail' => 'Work Detail',
-'subtitle' => 'Complete information for this project work.',
-'edit' => 'Edit Work',
+'page_title' =>
+'Work Detail',
 
-'project' => 'Project',
-'client' => 'Client',
-'method' => 'Method',
-'volume' => 'Volume',
-'unit_price' => 'Unit Price',
-'duration' => 'Duration',
-'total_cost' => 'Total Cost',
-'status' => 'Status',
-'visibility' => 'Client Visibility',
+'works' =>
+'Works',
 
-'daily' => 'Daily',
-'contract' => 'Contract',
+'detail' =>
+'Work Detail',
 
-'planned' => 'Not Started',
-'ongoing' => 'Ongoing',
-'completed' => 'Completed',
-'cancelled' => 'Cancelled',
+'subtitle' =>
+'Complete information for this project work.',
 
-'visible' => 'Visible to Client',
-'hidden' => 'Hidden from Client',
+'edit' =>
+'Edit Work',
 
-'schedule_count' => 'Schedule Count',
+'project' =>
+'Project',
+
+'client' =>
+'Client',
+
+'method' =>
+'Method',
+
+'volume' =>
+'Volume',
+
+'unit_price' =>
+'Unit Price',
+
+'duration' =>
+'Duration',
+
+'day' =>
+'days',
+
+'total_cost' =>
+'Total Cost',
+
+'status' =>
+'Status',
+
+'visibility' =>
+'Client Visibility',
+
+'daily' =>
+'Daily',
+
+'contract' =>
+'Contract',
+
+'planned' =>
+'Not Started',
+
+'ongoing' =>
+'Ongoing',
+
+'completed' =>
+'Completed',
+
+'cancelled' =>
+'Cancelled',
+
+'visible' =>
+'Visible to Client',
+
+'hidden' =>
+'Hidden from Client',
+
+'schedule_count' =>
+'Schedule Count',
 
 ],
 
@@ -90,6 +184,12 @@ $translations[$pageLang]
 ??
 $translations['id'];
 
+
+/*
+|--------------------------------------------------------------------------
+| STATUS LABEL
+|--------------------------------------------------------------------------
+*/
 
 $statusLabel =
 match ($work->status) {
@@ -108,6 +208,12 @@ $dt['planned'],
 
 };
 
+
+/*
+|--------------------------------------------------------------------------
+| STATUS CLASS
+|--------------------------------------------------------------------------
+*/
 
 $statusClass =
 match ($work->status) {
@@ -129,11 +235,22 @@ default =>
 @endphp
 
 
+
+@section(
+'title',
+$dt['page_title'] . ' - RuangKita'
+)
+
+
+
 @push('styles')
 
 <style>
-    .work-detail-header {
+    /* =====================================================
+       HEADER
+    ===================================================== */
 
+    .work-detail-header {
         margin-bottom: 22px;
 
         display: flex;
@@ -146,8 +263,12 @@ default =>
     }
 
 
-    .work-detail-grid {
 
+    /* =====================================================
+       SUMMARY GRID
+    ===================================================== */
+
+    .work-detail-grid {
         margin-bottom: 18px;
 
         display: grid;
@@ -161,13 +282,11 @@ default =>
 
 
     .work-detail-card {
-
         padding: 18px;
     }
 
 
     .work-detail-label {
-
         margin-bottom: 7px;
 
         color:
@@ -178,7 +297,6 @@ default =>
 
 
     .work-detail-value {
-
         color:
             var(--text-heading);
 
@@ -188,14 +306,17 @@ default =>
     }
 
 
-    .work-info-panel {
 
+    /* =====================================================
+       DETAIL INFORMATION
+    ===================================================== */
+
+    .work-info-panel {
         padding: 20px;
     }
 
 
     .work-info-title {
-
         margin-bottom: 16px;
 
         color:
@@ -208,8 +329,8 @@ default =>
 
 
     .work-info-row {
-
-        padding: 12px 0;
+        padding:
+            12px 0;
 
         display: grid;
 
@@ -226,20 +347,17 @@ default =>
 
 
     .work-info-row:last-child {
-
         border-bottom: none;
     }
 
 
     .work-info-label {
-
         color:
             var(--text-muted);
     }
 
 
     .work-info-value {
-
         color:
             var(--text-main);
 
@@ -247,10 +365,14 @@ default =>
     }
 
 
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
     @media(max-width: 850px) {
 
         .work-detail-grid {
-
             grid-template-columns:
                 1fr 1fr;
         }
@@ -261,7 +383,6 @@ default =>
     @media(max-width: 650px) {
 
         .work-detail-header {
-
             align-items:
                 flex-start;
 
@@ -271,14 +392,12 @@ default =>
 
 
         .work-detail-grid {
-
             grid-template-columns:
                 1fr;
         }
 
 
         .work-info-row {
-
             grid-template-columns:
                 1fr;
 
@@ -295,27 +414,45 @@ default =>
 @section('content')
 
 
+{{-- =====================================================
+     BREADCRUMB
+===================================================== --}}
+
 <div class="admin-breadcrumb">
 
+
     <a href="{{ route('admin.works.index') }}">
+
         {{ $dt['works'] }}
+
     </a>
+
 
     <span class="admin-breadcrumb-separator">
         /
     </span>
 
+
     <span class="admin-breadcrumb-current">
+
         {{ $dt['detail'] }}
+
     </span>
+
 
 </div>
 
 
 
+{{-- =====================================================
+     PAGE HEADER
+===================================================== --}}
+
 <div class="work-detail-header">
 
+
     <div>
+
 
         <h1 class="admin-page-title">
 
@@ -323,13 +460,16 @@ default =>
 
         </h1>
 
+
         <p class="admin-page-subtitle">
 
             {{ $dt['subtitle'] }}
 
         </p>
 
+
     </div>
+
 
 
     <a
@@ -338,21 +478,34 @@ default =>
             admin-btn
             admin-btn-warning
         ">
+
         ✎ {{ $dt['edit'] }}
+
     </a>
+
 
 </div>
 
 
 
+{{-- =====================================================
+     SUMMARY
+===================================================== --}}
+
 <div class="work-detail-grid">
 
 
+    {{-- PROJECT --}}
+
     <div class="admin-card work-detail-card">
 
+
         <div class="work-detail-label">
+
             {{ $dt['project'] }}
+
         </div>
+
 
         <div class="work-detail-value">
 
@@ -364,14 +517,22 @@ default =>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- CLIENT --}}
+
     <div class="admin-card work-detail-card">
 
+
         <div class="work-detail-label">
+
             {{ $dt['client'] }}
+
         </div>
+
 
         <div class="work-detail-value">
 
@@ -387,14 +548,22 @@ default =>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- SCHEDULE COUNT --}}
+
     <div class="admin-card work-detail-card">
 
+
         <div class="work-detail-label">
+
             {{ $dt['schedule_count'] }}
+
         </div>
+
 
         <div class="work-detail-value">
 
@@ -402,12 +571,17 @@ default =>
 
         </div>
 
+
     </div>
 
 
 </div>
 
 
+
+{{-- =====================================================
+     WORK INFORMATION
+===================================================== --}}
 
 <div class="admin-card work-info-panel">
 
@@ -419,32 +593,45 @@ default =>
     </div>
 
 
+
+    {{-- METHOD --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['method'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
             {{
                 $work->method_type === 'daily'
-                ?
-                $dt['daily']
-                :
-                $dt['contract']
+                    ? $dt['daily']
+                    : $dt['contract']
             }}
 
         </div>
 
+
     </div>
 
 
+
+    {{-- VOLUME --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['volume'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
@@ -462,21 +649,29 @@ default =>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- UNIT PRICE --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['unit_price'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
             Rp
             {{
                 number_format(
-                    $work->unit_price,
+                    $work->unit_price ?? 0,
                     0,
                     ',',
                     '.'
@@ -485,14 +680,22 @@ default =>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- DURATION --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['duration'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
@@ -503,26 +706,36 @@ default =>
             }}
 
             @if($work->duration_days)
-            hari
+
+            {{ $dt['day'] }}
+
             @endif
 
         </div>
 
+
     </div>
 
 
+
+    {{-- TOTAL COST --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['total_cost'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
             Rp
             {{
                 number_format(
-                    $work->total_cost,
+                    $work->total_cost ?? 0,
                     0,
                     ',',
                     '.'
@@ -531,14 +744,22 @@ default =>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- STATUS --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['status'] }}
+
         </div>
+
 
         <div class="work-info-value">
 
@@ -547,21 +768,32 @@ default =>
                     admin-badge
                     {{ $statusClass }}
                 ">
+
                 {{ $statusLabel }}
+
             </span>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- CLIENT VISIBILITY --}}
+
     <div class="work-info-row">
 
+
         <div class="work-info-label">
+
             {{ $dt['visibility'] }}
+
         </div>
 
+
         <div class="work-info-value">
+
 
             @if($work->is_visible_to_client)
 
@@ -570,7 +802,9 @@ default =>
                         admin-badge
                         admin-badge-success
                     ">
+
                 {{ $dt['visible'] }}
+
             </span>
 
             @else
@@ -580,12 +814,16 @@ default =>
                         admin-badge
                         admin-badge-danger
                     ">
+
                 {{ $dt['hidden'] }}
+
             </span>
 
             @endif
 
+
         </div>
+
 
     </div>
 

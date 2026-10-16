@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 
 
-@section(
-'title',
-'Detail Jadwal - RuangKita'
-)
-
-
 @php
 
 $pageLang =
@@ -17,7 +11,16 @@ auth()->user()->language
 
 $translations = [
 
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
 'id' => [
+
+'page_title' =>
+'Detail Jadwal',
 
 'schedule' =>
 'Data Jadwal',
@@ -73,7 +76,16 @@ $translations = [
 ],
 
 
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
 'en' => [
+
+'page_title' =>
+'Schedule Detail',
 
 'schedule' =>
 'Schedules',
@@ -137,6 +149,12 @@ $translations[$pageLang]
 $translations['id'];
 
 
+/*
+|--------------------------------------------------------------------------
+| STATUS LABEL
+|--------------------------------------------------------------------------
+*/
+
 $statusLabel =
 match ($schedule->status) {
 
@@ -157,6 +175,12 @@ $dt['planned'],
 
 };
 
+
+/*
+|--------------------------------------------------------------------------
+| STATUS CLASS
+|--------------------------------------------------------------------------
+*/
 
 $statusClass =
 match ($schedule->status) {
@@ -181,11 +205,18 @@ default =>
 @endphp
 
 
+
+@section(
+'title',
+$dt['page_title'] . ' - RuangKita'
+)
+
+
+
 @push('styles')
 
 <style>
     .schedule-detail-header {
-
         margin-bottom: 22px;
 
         display: flex;
@@ -200,7 +231,6 @@ default =>
 
 
     .schedule-summary-grid {
-
         margin-bottom: 18px;
 
         display: grid;
@@ -214,13 +244,11 @@ default =>
 
 
     .schedule-summary-card {
-
         padding: 18px;
     }
 
 
     .schedule-summary-label {
-
         margin-bottom: 7px;
 
         color:
@@ -231,7 +259,6 @@ default =>
 
 
     .schedule-summary-value {
-
         color:
             var(--text-heading);
 
@@ -242,13 +269,11 @@ default =>
 
 
     .schedule-info-panel {
-
         padding: 20px;
     }
 
 
     .schedule-info-title {
-
         margin-bottom: 16px;
 
         color:
@@ -261,7 +286,6 @@ default =>
 
 
     .schedule-info-row {
-
         padding: 12px 0;
 
         display: grid;
@@ -277,20 +301,17 @@ default =>
 
 
     .schedule-info-row:last-child {
-
         border-bottom: none;
     }
 
 
     .schedule-info-label {
-
         color:
             var(--text-muted);
     }
 
 
     .schedule-info-value {
-
         color:
             var(--text-main);
 
@@ -299,7 +320,6 @@ default =>
 
 
     .schedule-description {
-
         white-space:
             pre-line;
 
@@ -310,14 +330,12 @@ default =>
     @media(max-width: 750px) {
 
         .schedule-summary-grid {
-
             grid-template-columns:
                 1fr;
         }
 
 
         .schedule-info-row {
-
             grid-template-columns:
                 1fr;
 
@@ -326,7 +344,6 @@ default =>
 
 
         .schedule-detail-header {
-
             align-items:
                 flex-start;
 
@@ -344,27 +361,45 @@ default =>
 @section('content')
 
 
+{{-- =====================================================
+     BREADCRUMB
+===================================================== --}}
+
 <div class="admin-breadcrumb">
 
+
     <a href="{{ route('admin.schedules.index') }}">
+
         {{ $dt['schedule'] }}
+
     </a>
+
 
     <span class="admin-breadcrumb-separator">
         /
     </span>
 
+
     <span class="admin-breadcrumb-current">
+
         {{ $dt['detail'] }}
+
     </span>
+
 
 </div>
 
 
 
+{{-- =====================================================
+     HEADER
+===================================================== --}}
+
 <div class="schedule-detail-header">
 
+
     <div>
+
 
         <h1 class="admin-page-title">
 
@@ -372,13 +407,16 @@ default =>
 
         </h1>
 
+
         <p class="admin-page-subtitle">
 
             {{ $dt['subtitle'] }}
 
         </p>
 
+
     </div>
+
 
 
     <a
@@ -387,40 +425,57 @@ default =>
             admin-btn
             admin-btn-warning
         ">
+
         ✎ {{ $dt['edit'] }}
+
     </a>
+
 
 </div>
 
 
+
+{{-- =====================================================
+     SUMMARY
+===================================================== --}}
 
 <div class="schedule-summary-grid">
 
 
     <div class="admin-card schedule-summary-card">
 
+
         <div class="schedule-summary-label">
+
             {{ $dt['project'] }}
+
         </div>
+
 
         <div class="schedule-summary-value">
 
             {{
-                $schedule->project->project_name
+                optional($schedule->project)->project_name
                 ??
                 '-'
             }}
 
         </div>
 
+
     </div>
+
 
 
     <div class="admin-card schedule-summary-card">
 
+
         <div class="schedule-summary-label">
+
             {{ $dt['client'] }}
+
         </div>
+
 
         <div class="schedule-summary-value">
 
@@ -436,24 +491,31 @@ default =>
 
         </div>
 
+
     </div>
+
 
 
     <div class="admin-card schedule-summary-card">
 
+
         <div class="schedule-summary-label">
+
             {{ $dt['work'] }}
+
         </div>
+
 
         <div class="schedule-summary-value">
 
             {{
-                $schedule->work->work_name
+                optional($schedule->work)->work_name
                 ??
                 '-'
             }}
 
         </div>
+
 
     </div>
 
@@ -461,6 +523,10 @@ default =>
 </div>
 
 
+
+{{-- =====================================================
+     DETAIL INFORMATION
+===================================================== --}}
 
 <div class="admin-card schedule-info-panel">
 
@@ -472,49 +538,88 @@ default =>
     </div>
 
 
+
+    {{-- START DATE --}}
+
     <div class="schedule-info-row">
 
+
         <div class="schedule-info-label">
+
             {{ $dt['start'] }}
+
         </div>
+
 
         <div class="schedule-info-value">
 
+            @if($schedule->start_date)
+
             {{
-                $schedule->start_date
-                    ? $schedule->start_date->format('d M Y')
-                    : '-'
-            }}
+                    $schedule->start_date
+                        ->locale($pageLang)
+                        ->translatedFormat('d M Y')
+                }}
+
+            @else
+
+            -
+
+            @endif
 
         </div>
+
 
     </div>
 
 
+
+    {{-- END DATE --}}
+
     <div class="schedule-info-row">
 
+
         <div class="schedule-info-label">
+
             {{ $dt['end'] }}
+
         </div>
+
 
         <div class="schedule-info-value">
 
+            @if($schedule->end_date)
+
             {{
-                $schedule->end_date
-                    ? $schedule->end_date->format('d M Y')
-                    : '-'
-            }}
+                    $schedule->end_date
+                        ->locale($pageLang)
+                        ->translatedFormat('d M Y')
+                }}
+
+            @else
+
+            -
+
+            @endif
 
         </div>
+
 
     </div>
 
 
+
+    {{-- STATUS --}}
+
     <div class="schedule-info-row">
 
+
         <div class="schedule-info-label">
+
             {{ $dt['status'] }}
+
         </div>
+
 
         <div class="schedule-info-value">
 
@@ -523,19 +628,29 @@ default =>
                     admin-badge
                     {{ $statusClass }}
                 ">
+
                 {{ $statusLabel }}
+
             </span>
 
         </div>
 
+
     </div>
 
 
+
+    {{-- DESCRIPTION --}}
+
     <div class="schedule-info-row">
 
+
         <div class="schedule-info-label">
+
             {{ $dt['description'] }}
+
         </div>
+
 
         <div
             class="
@@ -549,6 +664,7 @@ default =>
             }}
 
         </div>
+
 
     </div>
 

@@ -353,24 +353,17 @@ $adminTranslations['id'];
         ===================================================== */
 
         .admin-menu-item {
-
             min-height: 44px;
-
-            padding:
-                0 13px;
-
+            padding: 0 13px;
             margin-bottom: 4px;
 
             border-radius: 8px;
 
             display: flex;
-
             align-items: center;
-
             gap: 11px;
 
-            color:
-                #d6e6f5;
+            color: #d6e6f5;
 
             text-decoration: none;
 
@@ -1646,50 +1639,77 @@ $adminTranslations['id'];
                 <span class="admin-menu-text">{{ $at['personal_funds'] }}</span>
             </a>
 
-
-
             {{-- PROGRESS --}}
 
-            <a href="#"
-                class="admin-menu-item">
-                <span class="admin-menu-icon">↗</span>
-                <span class="admin-menu-text">{{ $at['progress'] }}</span>
+            <a
+                href="{{ route('admin.progress.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.progress.*') ? 'active' : '' }}">
+
+                <span class="admin-menu-icon">
+                    ↗
+                </span>
+
+                <span class="admin-menu-text">
+                    {{ $at['progress'] }}
+                </span>
+
             </a>
 
 
 
             {{-- DOCUMENTATION --}}
 
-            <a href="#"
+            <a href="{{ route('admin.documentations.index') }}"
                 class="admin-menu-item">
                 <span class="admin-menu-icon">▧</span>
                 <span class="admin-menu-text">{{ $at['documentation'] }}</span>
             </a>
 
+            {{-- MESSAGE --}}
+            <a
+                href="{{ route('admin.messages.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+                <span class="admin-menu-icon">
+                    ✉
+                </span>
 
+                <span class="admin-menu-text">
+                    {{ $at['messages'] ?? 'Pesan' }}
+                </span>
+            </a>
 
             {{-- REPORT --}}
 
-            <a href="#"
-                class="admin-menu-item">
+            <a href="{{ route('admin.reports.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                 <span class="admin-menu-icon">▥</span>
                 <span class="admin-menu-text">{{ $at['reports'] }}</span>
             </a>
 
 
 
-            {{-- SETTINGS
-             ROUTE DIAKTIFKAN NANTI --}}
+            {{-- SETTING --}}
 
-            <a href="#"
-                class="admin-menu-item">
-                <span class="admin-menu-icon">⚙</span>
-                <span class="admin-menu-text">{{ $at['settings'] }}</span>
+            {{-- =================================================
+     PENGATURAN
+================================================== --}}
+
+            <a
+                href="{{ route('admin.settings.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                <span class="admin-menu-icon">
+                    ⚙
+                </span>
+
+                <span class="admin-menu-text">
+                    {{ $at['settings'] ?? 'Pengaturan' }}
+                </span>
             </a>
+
+            <div class="admin-profile-divider"></div>
 
 
         </aside>
-
 
 
         {{-- =====================================================

@@ -23,11 +23,4 @@ class ProjectArea extends Model
     {
         return $this->hasMany(ArDesign::class);
     }
-    public function documentations()
-    {
-        return $this->hasMany(
-            Documentation::class,
-            'project_area_id'
-        );
-    }
 }

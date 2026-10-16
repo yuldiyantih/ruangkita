@@ -1,12 +1,6 @@
 @extends('layouts.admin')
 
 
-@section(
-'title',
-'Edit Client - RuangKita'
-)
-
-
 @php
 
 $pageLang =
@@ -17,7 +11,16 @@ auth()->user()->language
 
 $translations = [
 
+/*
+|--------------------------------------------------------------------------
+| BAHASA INDONESIA
+|--------------------------------------------------------------------------
+*/
+
 'id' => [
+
+'page_title' =>
+'Edit Client',
 
 'data_client' =>
 'Data Client',
@@ -61,7 +64,16 @@ $translations = [
 ],
 
 
+/*
+|--------------------------------------------------------------------------
+| ENGLISH
+|--------------------------------------------------------------------------
+*/
+
 'en' => [
+
+'page_title' =>
+'Edit Client',
 
 'data_client' =>
 'Clients',
@@ -115,27 +127,29 @@ $translations['id'];
 @endphp
 
 
+
+@section(
+'title',
+$et['page_title'] . ' - RuangKita'
+)
+
+
+
 @push('styles')
 
 <style>
     .client-form-page {
-
-        max-width:
-            980px;
+        max-width: 980px;
     }
 
 
     .client-edit-header {
-
-        margin-bottom:
-            22px;
+        margin-bottom: 22px;
     }
 
 
     .client-edit-subtitle {
-
-        max-width:
-            620px;
+        max-width: 620px;
     }
 </style>
 
@@ -164,9 +178,7 @@ $translations['id'];
 
 
         <span class="admin-breadcrumb-separator">
-
             /
-
         </span>
 
 
@@ -178,9 +190,7 @@ $translations['id'];
 
 
         <span class="admin-breadcrumb-separator">
-
             /
-
         </span>
 
 
@@ -245,7 +255,9 @@ $translations['id'];
         <div class="admin-form-grid">
 
 
-            {{-- NAME --}}
+            {{-- =================================================
+                 NAME
+            ================================================== --}}
 
             <div class="admin-form-group">
 
@@ -280,7 +292,9 @@ $translations['id'];
 
 
 
-            {{-- EMAIL --}}
+            {{-- =================================================
+                 EMAIL
+            ================================================== --}}
 
             <div class="admin-form-group">
 
@@ -315,7 +329,9 @@ $translations['id'];
 
 
 
-            {{-- PHONE --}}
+            {{-- =================================================
+                 PHONE
+            ================================================== --}}
 
             <div class="admin-form-group">
 
@@ -346,7 +362,9 @@ $translations['id'];
 
 
 
-            {{-- ADDRESS --}}
+            {{-- =================================================
+                 ADDRESS
+            ================================================== --}}
 
             <div class="admin-form-group full">
 
@@ -371,9 +389,9 @@ $translations['id'];
 
 
 
-        {{-- =================================================
+        {{-- =====================================================
              ACTIONS
-        ================================================== --}}
+        ====================================================== --}}
 
         <div class="admin-form-actions">
 

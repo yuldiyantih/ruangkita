@@ -13,6 +13,14 @@ use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\PersonalFundController;
+use App\Http\Controllers\Admin\ProgressController;
+use App\Http\Controllers\Admin\DocumentationController;
+use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SettingController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -311,6 +319,99 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/expenses/{expense}', [ExpenseController::class, 'destroy'])
         ->name('admin.expenses.destroy');
 
+    Route::get(
+        '/admin/documentations',
+        [DocumentationController::class, 'index']
+    )->name('admin.documentations.index');
+
+
+    Route::get(
+        '/admin/documentations/create',
+        [DocumentationController::class, 'create']
+    )->name('admin.documentations.create');
+
+
+    Route::post(
+        '/admin/documentations',
+        [DocumentationController::class, 'store']
+    )->name('admin.documentations.store');
+
+
+    Route::get(
+        '/admin/documentations/{documentation}',
+        [DocumentationController::class, 'show']
+    )->name('admin.documentations.show');
+
+
+    Route::get(
+        '/admin/documentations/{documentation}/edit',
+        [DocumentationController::class, 'edit']
+    )->name('admin.documentations.edit');
+
+
+    Route::put(
+        '/admin/documentations/{documentation}',
+        [DocumentationController::class, 'update']
+    )->name('admin.documentations.update');
+
+
+    Route::delete(
+        '/admin/documentations/{documentation}',
+        [DocumentationController::class, 'destroy']
+    )->name('admin.documentations.destroy');
+
+    Route::get(
+        '/admin/messages',
+        [MessageController::class, 'index']
+    )->name('admin.messages.index');
+
+    Route::post(
+        '/admin/messages',
+        [MessageController::class, 'send']
+    )->name('admin.messages.send');
+
+    // =========================
+    // ADMIN - REPORT
+    // =========================
+
+    Route::get(
+        '/admin/reports',
+        [ReportController::class, 'index']
+    )->name('admin.reports.index');
+
+    Route::get(
+        '/admin/reports/export/pdf',
+        [ReportController::class, 'exportPdf']
+    )->name('admin.reports.export.pdf');
+
+
+    Route::get(
+        '/admin/reports/export/excel',
+        [ReportController::class, 'exportExcel']
+    )->name('admin.reports.export.excel');
+
+    // =========================
+    // ADMIN - PENGATURAN
+    // =========================
+    Route::get(
+        '/admin/settings',
+        [SettingController::class, 'index']
+    )->name('admin.settings.index');
+
+    Route::put(
+        '/admin/settings/profile',
+        [SettingController::class, 'updateProfile']
+    )->name('admin.settings.profile');
+
+    Route::put(
+        '/admin/settings/preferences',
+        [SettingController::class, 'updatePreferences']
+    )->name('admin.settings.preferences');
+
+    Route::put(
+        '/admin/settings/password',
+        [SettingController::class, 'updatePassword']
+    )->name('admin.settings.password');
 
 
     // =========================
@@ -463,4 +564,49 @@ Route::middleware('auth')->group(function () {
         '/admin/personal-funds/{personalFund}/unpaid',
         [PersonalFundController::class, 'markAsUnpaid']
     )->name('admin.personal-funds.unpaid');
+
+    // =========================
+    // ADMIN - PROGRESS
+    // =========================
+
+    Route::get(
+        '/admin/progress',
+        [ProgressController::class, 'index']
+    )->name('admin.progress.index');
+
+
+    Route::get(
+        '/admin/progress/create',
+        [ProgressController::class, 'create']
+    )->name('admin.progress.create');
+
+
+    Route::post(
+        '/admin/progress',
+        [ProgressController::class, 'store']
+    )->name('admin.progress.store');
+
+
+    Route::get(
+        '/admin/progress/{progressUpdate}',
+        [ProgressController::class, 'show']
+    )->name('admin.progress.show');
+
+
+    Route::get(
+        '/admin/progress/{progressUpdate}/edit',
+        [ProgressController::class, 'edit']
+    )->name('admin.progress.edit');
+
+
+    Route::put(
+        '/admin/progress/{progressUpdate}',
+        [ProgressController::class, 'update']
+    )->name('admin.progress.update');
+
+
+    Route::delete(
+        '/admin/progress/{progressUpdate}',
+        [ProgressController::class, 'destroy']
+    )->name('admin.progress.destroy');
 });
