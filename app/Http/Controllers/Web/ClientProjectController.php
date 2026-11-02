@@ -1205,6 +1205,7 @@ class ClientProjectController extends Controller
     */
 
         $arAssets = ArAsset::query()
+            ->where('is_active', true)
             ->latest()
             ->get();
 

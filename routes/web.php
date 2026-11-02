@@ -319,6 +319,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/expenses/{expense}', [ExpenseController::class, 'destroy'])
         ->name('admin.expenses.destroy');
 
+    // =========================
+    // ADMIN - DOKUMENTASI
+    // =========================
     Route::get(
         '/admin/documentations',
         [DocumentationController::class, 'index']
@@ -360,6 +363,10 @@ Route::middleware('auth')->group(function () {
         [DocumentationController::class, 'destroy']
     )->name('admin.documentations.destroy');
 
+
+    // =========================
+    // ADMIN - PESAN
+    // =========================
     Route::get(
         '/admin/messages',
         [MessageController::class, 'index']

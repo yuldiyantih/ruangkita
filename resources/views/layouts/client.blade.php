@@ -1079,16 +1079,53 @@ $tr = $translations[$lang] ?? $translations['id'];
         @media(max-width: 850px) {
 
             .sidebar {
-                display: none;
+                display: block;
+
+                width: 230px;
+
+                transform: translateX(-100%);
+
+                transition: transform .25s ease;
+
+                z-index: 3000;
+
+                box-shadow:
+                    8px 0 24px rgba(0, 0, 0, .18);
+            }
+
+            body.mobile-sidebar-open .sidebar {
+                transform: translateX(0);
             }
 
             .main {
-
                 width: 100%;
-
                 margin-left: 0;
             }
 
+            body.sidebar-collapsed .sidebar {
+                width: 230px;
+            }
+
+            body.sidebar-collapsed .main {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            body.sidebar-collapsed .brand-name,
+            body.sidebar-collapsed .menu-item .menu-text {
+                display: inline;
+            }
+
+            body.sidebar-collapsed .menu-item {
+                justify-content: flex-start;
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+
+            body.sidebar-collapsed .menu-icon {
+                width: 21px;
+                font-size: 16px;
+            }
         }
 
 
@@ -1497,24 +1534,31 @@ $tr = $translations[$lang] ?? $translations['id'];
                     'click',
                     function() {
 
-                        document.body.classList.toggle(
-                            'sidebar-collapsed'
-                        );
+                        if (window.innerWidth <= 850) {
 
-                        localStorage.setItem(
-                            'ruangkitaSidebarCollapsed',
-                            document.body.classList.contains(
+                            document.body.classList.toggle(
+                                'mobile-sidebar-open'
+                            );
+
+                        } else {
+
+                            document.body.classList.toggle(
                                 'sidebar-collapsed'
-                            ) ?
-                            '1' :
-                            '0'
-                        );
+                            );
+
+                            localStorage.setItem(
+                                'ruangkitaSidebarCollapsed',
+                                document.body.classList.contains(
+                                    'sidebar-collapsed'
+                                ) ? '1' : '0'
+                            );
+
+                        }
 
                     }
                 );
 
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -1523,6 +1567,7 @@ $tr = $translations[$lang] ?? $translations['id'];
             */
 
             if (
+                window.innerWidth > 850 &&
                 localStorage.getItem(
                     'ruangkitaSidebarCollapsed'
                 ) === '1'

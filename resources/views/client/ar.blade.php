@@ -171,10 +171,12 @@ $arTranslations = [
 
 ];
 
-$at =
-$arTranslations[$arLang]
-??
-$arTranslations['id'];
+$at = $arTranslations[$arLang] ?? $arTranslations['id'];
+
+$arMobileUrl = route('client.ar', [
+'project' => $selectedProject?->id,
+'area' => $selectedArea?->id,
+]);
 
 @endphp
 
@@ -766,7 +768,7 @@ $at['title'] . ' - RuangKita'
 
 
     .asset-card {
-
+        cursor: pointer;
         padding:
             13px 9px;
 
@@ -1203,32 +1205,22 @@ $at['title'] . ' - RuangKita'
 
             </div>
 
-
-            <button
-
-                type="button"
-
-                class="mobile-button">
-
-                {{
-                        $at[
-                            'mobile_button'
-                        ]
-                    }}
-
-            </button>
+            <a
+                href="{{ $arMobileUrl }}"
+                class="mobile-button"
+                style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                text-decoration:none;
+    ">
+                {{ $at['mobile_button'] }}
+            </a>
 
 
-            <div class="qr-placeholder">
-
-                {{
-                        $at[
-                            'qr_placeholder'
-                        ]
-                    }}
-
+            <div class="qr-placeholder" style="padding:10px;">
+                {!! QrCode::size(110)->generate($arMobileUrl) !!}
             </div>
-
 
         </div>
 
@@ -1573,22 +1565,61 @@ $at['title'] . ' - RuangKita'
 
 
         <div
-
             class="asset-card"
-
-            data-asset-id="{{
-                            $asset->id
-                        }}">
+            data-asset-id="{{ $asset->id }}"
+            data-asset-type="{{ $asset->asset_type }}"
+            data-color-code="{{ $asset->color_code ?? '' }}"
+            data-model-url="{{ $asset->model_3d_path ? asset('storage/' . $asset->model_3d_path) : '' }}"
+            data-texture-url="{{ $asset->texture_path ? asset('storage/' . $asset->texture_path) : '' }}">
 
 
             <div class="asset-icon">
 
+                {{-- THUMBNAIL --}}
+                @if($asset->thumbnail_path)
 
-                @if($asset->asset_type === 'color')
+                <img
+                    src="{{ asset('storage/' . $asset->thumbnail_path) }}"
+                    alt="{{ $asset->name }}"
+                    style="
+                width:100%;
+                height:100%;
+                object-fit:cover;
+                border-radius:10px;
+            ">
+
+                {{-- COLOR --}}
+                @elseif($asset->asset_type === 'color' && $asset->color_code)
+
+                <div
+                    class="asset-color-preview"
+                    data-color="{{ $asset->color_code }}"
+                    style="
+                    width:100%;
+                    height:100%;
+                    border-radius:10px;
+                    border:1px solid var(--border);
+        "></div>
+
+                {{-- MATERIAL TEXTURE --}}
+                @elseif($asset->asset_type === 'material' && $asset->texture_path)
+
+                <img
+                    src="{{ asset('storage/' . $asset->texture_path) }}"
+                    alt="{{ $asset->name }}"
+                    style="
+                width:100%;
+                height:100%;
+                object-fit:cover;
+                border-radius:10px;
+            ">
+
+                {{-- FALLBACK --}}
+                @elseif($asset->asset_type === 'color')
 
                 🎨
 
-                @elseif(($asset->asset_type ?? '') === 'material')
+                @elseif($asset->asset_type === 'material')
 
                 ▦
 
@@ -1598,9 +1629,7 @@ $at['title'] . ' - RuangKita'
 
                 @endif
 
-
             </div>
-
 
 
             <div class="asset-name">
@@ -1659,51 +1688,68 @@ $at['title'] . ' - RuangKita'
 @push('scripts')
 
 <script>
-    /*
-    |--------------------------------------------------------------------------
-    | SELECT AR ASSET
-    |--------------------------------------------------------------------------
-    */
+    document.addEventListener('DOMContentLoaded', function() {
 
-    document
-        .querySelectorAll(
-            '.asset-card'
-        )
-        .forEach(
-            function(card) {
+        /*
+        |--------------------------------------------------------------------------
+        | COLOR PREVIEW
+        |--------------------------------------------------------------------------
+        */
 
-                card.addEventListener(
-                    'click',
-                    function() {
+        document
+            .querySelectorAll('.asset-color-preview')
+            .forEach(function(item) {
 
-                        document
-                            .querySelectorAll(
-                                '.asset-card'
-                            )
-                            .forEach(
-                                function(item) {
+                const color = item.dataset.color;
 
-                                    item
-                                        .classList
-                                        .remove(
-                                            'active'
-                                        );
+                if (color) {
+                    item.style.backgroundColor = color;
+                }
 
-                                }
-                            );
+            });
 
 
-                        this
-                            .classList
-                            .add(
-                                'active'
-                            );
+        /*
+        |--------------------------------------------------------------------------
+        | SELECT AR ASSET
+        |--------------------------------------------------------------------------
+        */
 
-                    }
+        const assetCards =
+            document.querySelectorAll('.asset-card');
+
+        assetCards.forEach(function(card) {
+
+            card.addEventListener('click', function() {
+
+                /*
+                | Hapus active dari semua asset
+                */
+                assetCards.forEach(function(item) {
+                    item.classList.remove('active');
+                });
+
+                /*
+                | Aktifkan asset yang dipilih
+                */
+                this.classList.add('active');
+
+                /*
+                | Ambil ID asset
+                */
+                const assetId =
+                    this.dataset.assetId;
+
+                console.log(
+                    'AR Asset dipilih:',
+                    assetId
                 );
 
-            }
-        );
+            });
+
+        });
+
+    });
 </script>
 
 @endpush

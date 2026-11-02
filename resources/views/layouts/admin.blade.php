@@ -28,6 +28,7 @@ $adminTranslations = [
 'personal_funds' => 'Uang Pribadi',
 'progress' => 'Progress',
 'documentation' => 'Dokumentasi',
+'augmented_reality' => 'Augmented Reality',
 'reports' => 'Laporan',
 'settings' => 'Pengaturan',
 'logout' => 'Keluar',
@@ -1660,10 +1661,23 @@ $adminTranslations['id'];
             {{-- DOCUMENTATION --}}
 
             <a href="{{ route('admin.documentations.index') }}"
-                class="admin-menu-item">
+                class="admin-menu-item {{ request()->routeIs('admin.documentations.*') ? 'active' : '' }}">
                 <span class="admin-menu-icon">▧</span>
                 <span class="admin-menu-text">{{ $at['documentation'] }}</span>
             </a>
+
+
+            {{-- AUGMENTED REALITY --}}
+            <a
+                href="{{ route('admin.ar-assets.index') }}"
+                class="admin-menu-item {{ request()->routeIs('admin.ar-assets.*') ? 'active' : '' }}">
+                <span class="admin-menu-icon">◇</span>
+
+                <span class="admin-menu-text">
+                    {{ $at['augmented_reality'] ?? 'Augmented Reality' }}
+                </span>
+            </a>
+
 
             {{-- MESSAGE --}}
             <a
