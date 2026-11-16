@@ -1041,7 +1041,7 @@ $translations['id'];
                 @php
 
                 $projectStatus =
-                $project->status
+                $project->project_status
                 ??
                 'planning';
 
@@ -1124,7 +1124,7 @@ $translations['id'];
                                     optional(
                                         $project->client
                                     )->user
-                                )->name
+                                )->user_name
                                 ??
                                 '-'
                             }}

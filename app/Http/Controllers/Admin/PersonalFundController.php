@@ -46,22 +46,37 @@ class PersonalFundController extends Controller
                     $q->where('notes', 'like', '%' . $search . '%')
 
                         ->orWhereHas('user', function ($user) use ($search) {
-                            $user->where('name', 'like', '%' . $search . '%');
+                            $user->where(
+                                'user_name',
+                                'like',
+                                '%' . $search . '%'
+                            );
                         })
 
                         ->orWhereHas('expense', function ($expense) use ($search) {
 
                             $expense
-                                ->where('description', 'like', '%' . $search . '%')
-                                ->orWhere('store_name', 'like', '%' . $search . '%')
+                                ->where(
+                                    'description',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
+                                ->orWhere(
+                                    'store_name',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
 
-                                ->orWhereHas('project', function ($project) use ($search) {
-                                    $project->where(
-                                        'project_name',
-                                        'like',
-                                        '%' . $search . '%'
-                                    );
-                                });
+                                ->orWhereHas(
+                                    'project',
+                                    function ($project) use ($search) {
+                                        $project->where(
+                                            'project_name',
+                                            'like',
+                                            '%' . $search . '%'
+                                        );
+                                    }
+                                );
                         });
                 });
             })
@@ -74,13 +89,16 @@ class PersonalFundController extends Controller
 
             ->when($projectId, function ($query) use ($projectId) {
 
-                $query->whereHas('expense', function ($expense) use ($projectId) {
+                $query->whereHas(
+                    'expense',
+                    function ($expense) use ($projectId) {
 
-                    $expense->where(
-                        'project_id',
-                        $projectId
-                    );
-                });
+                        $expense->where(
+                            'project_id',
+                            $projectId
+                        );
+                    }
+                );
             })
 
             /*
@@ -222,10 +240,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | SEARCH
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | SEARCH
+        |--------------------------------------------------------------------------
+        */
 
         if ($search) {
 
@@ -242,7 +260,7 @@ class PersonalFundController extends Controller
                         function ($user) use ($search) {
 
                             $user->where(
-                                'name',
+                                'user_name',
                                 'like',
                                 '%' . $search . '%'
                             );
@@ -284,10 +302,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT
+        |--------------------------------------------------------------------------
+        */
 
         if ($projectId) {
 
@@ -305,10 +323,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | STATUS
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | STATUS
+        |--------------------------------------------------------------------------
+        */
 
         if ($status) {
 
@@ -319,8 +337,9 @@ class PersonalFundController extends Controller
         }
 
         return $query
-            ->orderByDesc('id');
+            ->orderByDesc('personal_fund_id');
     }
+
 
     public function exportExcel(Request $request)
     {
@@ -345,10 +364,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | JUDUL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | JUDUL
+        |--------------------------------------------------------------------------
+        */
 
         $sheet->mergeCells(
             'A1:I1'
@@ -372,13 +391,12 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | HEADER
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | HEADER
+        |--------------------------------------------------------------------------
+        */
 
         $headers = [
-
             'No',
             'Tanggal',
             'Nama Tim',
@@ -388,7 +406,6 @@ class PersonalFundController extends Controller
             'Status',
             'Tanggal Diganti',
             'Client',
-
         ];
 
 
@@ -407,10 +424,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DATA
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DATA
+        |--------------------------------------------------------------------------
+        */
 
         $row = 5;
 
@@ -454,7 +471,7 @@ class PersonalFundController extends Controller
                 'C' . $row,
                 $personalFund
                     ->user
-                    ?->name
+                    ?->user_name
                     ??
                     '-'
             );
@@ -517,7 +534,7 @@ class PersonalFundController extends Controller
                     ?->project
                     ?->client
                     ?->user
-                    ?->name
+                    ?->user_name
                     ??
                     '-'
             );
@@ -535,10 +552,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | TOTAL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | TOTAL
+        |--------------------------------------------------------------------------
+        */
 
         $sheet->mergeCells(
             'A' . $row .
@@ -559,10 +576,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | FORMAT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | FORMAT
+        |--------------------------------------------------------------------------
+        */
 
         $sheet
             ->getStyle('A1:I1')
@@ -610,10 +627,10 @@ class PersonalFundController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DOWNLOAD
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DOWNLOAD
+        |--------------------------------------------------------------------------
+        */
 
         $fileName =
             'uang-pribadi-ruangkita-' .
@@ -647,6 +664,7 @@ class PersonalFundController extends Controller
 
             );
     }
+
 
     public function exportPdf(Request $request)
     {
@@ -755,6 +773,7 @@ class PersonalFundController extends Controller
 
         );
     }
+
 
     /*
     |--------------------------------------------------------------------------

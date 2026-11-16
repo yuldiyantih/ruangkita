@@ -620,7 +620,7 @@ default =>
                     {{
                         $documentation
                             ->uploader
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}

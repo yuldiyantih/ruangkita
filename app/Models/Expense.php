@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
+    protected $primaryKey = 'expense_id';
+
     protected $fillable = [
         'project_id',
         'material_id',
@@ -28,21 +30,37 @@ class Expense extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
     public function material()
     {
-        return $this->belongsTo(Material::class);
+        return $this->belongsTo(
+            Material::class,
+            'material_id',
+            'material_id'
+        );
     }
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(
+            User::class,
+            'created_by',
+            'user_id'
+        );
     }
 
     public function personalFund()
     {
-        return $this->hasOne(PersonalFund::class);
+        return $this->hasOne(
+            PersonalFund::class,
+            'expense_id',
+            'expense_id'
+        );
     }
 }

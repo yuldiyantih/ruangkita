@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ArAsset extends Model
 {
+    protected $primaryKey = 'ar_asset_id';
+
     protected $fillable = [
-        'name',
+        'ar_asset_name',
         'asset_type',
         'category',
         'color_code',
@@ -23,6 +25,10 @@ class ArAsset extends Model
 
     public function designItems()
     {
-        return $this->hasMany(ArDesignItem::class);
+        return $this->hasMany(
+            ArDesignItem::class,
+            'ar_asset_id',
+            'ar_asset_id'
+        );
     }
 }

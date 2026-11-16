@@ -25,7 +25,7 @@ class ClientController extends Controller
                 if ($search) {
                     $query->where(function ($q) use ($search) {
 
-                        $q->where('name', 'like', '%' . $search . '%')
+                        $q->where('user_name', 'like', '%' . $search . '%')
                             ->orWhere('email', 'like', '%' . $search . '%')
                             ->orWhere('phone', 'like', '%' . $search . '%');
                     });
@@ -115,7 +115,7 @@ class ClientController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
+            'user_name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
@@ -124,7 +124,7 @@ class ClientController extends Controller
         ]);
 
         Client::create([
-            'user_id' => $user->id,
+            'user_id' => $user->user_id,
             'address' => $validated['address'] ?? null,
         ]);
 
@@ -178,7 +178,7 @@ class ClientController extends Controller
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')
-                    ->ignore($user->id),
+                    ->ignore($user->user_id, 'user_id'),
             ],
             'phone' => [
                 'nullable',
@@ -193,7 +193,7 @@ class ClientController extends Controller
         ]);
 
         $user->update([
-            'name' => $validated['name'],
+            'user_name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
         ]);

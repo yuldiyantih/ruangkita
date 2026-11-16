@@ -15,9 +15,15 @@ class MaterialController extends Controller
         $query = Material::with('project');
 
         if ($user->role !== 'admin') {
-            $query->whereHas('project.client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
+            $query->whereHas(
+                'project.client',
+                function ($q) use ($user) {
+                    $q->where(
+                        'user_id',
+                        $user->user_id
+                    );
+                }
+            );
         }
 
         $materials = $query
@@ -42,18 +48,37 @@ class MaterialController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'material_name' => 'required|string|max:150',
-            'quantity' => 'required|numeric|min:0',
-            'unit' => 'required|string|max:50',
-            'unit_price' => 'required|numeric|min:0',
-            'total_price' => 'required|numeric|min:0',
-            'supplier' => 'nullable|string|max:150',
-            'purchase_date' => 'nullable|date',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'material_name' =>
+            'required|string|max:150',
+
+            'quantity' =>
+            'required|numeric|min:0',
+
+            'unit' =>
+            'required|string|max:50',
+
+            'unit_price' =>
+            'required|numeric|min:0',
+
+            'total_price' =>
+            'required|numeric|min:0',
+
+            'supplier' =>
+            'nullable|string|max:150',
+
+            'purchase_date' =>
+            'nullable|date',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $material = Material::create($validated);
+        $material = Material::create(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -62,13 +87,19 @@ class MaterialController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, Material $material)
-    {
+    public function show(
+        Request $request,
+        Material $material
+    ) {
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $material->project?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $material
+            ->project
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -76,7 +107,9 @@ class MaterialController extends Controller
             ], 403);
         }
 
-        $material->load('project');
+        $material->load(
+            'project'
+        );
 
         return response()->json([
             'success' => true,
@@ -98,18 +131,37 @@ class MaterialController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'sometimes|exists:projects,id',
-            'material_name' => 'sometimes|string|max:150',
-            'quantity' => 'sometimes|numeric|min:0',
-            'unit' => 'sometimes|string|max:50',
-            'unit_price' => 'sometimes|numeric|min:0',
-            'total_price' => 'sometimes|numeric|min:0',
-            'supplier' => 'nullable|string|max:150',
-            'purchase_date' => 'nullable|date',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'sometimes|exists:projects,project_id',
+
+            'material_name' =>
+            'sometimes|string|max:150',
+
+            'quantity' =>
+            'sometimes|numeric|min:0',
+
+            'unit' =>
+            'sometimes|string|max:50',
+
+            'unit_price' =>
+            'sometimes|numeric|min:0',
+
+            'total_price' =>
+            'sometimes|numeric|min:0',
+
+            'supplier' =>
+            'nullable|string|max:150',
+
+            'purchase_date' =>
+            'nullable|date',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $material->update($validated);
+        $material->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,

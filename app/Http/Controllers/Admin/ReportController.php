@@ -66,7 +66,7 @@ class ReportController extends Controller
         if ($projectId) {
 
             $projectQuery->where(
-                'id',
+                'project_id',
                 $projectId
             );
         }
@@ -129,7 +129,7 @@ class ReportController extends Controller
 
         $projectIds =
             $reportProjects
-            ->pluck('id');
+            ->pluck('project_id');
 
 
         /*
@@ -200,7 +200,7 @@ class ReportController extends Controller
 
                     $project->report_expense =
                         (float) (
-                            $expenseByProject[$project->id]
+                            $expenseByProject[$project->project_id]
                             ?? 0
                         );
 
@@ -276,7 +276,7 @@ class ReportController extends Controller
             'planning' =>
             $reportProjects
                 ->where(
-                    'status',
+                    'project_status',
                     'planning'
                 )
                 ->count(),
@@ -284,7 +284,7 @@ class ReportController extends Controller
             'ongoing' =>
             $reportProjects
                 ->where(
-                    'status',
+                    'project_status',
                     'ongoing'
                 )
                 ->count(),
@@ -292,7 +292,7 @@ class ReportController extends Controller
             'completed' =>
             $reportProjects
                 ->where(
-                    'status',
+                    'project_status',
                     'completed'
                 )
                 ->count(),
@@ -300,7 +300,7 @@ class ReportController extends Controller
             'paused' =>
             $reportProjects
                 ->where(
-                    'status',
+                    'project_status',
                     'paused'
                 )
                 ->count(),
@@ -676,7 +676,7 @@ class ReportController extends Controller
         ) {
 
             $statusLabel =
-                match ($project->status) {
+                match ($project->project_status) {
 
                     'ongoing'
                     => 'Berjalan',
@@ -697,7 +697,7 @@ class ReportController extends Controller
                     optional(
                         $project->client
                     )->user
-                )->name
+                )->user_name
                 ?? '-';
 
 

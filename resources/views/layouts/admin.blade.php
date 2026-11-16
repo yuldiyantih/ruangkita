@@ -1779,14 +1779,14 @@ $adminTranslations['id'];
 
                             <img
                                 src="{{ asset('storage/' . $adminUser->profile_photo) }}"
-                                alt="{{ $adminUser->name }}">
+                                alt="{{ $adminUser->user_name }}">
 
                             @else
 
                             {{
                                 strtoupper(
                                     substr(
-                                        $adminUser->name ?? 'A',
+                                        $adminUser->user_name ?? 'A',
                                         0,
                                         1
                                     )
@@ -1804,7 +1804,7 @@ $adminTranslations['id'];
                         <span class="admin-profile-name">
 
                             {{
-                            $adminUser->name
+                            $adminUser->user_name
                             ??
                             'Admin RuangKita'
                         }}
@@ -1842,7 +1842,7 @@ $adminTranslations['id'];
                             <strong>
 
                                 {{
-                                $adminUser->name
+                                $adminUser->user_name
                                 ??
                                 'Admin RuangKita'
                             }}

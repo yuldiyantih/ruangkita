@@ -977,7 +977,7 @@ $st['title'] . ' - RuangKita'
                                             )
                                         }}"
 
-                                alt="{{ $user->name }}">
+                                alt="{{ $user->user_name }}">
 
                             @else
 
@@ -1044,7 +1044,7 @@ $st['title'] . ' - RuangKita'
                                     value="{{
                                             old(
                                                 'name',
-                                                $user->name
+                                                $user->user_name
                                             )
                                         }}"
 
@@ -1990,7 +1990,7 @@ $st['title'] . ' - RuangKita'
                                     )
                                 }}"
 
-                        alt="{{ $user->name }}">
+                        alt="{{ $user->user_name }}">
 
                     @else
 
@@ -2006,7 +2006,7 @@ $st['title'] . ' - RuangKita'
 
                     <div class="account-name">
 
-                        {{ $user->name }}
+                        {{ $user->user_name }}
 
                     </div>
 

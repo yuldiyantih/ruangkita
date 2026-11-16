@@ -51,7 +51,10 @@ class SettingController extends Controller
                 'email',
                 'max:150',
                 Rule::unique('users', 'email')
-                    ->ignore($user->id),
+                    ->ignore(
+                        $user->user_id,
+                        'user_id'
+                    ),
             ],
 
             'phone' => [
@@ -88,7 +91,7 @@ class SettingController extends Controller
         }
 
         $user->update([
-            'name' =>
+            'user_name' =>
             $validated['name'],
 
             'email' =>

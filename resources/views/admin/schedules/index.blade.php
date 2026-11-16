@@ -1,205 +1,134 @@
 @extends('layouts.admin')
 
-
-@section(
-'title',
-'Data Jadwal - RuangKita'
-)
-
+@section('title', 'Data Jadwal - RuangKita')
 
 @php
 
-$pageLang =
-auth()->user()->language
-??
-'id';
-
+$pageLang = auth()->user()->language ?? 'id';
 
 $translations = [
 
 'id' => [
 
 'title' => 'Data Jadwal',
-'subtitle' =>
-'Kelola seluruh jadwal pekerjaan dan proyek RuangKita.',
 
-'add_schedule' =>
-'Tambah Jadwal',
+'subtitle' => 'Kelola seluruh jadwal pekerjaan dan proyek RuangKita.',
 
-'total' =>
-'Total Jadwal',
+'add_schedule' => 'Tambah Jadwal',
 
-'planned' =>
-'Akan Datang',
+'total' => 'Total Jadwal',
 
-'ongoing' =>
-'Sedang Berjalan',
+'planned' => 'Akan Datang',
 
-'completed' =>
-'Selesai',
+'ongoing' => 'Sedang Berjalan',
 
-'list' =>
-'Daftar Jadwal',
+'completed' => 'Selesai',
 
-'search_placeholder' =>
-'Cari judul jadwal...',
+'list' => 'Daftar Jadwal',
 
-'all_projects' =>
-'Semua Proyek',
+'search_placeholder' => 'Cari judul jadwal...',
 
-'all_works' =>
-'Semua Pekerjaan',
+'all_projects' => 'Semua Proyek',
 
-'all_status' =>
-'Semua Status',
+'all_works' => 'Semua Pekerjaan',
 
-'search' =>
-'Cari',
+'all_status' => 'Semua Status',
 
-'reset' =>
-'Reset',
+'search' => 'Cari',
 
-'no' =>
-'No',
+'reset' => 'Reset',
 
-'title_col' =>
-'Judul',
+'no' => 'No',
 
-'project' =>
-'Proyek',
+'title_col' => 'Judul',
 
-'work' =>
-'Pekerjaan',
+'project' => 'Proyek',
 
-'start_date' =>
-'Mulai',
+'work' => 'Pekerjaan',
 
-'end_date' =>
-'Selesai',
+'start_date' => 'Mulai',
 
-'status' =>
-'Status',
+'end_date' => 'Selesai',
 
-'action' =>
-'Aksi',
+'status' => 'Status',
 
-'planned_status' =>
-'Akan Datang',
+'action' => 'Aksi',
 
-'ongoing_status' =>
-'Sedang Berjalan',
+'planned_status' => 'Akan Datang',
 
-'completed_status' =>
-'Selesai',
+'ongoing_status' => 'Sedang Berjalan',
 
-'delayed_status' =>
-'Terlambat',
+'completed_status' => 'Selesai',
 
-'cancelled_status' =>
-'Dibatalkan',
+'cancelled_status' => 'Dibatalkan',
 
-'empty' =>
-'Belum ada data jadwal.',
+'empty' => 'Belum ada data jadwal.',
 
 ],
-
 
 'en' => [
 
 'title' => 'Schedules',
-'subtitle' =>
-'Manage all RuangKita project and work schedules.',
 
-'add_schedule' =>
-'Add Schedule',
+'subtitle' => 'Manage all RuangKita project and work schedules.',
 
-'total' =>
-'Total Schedules',
+'add_schedule' => 'Add Schedule',
 
-'planned' =>
-'Upcoming',
+'total' => 'Total Schedules',
 
-'ongoing' =>
-'Ongoing',
+'planned' => 'Upcoming',
 
-'completed' =>
-'Completed',
+'ongoing' => 'Ongoing',
 
-'list' =>
-'Schedule List',
+'completed' => 'Completed',
 
-'search_placeholder' =>
-'Search schedule title...',
+'list' => 'Schedule List',
 
-'all_projects' =>
-'All Projects',
+'search_placeholder' => 'Search schedule title...',
 
-'all_works' =>
-'All Works',
+'all_projects' => 'All Projects',
 
-'all_status' =>
-'All Status',
+'all_works' => 'All Works',
 
-'search' =>
-'Search',
+'all_status' => 'All Status',
 
-'reset' =>
-'Reset',
+'search' => 'Search',
 
-'no' =>
-'No',
+'reset' => 'Reset',
 
-'title_col' =>
-'Title',
+'no' => 'No',
 
-'project' =>
-'Project',
+'title_col' => 'Title',
 
-'work' =>
-'Work',
+'project' => 'Project',
 
-'start_date' =>
-'Start',
+'work' => 'Work',
 
-'end_date' =>
-'End',
+'start_date' => 'Start',
 
-'status' =>
-'Status',
+'end_date' => 'End',
 
-'action' =>
-'Action',
+'status' => 'Status',
 
-'planned_status' =>
-'Upcoming',
+'action' => 'Action',
 
-'ongoing_status' =>
-'Ongoing',
+'planned_status' => 'Upcoming',
 
-'completed_status' =>
-'Completed',
+'ongoing_status' => 'Ongoing',
 
-'delayed_status' =>
-'Delayed',
+'completed_status' => 'Completed',
 
-'cancelled_status' =>
-'Cancelled',
+'cancelled_status' => 'Cancelled',
 
-'empty' =>
-'No schedule data available.',
+'empty' => 'No schedule data available.',
 
 ],
 
 ];
 
-
-$st =
-$translations[$pageLang]
-??
-$translations['id'];
+$st = $translations[$pageLang] ?? $translations['id'];
 
 @endphp
-
 
 @push('styles')
 
@@ -215,8 +144,8 @@ $translations['id'];
         justify-content: space-between;
 
         gap: 16px;
-    }
 
+    }
 
     .schedule-summary-grid {
 
@@ -224,13 +153,13 @@ $translations['id'];
 
         display: grid;
 
-        grid-template-columns:
-            repeat(4,
+        grid-template-columns: repeat(4,
+
                 minmax(0, 1fr));
 
         gap: 14px;
-    }
 
+    }
 
     .schedule-summary-card {
 
@@ -243,12 +172,13 @@ $translations['id'];
         align-items: center;
 
         gap: 14px;
-    }
 
+    }
 
     .schedule-summary-icon {
 
         width: 50px;
+
         height: 50px;
 
         border-radius: 12px;
@@ -262,81 +192,70 @@ $translations['id'];
         flex-shrink: 0;
 
         font-size: 20px;
-    }
 
+    }
 
     .schedule-summary-icon.blue {
 
-        background:
-            var(--primary-soft);
+        background: var(--primary-soft);
 
-        color:
-            var(--primary);
+        color: var(--primary);
+
     }
-
 
     .schedule-summary-icon.orange {
 
-        background:
-            var(--warning-bg);
+        background: var(--warning-bg);
 
-        color:
-            var(--warning);
+        color: var(--warning);
+
     }
-
 
     .schedule-summary-icon.green {
 
-        background:
-            var(--success-bg);
+        background: var(--success-bg);
 
-        color:
-            var(--success);
+        color: var(--success);
+
     }
-
 
     .schedule-summary-icon.purple {
 
-        background:
-            rgba(111, 66, 217, .12);
+        background: rgba(111, 66, 217, .12);
 
-        color:
-            #7551d7;
+        color: #7551d7;
+
     }
-
 
     .schedule-summary-label {
 
         margin-bottom: 5px;
 
-        color:
-            var(--text-muted);
+        color: var(--text-muted);
 
         font-size: 13px;
-    }
 
+    }
 
     .schedule-summary-number {
 
-        color:
-            var(--text-heading);
+        color: var(--text-heading);
 
         font-size: 24px;
 
         font-weight: 700;
-    }
 
+    }
 
     .schedule-panel {
 
         overflow: hidden;
-    }
 
+    }
 
     .schedule-panel-header {
 
-        padding:
-            16px 18px;
+        padding: 16px 18px;
 
         display: flex;
 
@@ -346,23 +265,21 @@ $translations['id'];
 
         gap: 14px;
 
-        border-bottom:
-            1px solid var(--border);
-    }
+        border-bottom: 1px solid var(--border);
 
+    }
 
     .schedule-panel-title {
 
         flex-shrink: 0;
 
-        color:
-            var(--text-heading);
+        color: var(--text-heading);
 
         font-size: 17px;
 
         font-weight: 700;
-    }
 
+    }
 
     .schedule-filter-form {
 
@@ -375,40 +292,40 @@ $translations['id'];
         gap: 9px;
 
         flex-wrap: nowrap;
-    }
 
+    }
 
     .schedule-search {
 
         width: 220px;
-    }
 
+    }
 
     .schedule-project-filter {
 
         width: 190px;
-    }
 
+    }
 
     .schedule-work-filter {
 
         width: 190px;
-    }
 
+    }
 
     .schedule-status-filter {
 
         width: 165px;
-    }
 
+    }
 
     .schedule-filter-form .admin-form-control {
 
         height: 44px;
 
         min-height: 44px;
-    }
 
+    }
 
     .schedule-actions {
 
@@ -417,12 +334,13 @@ $translations['id'];
         align-items: center;
 
         gap: 7px;
-    }
 
+    }
 
     .schedule-action {
 
         width: 34px;
+
         height: 34px;
 
         border-radius: 8px;
@@ -436,59 +354,50 @@ $translations['id'];
         text-decoration: none;
 
         font-size: 14px;
-    }
 
+    }
 
     .schedule-action.view {
 
-        background:
-            var(--primary-soft);
+        background: var(--primary-soft);
 
-        color:
-            var(--primary);
+        color: var(--primary);
+
     }
-
 
     .schedule-action.edit {
 
-        background:
-            var(--warning-bg);
+        background: var(--warning-bg);
 
-        color:
-            var(--warning);
+        color: var(--warning);
+
     }
-
 
     .schedule-empty {
 
-        padding:
-            40px 20px !important;
+        padding: 40px 20px !important;
 
         text-align: center;
 
-        color:
-            var(--text-muted) !important;
-    }
+        color: var(--text-muted) !important;
 
+    }
 
     .schedule-pagination {
 
-        padding:
-            16px 18px;
-    }
+        padding: 16px 18px;
 
+    }
 
     @media(max-width: 1250px) {
 
         .schedule-panel-header {
 
-            align-items:
-                flex-start;
+            align-items: flex-start;
 
-            flex-direction:
-                column;
+            flex-direction: column;
+
         }
-
 
         .schedule-filter-form {
 
@@ -497,21 +406,20 @@ $translations['id'];
             justify-content: flex-start;
 
             flex-wrap: wrap;
+
         }
 
     }
-
 
     @media(max-width: 900px) {
 
         .schedule-summary-grid {
 
-            grid-template-columns:
-                repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+
         }
 
     }
-
 
     @media(max-width: 650px) {
 
@@ -520,30 +428,33 @@ $translations['id'];
             align-items: flex-start;
 
             flex-direction: column;
-        }
 
+        }
 
         .schedule-summary-grid {
 
-            grid-template-columns:
-                1fr;
-        }
+            grid-template-columns: 1fr;
 
+        }
 
         .schedule-filter-form {
 
             flex-direction: column;
 
             align-items: stretch;
+
         }
 
-
         .schedule-search,
+
         .schedule-project-filter,
+
         .schedule-work-filter,
+
         .schedule-status-filter {
 
             width: 100%;
+
         }
 
     }
@@ -551,13 +462,9 @@ $translations['id'];
 
 @endpush
 
-
-
 @section('content')
 
-
 <div class="schedule-page-header">
-
 
     <div>
 
@@ -567,7 +474,6 @@ $translations['id'];
 
         </h1>
 
-
         <p class="admin-page-subtitle">
 
             {{ $st['subtitle'] }}
@@ -576,119 +482,135 @@ $translations['id'];
 
     </div>
 
-
     <a
+
         href="{{ route('admin.schedules.create') }}"
+
         class="
+
             admin-btn
+
             admin-btn-primary
+
         ">
 
         ＋ {{ $st['add_schedule'] }}
 
     </a>
 
-
 </div>
 
-
-
 <div class="schedule-summary-grid">
-
 
     <div class="admin-card schedule-summary-card">
 
         <div class="schedule-summary-icon blue">
+
             ▦
+
         </div>
 
         <div>
 
             <div class="schedule-summary-label">
+
                 {{ $st['total'] }}
+
             </div>
 
             <div class="schedule-summary-number">
+
                 {{ $totalSchedules }}
+
             </div>
 
         </div>
 
     </div>
-
 
     <div class="admin-card schedule-summary-card">
 
         <div class="schedule-summary-icon purple">
+
             ◷
+
         </div>
 
         <div>
 
             <div class="schedule-summary-label">
+
                 {{ $st['planned'] }}
+
             </div>
 
             <div class="schedule-summary-number">
+
                 {{ $plannedSchedules }}
+
             </div>
 
         </div>
 
     </div>
-
 
     <div class="admin-card schedule-summary-card">
 
         <div class="schedule-summary-icon orange">
+
             ▶
+
         </div>
 
         <div>
 
             <div class="schedule-summary-label">
+
                 {{ $st['ongoing'] }}
+
             </div>
 
             <div class="schedule-summary-number">
+
                 {{ $ongoingSchedules }}
+
             </div>
 
         </div>
 
     </div>
-
 
     <div class="admin-card schedule-summary-card">
 
         <div class="schedule-summary-icon green">
+
             ✓
+
         </div>
 
         <div>
 
             <div class="schedule-summary-label">
+
                 {{ $st['completed'] }}
+
             </div>
 
             <div class="schedule-summary-number">
+
                 {{ $completedSchedules }}
+
             </div>
 
         </div>
 
     </div>
 
-
 </div>
-
-
 
 <div class="admin-card schedule-panel">
 
-
     <div class="schedule-panel-header">
-
 
         <div class="schedule-panel-title">
 
@@ -696,43 +618,62 @@ $translations['id'];
 
         </div>
 
-
         <form
+
             method="GET"
+
             action="{{ route('admin.schedules.index') }}"
+
             class="schedule-filter-form">
 
-
             <input
+
                 type="text"
+
                 name="search"
+
                 value="{{ $search }}"
+
                 class="
+
                     admin-form-control
+
                     schedule-search
+
                 "
+
                 placeholder="{{ $st['search_placeholder'] }}">
 
-
             <select
+
                 name="project"
+
                 class="
+
                     admin-form-control
+
                     schedule-project-filter
+
                 ">
 
                 <option value="">
-                    {{ $st['all_projects'] }}
-                </option>
 
+                    {{ $st['all_projects'] }}
+
+                </option>
 
                 @foreach($projects as $project)
 
                 <option
-                    value="{{ $project->id }}"
+
+                    value="{{ $project->project_id }}"
+
                     @selected(
-                    (string) $projectId===(string) $project->id
+
+                    (string) $projectId===(string) $project->project_id
+
                     )
+
                     >
 
                     {{ $project->project_name }}
@@ -743,26 +684,36 @@ $translations['id'];
 
             </select>
 
-
             <select
+
                 name="work"
+
                 class="
+
                     admin-form-control
+
                     schedule-work-filter
+
                 ">
 
                 <option value="">
-                    {{ $st['all_works'] }}
-                </option>
 
+                    {{ $st['all_works'] }}
+
+                </option>
 
                 @foreach($works as $work)
 
                 <option
-                    value="{{ $work->id }}"
+
+                    value="{{ $work->work_id }}"
+
                     @selected(
-                    (string) $workId===(string) $work->id
+
+                    (string) $workId===(string) $work->work_id
+
                     )
+
                     >
 
                     {{ $work->work_name }}
@@ -773,83 +724,105 @@ $translations['id'];
 
             </select>
 
-
             <select
+
                 name="status"
+
                 class="
+
                     admin-form-control
+
                     schedule-status-filter
+
                 ">
 
                 <option value="">
+
                     {{ $st['all_status'] }}
+
                 </option>
 
                 <option
+
                     value="planned"
+
                     @selected($status==='planned' )>
+
                     {{ $st['planned_status'] }}
+
                 </option>
 
                 <option
+
                     value="ongoing"
+
                     @selected($status==='ongoing' )>
+
                     {{ $st['ongoing_status'] }}
+
                 </option>
 
                 <option
+
                     value="completed"
+
                     @selected($status==='completed' )>
+
                     {{ $st['completed_status'] }}
+
                 </option>
 
                 <option
-                    value="delayed"
-                    @selected($status==='delayed' )>
-                    {{ $st['delayed_status'] }}
-                </option>
 
-                <option
                     value="cancelled"
+
                     @selected($status==='cancelled' )>
+
                     {{ $st['cancelled_status'] }}
+
                 </option>
 
             </select>
 
-
             <button
+
                 type="submit"
+
                 class="
+
                     admin-btn
+
                     admin-btn-primary
+
                 ">
+
                 {{ $st['search'] }}
+
             </button>
 
-
             <a
-                href="{{ route('admin.schedules.index') }}"
-                class="
-                    admin-btn
-                    admin-btn-secondary
-                ">
-                {{ $st['reset'] }}
-            </a>
 
+                href="{{ route('admin.schedules.index') }}"
+
+                class="
+
+                    admin-btn
+
+                    admin-btn-secondary
+
+                ">
+
+                {{ $st['reset'] }}
+
+            </a>
 
         </form>
 
-
     </div>
-
-
 
     <div class="admin-table-wrapper">
 
-
         <table class="admin-table">
-
 
             <thead>
 
@@ -875,132 +848,144 @@ $translations['id'];
 
             </thead>
 
-
             <tbody>
 
-
                 @forelse($schedules as $schedule)
-
 
                 @php
 
                 $statusLabel =
-                match ($schedule->status) {
+
+                match ($schedule->schedule_status) {
 
                 'ongoing' =>
+
                 $st['ongoing_status'],
 
                 'completed' =>
+
                 $st['completed_status'],
 
-                'delayed' =>
-                $st['delayed_status'],
-
                 'cancelled' =>
+
                 $st['cancelled_status'],
 
                 default =>
+
                 $st['planned_status'],
 
                 };
 
-
                 $statusClass =
-                match ($schedule->status) {
 
-                'ongoing' =>
-                'admin-badge-warning',
+                match ($schedule->schedule_status) {
 
-                'completed' =>
-                'admin-badge-success',
+                'ongoing' => 'admin-badge-warning',
 
-                'delayed' =>
-                'admin-badge-danger',
+                'completed' => 'admin-badge-success',
 
-                'cancelled' =>
-                'admin-badge-danger',
+                'cancelled' => 'admin-badge-danger',
 
                 default =>
+
                 'admin-badge-primary',
 
                 };
 
                 @endphp
 
-
                 <tr>
-
 
                     <td>
 
                         {{
+
                                 $schedules->firstItem()
+
                                 +
+
                                 $loop->index
+
                             }}
 
                     </td>
-
 
                     <td>
 
                         <strong>
+
                             {{ $schedule->title }}
+
                         </strong>
 
                     </td>
 
-
                     <td>
 
                         {{
+
                                 $schedule->project->project_name
+
                                 ??
+
                                 '-'
+
                             }}
 
                     </td>
 
-
                     <td>
 
                         {{
+
                                 $schedule->work->work_name
+
                                 ??
+
                                 '-'
+
                             }}
 
                     </td>
 
-
                     <td>
 
                         {{
+
                                 $schedule->start_date
+
                                     ? $schedule->start_date->format('d M Y')
+
                                     : '-'
+
                             }}
 
                     </td>
-
 
                     <td>
 
                         {{
+
                                 $schedule->end_date
+
                                     ? $schedule->end_date->format('d M Y')
+
                                     : '-'
+
                             }}
 
                     </td>
-
 
                     <td>
 
                         <span
+
                             class="
+
                                     admin-badge
+
                                     {{ $statusClass }}
+
                                 ">
 
                             {{ $statusLabel }}
@@ -1009,58 +994,63 @@ $translations['id'];
 
                     </td>
 
-
                     <td>
 
                         <div class="schedule-actions">
 
                             <a
+
                                 href="{{ route('admin.schedules.show', $schedule) }}"
+
                                 class="schedule-action view"
+
                                 title="Detail Jadwal">
+
                                 ◉
+
                             </a>
 
                             <a
+
                                 href="{{ route('admin.schedules.edit', $schedule) }}"
+
                                 class="schedule-action edit"
+
                                 title="Edit Jadwal">
+
                                 ✎
+
                             </a>
 
                         </div>
 
                     </td>
 
-
                 </tr>
 
-
                 @empty
-
 
                 <tr>
 
                     <td
+
                         colspan="8"
+
                         class="schedule-empty">
+
                         {{ $st['empty'] }}
+
                     </td>
 
                 </tr>
 
-
                 @endforelse
-
 
             </tbody>
 
-
         </table>
 
-
     </div>
-
 
     @if($schedules->hasPages())
 
@@ -1072,8 +1062,6 @@ $translations['id'];
 
     @endif
 
-
 </div>
-
 
 @endsection

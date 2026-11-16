@@ -1188,7 +1188,7 @@ $sdt['title'] . ' - RuangKita'
         @php
 
         $status =
-        $schedule->status
+        $schedule->schedule_status
         ??
         'planned';
 

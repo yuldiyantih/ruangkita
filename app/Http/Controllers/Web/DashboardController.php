@@ -15,8 +15,8 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $userData = [
-            'id' => $user->id,
-            'name' => $user->name,
+            'id' => $user->user_id,
+            'name' => $user->user_name,
             'email' => $user->email,
             'role' => $user->role,
             'is_active' => $user->is_active,
@@ -36,13 +36,13 @@ class DashboardController extends Controller
 
         $ongoingProjects =
             Project::where(
-                'status',
+                'project_status',
                 'ongoing'
             )->count();
 
         $completedProjects =
             Project::where(
-                'status',
+                'project_status',
                 'completed'
             )->count();
 

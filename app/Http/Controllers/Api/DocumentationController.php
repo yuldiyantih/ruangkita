@@ -18,10 +18,19 @@ class DocumentationController extends Controller
         ]);
 
         if ($user->role !== 'admin') {
-            $query->where('is_visible_to_client', true)
-                ->whereHas('project.client', function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                });
+            $query->where(
+                'is_visible_to_client',
+                true
+            )
+                ->whereHas(
+                    'project.client',
+                    function ($q) use ($user) {
+                        $q->where(
+                            'user_id',
+                            $user->user_id
+                        );
+                    }
+                );
         }
 
         $documentations = $query
@@ -46,18 +55,35 @@ class DocumentationController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'category' => 'required|in:before,during,after',
-            'title' => 'required|string|max:150',
-            'description' => 'nullable|string',
-            'file_path' => 'required|string|max:255',
-            'photo_date' => 'nullable|date',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'category' =>
+            'required|in:before,during,after',
+
+            'title' =>
+            'required|string|max:150',
+
+            'description' =>
+            'nullable|string',
+
+            'file_path' =>
+            'required|string|max:255',
+
+            'photo_date' =>
+            'nullable|date',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $validated['uploaded_by'] = $user->id;
+        $validated['uploaded_by'] =
+            $user->user_id;
 
-        $documentation = Documentation::create($validated);
+        $documentation =
+            Documentation::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -73,10 +99,15 @@ class DocumentationController extends Controller
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
+            $user->role !== 'admin'
+            &&
             (
-                !$documentation->is_visible_to_client ||
-                $documentation->project?->client?->user_id !== $user->id
+                !$documentation->is_visible_to_client
+                ||
+                $documentation
+                ->project
+                ?->client
+                ?->user_id !== $user->user_id
             )
         ) {
             return response()->json([
@@ -110,16 +141,31 @@ class DocumentationController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'sometimes|exists:projects,id',
-            'category' => 'sometimes|in:before,during,after',
-            'title' => 'sometimes|string|max:150',
-            'description' => 'nullable|string',
-            'file_path' => 'sometimes|string|max:255',
-            'photo_date' => 'nullable|date',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'sometimes|exists:projects,project_id',
+
+            'category' =>
+            'sometimes|in:before,during,after',
+
+            'title' =>
+            'sometimes|string|max:150',
+
+            'description' =>
+            'nullable|string',
+
+            'file_path' =>
+            'sometimes|string|max:255',
+
+            'photo_date' =>
+            'nullable|date',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $documentation->update($validated);
+        $documentation->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,

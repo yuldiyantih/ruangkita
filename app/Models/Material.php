@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
+    protected $primaryKey = 'material_id';
+
     protected $fillable = [
         'project_id',
         'material_name',
@@ -28,6 +30,10 @@ class Material extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 }

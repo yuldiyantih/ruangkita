@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProgressUpdate extends Model
 {
+    protected $primaryKey = 'progress_update_id';
+
     protected $fillable = [
         'project_id',
         'created_by',
@@ -21,11 +23,19 @@ class ProgressUpdate extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(
+            User::class,
+            'created_by',
+            'user_id'
+        );
     }
 }

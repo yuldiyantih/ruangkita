@@ -1124,9 +1124,9 @@ $translations['id'];
                 @foreach($projects as $project)
 
                 <option
-                    value="{{ $project->id }}"
+                    value="{{ $project->project_id }}"
                     @selected(
-                    (string) $projectId===(string) $project->id
+                    (string) $projectId===(string) $project->project_id
                     )
                     >
 
@@ -1135,7 +1135,6 @@ $translations['id'];
                 </option>
 
                 @endforeach
-
             </select>
 
 

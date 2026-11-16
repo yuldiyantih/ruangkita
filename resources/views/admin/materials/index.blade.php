@@ -70,7 +70,6 @@ $translations = [
 $mt = $translations[$pageLang] ?? $translations['id'];
 @endphp
 
-
 @push('styles')
 <style>
     .material-page-header {
@@ -225,7 +224,7 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         padding: 16px 18px;
     }
 
-    @media(max-width: 1250px) {
+    @media (max-width: 1250px) {
         .material-panel-header {
             align-items: flex-start;
             flex-direction: column;
@@ -238,13 +237,13 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         }
     }
 
-    @media(max-width: 900px) {
+    @media (max-width: 900px) {
         .material-summary-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
 
-    @media(max-width: 650px) {
+    @media (max-width: 650px) {
         .material-page-header {
             align-items: flex-start;
             flex-direction: column;
@@ -269,7 +268,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
 </style>
 @endpush
 
-
 @section('content')
 
 <div class="material-page-header">
@@ -283,12 +281,12 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         </p>
     </div>
 
-    <a href="{{ route('admin.materials.create') }}"
+    <a
+        href="{{ route('admin.materials.create') }}"
         class="admin-btn admin-btn-primary">
         ＋ {{ $mt['add_material'] }}
     </a>
 </div>
-
 
 <div class="material-summary-grid">
 
@@ -308,7 +306,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         </div>
     </div>
 
-
     <div class="admin-card material-summary-card">
         <div class="material-summary-icon orange">
             Rp
@@ -325,7 +322,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         </div>
     </div>
 
-
     <div class="admin-card material-summary-card">
         <div class="material-summary-icon green">
             ◉
@@ -341,7 +337,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
             </div>
         </div>
     </div>
-
 
     <div class="admin-card material-summary-card">
         <div class="material-summary-icon red">
@@ -361,7 +356,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
 
 </div>
 
-
 <div class="admin-card material-panel">
 
     <div class="material-panel-header">
@@ -370,85 +364,79 @@ $mt = $translations[$pageLang] ?? $translations['id'];
             {{ $mt['list'] }}
         </div>
 
-
-        <form method="GET"
+        <form
+            method="GET"
             action="{{ route('admin.materials.index') }}"
             class="material-filter-form">
 
-            <input type="text"
+            <input
+                type="text"
                 name="search"
                 value="{{ $search }}"
                 class="admin-form-control material-search"
                 placeholder="{{ $mt['search_placeholder'] }}">
 
-
-            <select name="project"
+            <select
+                name="project"
                 class="admin-form-control material-project-filter">
-
                 <option value="">
                     {{ $mt['all_projects'] }}
                 </option>
 
-                @foreach($projects as $project)
-
-                <option value="{{ $project->id }}"
-                    @selected(
-                    (string) $projectId===(string) $project->id
-                    )>
+                @foreach ($projects as $project)
+                <option
+                    value="{{ $project->project_id }}"
+                    @selected((string) $projectId==(string) $project->project_id)
+                    >
                     {{ $project->project_name }}
                 </option>
-
                 @endforeach
-
             </select>
 
-
-            <select name="supplier"
+            <select
+                name="supplier"
                 class="admin-form-control material-supplier-filter">
-
                 <option value="">
                     {{ $mt['all_suppliers'] }}
                 </option>
 
-                @foreach($suppliers as $supplierItem)
-
-                <option value="{{ $supplierItem }}"
-                    @selected($supplier===$supplierItem)>
+                @foreach ($suppliers as $supplierItem)
+                <option
+                    value="{{ $supplierItem }}"
+                    @selected($supplier==$supplierItem)>
                     {{ $supplierItem }}
                 </option>
-
                 @endforeach
-
             </select>
 
-
-            <select name="visibility"
+            <select
+                name="visibility"
                 class="admin-form-control material-visibility-filter">
-
                 <option value="">
                     {{ $mt['all_visibility'] }}
                 </option>
 
-                <option value="1"
-                    @selected((string) $visibility==='1' )>
+                <option
+                    value="1"
+                    @selected((string) $visibility=='1' )>
                     {{ $mt['visible_option'] }}
                 </option>
 
-                <option value="0"
-                    @selected((string) $visibility==='0' )>
+                <option
+                    value="0"
+                    @selected((string) $visibility=='0' )>
                     {{ $mt['hidden_option'] }}
                 </option>
-
             </select>
 
-
-            <button type="submit"
+            <button
+                type="submit"
                 class="admin-btn admin-btn-primary">
                 {{ $mt['search'] }}
             </button>
 
-
-            <a href="{{ route('admin.materials.index') }}"
+            <a
+                href="{{ route('admin.materials.index') }}"
                 class="admin-btn admin-btn-secondary">
                 {{ $mt['reset'] }}
             </a>
@@ -456,7 +444,6 @@ $mt = $translations[$pageLang] ?? $translations['id'];
         </form>
 
     </div>
-
 
     <div class="admin-table-wrapper">
 
@@ -477,17 +464,14 @@ $mt = $translations[$pageLang] ?? $translations['id'];
                 </tr>
             </thead>
 
-
             <tbody>
 
-                @forelse($materials as $material)
-
+                @forelse ($materials as $material)
                 <tr>
 
                     <td>
                         {{ $materials->firstItem() + $loop->index }}
                     </td>
-
 
                     <td>
                         <strong>
@@ -495,108 +479,92 @@ $mt = $translations[$pageLang] ?? $translations['id'];
                         </strong>
                     </td>
 
-
                     <td>
                         {{ $material->project->project_name ?? '-' }}
                     </td>
-
 
                     <td>
                         {{ $material->supplier ?? '-' }}
                     </td>
 
-
                     <td>
                         {{
-                                $material->purchase_date
-                                    ? $material->purchase_date->format('d M Y')
-                                    : '-'
-                            }}
+                                    $material->purchase_date
+                                        ? $material->purchase_date->format('d M Y')
+                                        : '-'
+                                }}
                     </td>
-
 
                     <td>
                         {{ $material->quantity ?? 0 }}
                         {{ $material->unit ?? '' }}
                     </td>
 
-
                     <td>
                         Rp
                         {{
-                                number_format(
-                                    $material->unit_price,
-                                    0,
-                                    ',',
-                                    '.'
-                                )
-                            }}
-                    </td>
-
-
-                    <td>
-                        <strong>
-                            Rp
-                            {{
                                     number_format(
-                                        $material->total_price,
+                                        $material->unit_price,
                                         0,
                                         ',',
                                         '.'
                                     )
                                 }}
+                    </td>
+
+                    <td>
+                        <strong>
+                            Rp
+                            {{
+                                        number_format(
+                                            $material->total_price,
+                                            0,
+                                            ',',
+                                            '.'
+                                        )
+                                    }}
                         </strong>
                     </td>
 
-
                     <td>
-                        @if($material->is_visible_to_client)
-
+                        @if ($material->is_visible_to_client)
                         <span class="admin-badge admin-badge-success">
                             {{ $mt['visible_option'] }}
                         </span>
-
                         @else
-
                         <span class="admin-badge admin-badge-danger">
                             {{ $mt['hidden_option'] }}
                         </span>
-
                         @endif
                     </td>
 
-
                     <td>
-
                         <div class="material-actions">
 
-                            <a href="{{ route('admin.materials.show', $material) }}"
+                            <a
+                                href="{{ route('admin.materials.show', $material) }}"
                                 class="material-action view"
                                 title="Detail Material">
                                 ◉
                             </a>
 
-                            <a href="{{ route('admin.materials.edit', $material) }}"
+                            <a
+                                href="{{ route('admin.materials.edit', $material) }}"
                                 class="material-action edit"
                                 title="Edit Material">
                                 ✎
                             </a>
 
                         </div>
-
                     </td>
 
                 </tr>
-
                 @empty
-
                 <tr>
-                    <td colspan="10"
-                        class="material-empty">
+                    <td colspan="10" class="material-empty">
                         {{ $mt['empty'] }}
                     </td>
                 </tr>
-
                 @endforelse
 
             </tbody>
@@ -605,13 +573,10 @@ $mt = $translations[$pageLang] ?? $translations['id'];
 
     </div>
 
-
-    @if($materials->hasPages())
-
+    @if ($materials->hasPages())
     <div class="material-pagination">
         {{ $materials->links() }}
     </div>
-
     @endif
 
 </div>

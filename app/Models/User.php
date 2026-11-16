@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -12,8 +11,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
-        'name',
+        'user_name',
         'email',
         'password',
         'role',
@@ -37,16 +38,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function client()
-    {
-        return $this->hasOne(Client::class);
-    }
-
-    public function administeredProjects()
-    {
-        return $this->hasMany(Project::class, 'admin_id');
-    }
-
     protected function casts(): array
     {
         return [
@@ -62,11 +53,30 @@ class User extends Authenticatable
         ];
     }
 
+    public function client()
+    {
+        return $this->hasOne(
+            Client::class,
+            'user_id',
+            'user_id'
+        );
+    }
+
+    public function administeredProjects()
+    {
+        return $this->hasMany(
+            Project::class,
+            'admin_id',
+            'user_id'
+        );
+    }
+
     public function sentMessages()
     {
         return $this->hasMany(
             Message::class,
-            'sender_id'
+            'sender_id',
+            'user_id'
         );
     }
 
@@ -74,7 +84,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(
             Message::class,
-            'receiver_id'
+            'receiver_id',
+            'user_id'
         );
     }
 }

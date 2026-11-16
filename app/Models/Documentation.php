@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Documentation extends Model
 {
+    protected $primaryKey = 'documentation_id';
+
     protected $fillable = [
         'project_id',
         'uploaded_by',
@@ -25,7 +27,9 @@ class Documentation extends Model
     public function project()
     {
         return $this->belongsTo(
-            Project::class
+            Project::class,
+            'project_id',
+            'project_id'
         );
     }
 
@@ -33,7 +37,8 @@ class Documentation extends Model
     {
         return $this->belongsTo(
             User::class,
-            'uploaded_by'
+            'uploaded_by',
+            'user_id'
         );
     }
 }

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectArea extends Model
 {
+    protected $primaryKey = 'project_area_id';
+
     protected $fillable = [
         'project_id',
         'area_name',
@@ -16,11 +18,19 @@ class ProjectArea extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
     public function arDesigns()
     {
-        return $this->hasMany(ArDesign::class);
+        return $this->hasMany(
+            ArDesign::class,
+            'project_area_id',
+            'project_area_id'
+        );
     }
 }

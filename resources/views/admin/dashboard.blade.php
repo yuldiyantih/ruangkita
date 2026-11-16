@@ -796,7 +796,7 @@ $dt['page_title'] . ' - RuangKita'
     <p>
 
         {{ $dt['welcome'] }},
-        {{ auth()->user()->name }}!
+        {{ auth()->user()->user_name }}!
 
     </p>
 
@@ -1013,7 +1013,7 @@ $dt['page_title'] . ' - RuangKita'
                                     optional(
                                         $project->client
                                     )->user
-                                )->name
+                                )->user_name
                                 ??
                                 '-'
                             }}
@@ -1072,7 +1072,7 @@ $dt['page_title'] . ' - RuangKita'
                     <td>
 
 
-                        @if($project->status === 'ongoing')
+                        @if($project->project_status === 'ongoing')
 
                         <span
                             class="
@@ -1085,7 +1085,7 @@ $dt['page_title'] . ' - RuangKita'
                         </span>
 
 
-                        @elseif($project->status === 'completed')
+                        @elseif($project->project_status === 'completed')
 
                         <span
                             class="
@@ -1098,7 +1098,7 @@ $dt['page_title'] . ' - RuangKita'
                         </span>
 
 
-                        @elseif($project->status === 'paused')
+                        @elseif($project->project_status === 'paused')
 
                         <span
                             class="

@@ -1117,12 +1117,12 @@ $ct['title'] . ' - RuangKita'
 
             <option
 
-                value="{{ $project->id }}"
+                value="{{ $project->project_id }}"
 
                 @selected(
-                $project->id
+                $project->project_id
                 ===
-                $selectedProject->id
+                $selectedProject->project_id
                 )
 
                 >
@@ -1331,7 +1331,7 @@ $ct['title'] . ' - RuangKita'
         <div class="stage">
 
 
-            @if($stage->status === 'paid')
+            @if($stage->payment_stage_status === 'paid')
 
             <div class="stage-circle paid">
 
@@ -1339,7 +1339,7 @@ $ct['title'] . ' - RuangKita'
 
             </div>
 
-            @elseif($stage->status === 'awaiting_payment')
+            @elseif($stage->payment_stage_status === 'awaiting_payment')
 
             <div class="stage-circle waiting">
 
@@ -1394,7 +1394,7 @@ $ct['title'] . ' - RuangKita'
 
 
 
-            @if($stage->status === 'paid')
+            @if($stage->payment_stage_status === 'paid')
 
             <div
                 class="
@@ -1406,7 +1406,7 @@ $ct['title'] . ' - RuangKita'
 
             </div>
 
-            @elseif($stage->status === 'awaiting_payment')
+            @elseif($stage->payment_stage_status === 'awaiting_payment')
 
             <div
                 class="
@@ -1580,7 +1580,7 @@ $ct['title'] . ' - RuangKita'
                         <td>
 
 
-                            @if($stage->status === 'paid')
+                            @if($stage->payment_stage_status === 'paid')
 
                             <span
                                 class="
@@ -1592,7 +1592,7 @@ $ct['title'] . ' - RuangKita'
 
                             </span>
 
-                            @elseif($stage->status === 'awaiting_payment')
+                            @elseif($stage->payment_stage_status === 'awaiting_payment')
 
                             <span
                                 class="
@@ -1711,7 +1711,7 @@ $ct['title'] . ' - RuangKita'
                     class="
                                         history-dot
                                         {{
-                                            $payment->status
+                                            $payment->payment_status
                                             ===
                                             'verified'
                                             ?
@@ -1794,7 +1794,7 @@ $ct['title'] . ' - RuangKita'
                     <div>
 
 
-                        @if($payment->status === 'verified')
+                        @if($payment->payment_status === 'verified')
 
                         <span
                             class="
@@ -1810,7 +1810,7 @@ $ct['title'] . ' - RuangKita'
 
                         </span>
 
-                        @elseif($payment->status === 'pending')
+                        @elseif($payment->payment_status === 'pending')
 
                         <span
                             class="

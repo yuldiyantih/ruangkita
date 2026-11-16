@@ -429,21 +429,21 @@ $translations['id'];
                     @foreach($clients as $client)
 
                     <option
-                        value="{{ $client->id }}"
+                        value="{{ $client->client_id }}"
                         @selected(
                         old( 'client_id' ,
                         $project->client_id
                         )
                         ==
-                        $client->id
+                        $client->client_id
                         )
                         >
 
                         {{
-                                $client->user->name
-                                ??
-                                '-'
-                            }}
+            $client->user->user_name
+            ??
+            '-'
+        }}
 
                     </option>
 
@@ -661,7 +661,6 @@ $translations['id'];
 
                 </label>
 
-
                 <select
                     name="status"
                     class="admin-form-control"
@@ -671,7 +670,7 @@ $translations['id'];
                         value="planning"
                         @selected(
                         old( 'status' ,
-                        $project->status
+                        $project->project_status
                         )
                         ===
                         'planning'
@@ -680,11 +679,12 @@ $translations['id'];
                         {{ $et['planning'] }}
                     </option>
 
+
                     <option
                         value="ongoing"
                         @selected(
                         old( 'status' ,
-                        $project->status
+                        $project->project_status
                         )
                         ===
                         'ongoing'
@@ -693,11 +693,12 @@ $translations['id'];
                         {{ $et['ongoing'] }}
                     </option>
 
+
                     <option
                         value="completed"
                         @selected(
                         old( 'status' ,
-                        $project->status
+                        $project->project_status
                         )
                         ===
                         'completed'
@@ -706,11 +707,12 @@ $translations['id'];
                         {{ $et['completed'] }}
                     </option>
 
+
                     <option
                         value="paused"
                         @selected(
                         old( 'status' ,
-                        $project->status
+                        $project->project_status
                         )
                         ===
                         'paused'

@@ -1055,12 +1055,14 @@ $translations['id'];
                 @foreach($projects as $project)
 
                 <option
-                    value="{{ $project->id }}"
+                    value="{{ $project->project_id }}"
                     @selected(
-                    (string) $projectId===(string) $project->id
+                    (string) $projectId===(string) $project->project_id
                     )
                     >
+
                     {{ $project->project_name }}
+
                 </option>
 
                 @endforeach
@@ -1163,7 +1165,7 @@ $translations['id'];
                     <td>
 
                         {{
-                                $personalFund->user?->name
+                                $personalFund->user?->user_name
                                 ??
                                 '-'
                             }}

@@ -222,7 +222,7 @@ $translations['id'];
 
 
 $projectStatus =
-$project->status
+$project->project_status
 ??
 'planning';
 
@@ -845,7 +845,7 @@ default
                     optional(
                         $project->client
                     )->user
-                )->name
+                )->user_name
                 ??
                 '-'
             }}
@@ -1128,7 +1128,7 @@ default
                     optional(
                         $project->client
                     )->user
-                )->name
+                )->user_name
                 ??
                 '-'
             }}

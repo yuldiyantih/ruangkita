@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
+    protected $primaryKey = 'message_id';
+
     protected $fillable = [
         'project_id',
         'sender_id',
@@ -21,13 +23,11 @@ class Message extends Model
         'sent_at',
     ];
 
-
     protected $casts = [
         'is_read' => 'boolean',
         'sent_at' => 'datetime',
         'attachment_size' => 'integer',
     ];
-
 
     /*
     |--------------------------------------------------------------------------
@@ -37,9 +37,12 @@ class Message extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -51,10 +54,10 @@ class Message extends Model
     {
         return $this->belongsTo(
             User::class,
-            'sender_id'
+            'sender_id',
+            'user_id'
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -66,10 +69,10 @@ class Message extends Model
     {
         return $this->belongsTo(
             User::class,
-            'receiver_id'
+            'receiver_id',
+            'user_id'
         );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -81,7 +84,6 @@ class Message extends Model
     {
         return !empty($this->attachment_path);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -98,7 +100,6 @@ class Message extends Model
             );
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | HELPER - VIDEO
@@ -113,7 +114,6 @@ class Message extends Model
                 'video/'
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------

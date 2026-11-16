@@ -81,8 +81,9 @@ class AuthController extends Controller
         ]);
 
         DB::transaction(function () use ($validated) {
+
             $user = User::create([
-                'name' => $validated['name'],
+                'user_name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'] ?? null,
                 'password' => $validated['password'],
@@ -91,13 +92,16 @@ class AuthController extends Controller
             ]);
 
             Client::create([
-                'user_id' => $user->id,
+                'user_id' => $user->user_id,
                 'address' => $validated['address'] ?? null,
             ]);
         });
 
         return redirect()
             ->route('login')
-            ->with('success', 'Registrasi berhasil. Silakan login.');
+            ->with(
+                'success',
+                'Registrasi berhasil. Silakan login.'
+            );
     }
 }

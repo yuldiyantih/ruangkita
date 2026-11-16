@@ -322,22 +322,21 @@ $translations['id'];
                     @foreach($clients as $client)
 
                     <option
-                        value="{{ $client->id }}"
+                        value="{{ $client->client_id }}"
                         @selected(
-                        old('client_id')==$client->id
+                        old('client_id')==$client->client_id
                         )
                         >
 
                         {{
-                                $client->user->name
-                                ??
-                                '-'
-                            }}
+            $client->user->user_name
+            ??
+            '-'
+        }}
 
                     </option>
 
                     @endforeach
-
 
                 </select>
 

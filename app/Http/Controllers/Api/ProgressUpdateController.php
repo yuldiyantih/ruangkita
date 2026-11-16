@@ -18,9 +18,15 @@ class ProgressUpdateController extends Controller
         ]);
 
         if ($user->role !== 'admin') {
-            $query->whereHas('project.client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
+            $query->whereHas(
+                'project.client',
+                function ($q) use ($user) {
+                    $q->where(
+                        'user_id',
+                        $user->user_id
+                    );
+                }
+            );
         }
 
         $updates = $query
@@ -45,16 +51,29 @@ class ProgressUpdateController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'percentage' => 'required|integer|min:0|max:100',
-            'description' => 'nullable|string',
-            'update_date' => 'required|date',
-            'photo_path' => 'nullable|string|max:255',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'percentage' =>
+            'required|integer|min:0|max:100',
+
+            'description' =>
+            'nullable|string',
+
+            'update_date' =>
+            'required|date',
+
+            'photo_path' =>
+            'nullable|string|max:255',
         ]);
 
-        $validated['created_by'] = $user->id;
+        $validated['created_by'] =
+            $user->user_id;
 
-        $progressUpdate = ProgressUpdate::create($validated);
+        $progressUpdate =
+            ProgressUpdate::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -70,8 +89,12 @@ class ProgressUpdateController extends Controller
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $progressUpdate->project?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $progressUpdate
+            ->project
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -104,14 +127,25 @@ class ProgressUpdateController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'sometimes|exists:projects,id',
-            'percentage' => 'sometimes|integer|min:0|max:100',
-            'description' => 'nullable|string',
-            'update_date' => 'sometimes|date',
-            'photo_path' => 'nullable|string|max:255',
+            'project_id' =>
+            'sometimes|exists:projects,project_id',
+
+            'percentage' =>
+            'sometimes|integer|min:0|max:100',
+
+            'description' =>
+            'nullable|string',
+
+            'update_date' =>
+            'sometimes|date',
+
+            'photo_path' =>
+            'nullable|string|max:255',
         ]);
 
-        $progressUpdate->update($validated);
+        $progressUpdate->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,

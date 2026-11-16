@@ -519,10 +519,10 @@ $dt = $docTranslations[$docLang] ?? $docTranslations['id'];
             onchange="this.form.submit()">
             @foreach ($projects as $project)
             <option
-                value="{{ $project->id }}"
+                value="{{ $project->project_id }}"
                 @selected(
-                (int) $selectedProject->id ===
-                (int) $project->id
+                (int) $selectedProject->project_id ===
+                (int) $project->project_id
                 )
                 >
                 {{ $project->project_name }}

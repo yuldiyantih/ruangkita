@@ -121,7 +121,8 @@ class ArAssetController extends Controller
 
 
         ArAsset::create([
-            'name' => $validated['name'],
+            'ar_asset_name' =>
+            $validated['name'],
 
             'asset_type' =>
             $validated['asset_type'],
@@ -282,7 +283,7 @@ class ArAssetController extends Controller
         }
 
 
-        $arAsset->name =
+        $arAsset->ar_asset_name =
             $validated['name'];
 
         $arAsset->asset_type =

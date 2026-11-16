@@ -18,7 +18,10 @@ class PersonalFundController extends Controller
         ]);
 
         if ($user->role !== 'admin') {
-            $query->where('user_id', $user->id);
+            $query->where(
+                'user_id',
+                $user->user_id
+            );
         }
 
         $funds = $query
@@ -36,16 +39,29 @@ class PersonalFundController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'expense_id' => 'required|exists:expenses,id|unique:personal_funds,expense_id',
-            'amount' => 'required|numeric|min:0',
-            'reimbursement_status' => 'nullable|in:unpaid,paid',
-            'reimbursement_date' => 'nullable|date',
-            'notes' => 'nullable|string',
+            'expense_id' =>
+            'required|exists:expenses,expense_id|unique:personal_funds,expense_id',
+
+            'amount' =>
+            'required|numeric|min:0',
+
+            'reimbursement_status' =>
+            'nullable|in:unpaid,paid',
+
+            'reimbursement_date' =>
+            'nullable|date',
+
+            'notes' =>
+            'nullable|string',
         ]);
 
-        $validated['user_id'] = $user->id;
+        $validated['user_id'] =
+            $user->user_id;
 
-        $personalFund = PersonalFund::create($validated);
+        $personalFund =
+            PersonalFund::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -54,13 +70,16 @@ class PersonalFundController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, PersonalFund $personalFund)
-    {
+    public function show(
+        Request $request,
+        PersonalFund $personalFund
+    ) {
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $personalFund->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $personalFund->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -86,8 +105,9 @@ class PersonalFundController extends Controller
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $personalFund->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $personalFund->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -96,13 +116,22 @@ class PersonalFundController extends Controller
         }
 
         $validated = $request->validate([
-            'amount' => 'sometimes|numeric|min:0',
-            'reimbursement_status' => 'sometimes|in:unpaid,paid',
-            'reimbursement_date' => 'nullable|date',
-            'notes' => 'nullable|string',
+            'amount' =>
+            'sometimes|numeric|min:0',
+
+            'reimbursement_status' =>
+            'sometimes|in:unpaid,paid',
+
+            'reimbursement_date' =>
+            'nullable|date',
+
+            'notes' =>
+            'nullable|string',
         ]);
 
-        $personalFund->update($validated);
+        $personalFund->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -118,8 +147,9 @@ class PersonalFundController extends Controller
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $personalFund->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $personalFund->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,

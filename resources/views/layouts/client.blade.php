@@ -1344,11 +1344,11 @@ $tr = $translations[$lang] ?? $translations['id'];
 
                             <img
                                 src="{{ asset('storage/' . $currentUser->profile_photo) }}"
-                                alt="{{ $currentUser->name }}">
+                                alt="{{ $currentUser->user_name }}">
 
                             @else
 
-                            {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+                            {{ strtoupper(substr($currentUser->user_name, 0, 1)) }}
 
                             @endif
 
@@ -1356,7 +1356,7 @@ $tr = $translations[$lang] ?? $translations['id'];
 
 
                         <span class="profile-name">
-                            {{ $currentUser->name }}
+                            {{ $currentUser->user_name }}
                         </span>
 
 
@@ -1377,7 +1377,7 @@ $tr = $translations[$lang] ?? $translations['id'];
                         <div class="profile-menu-header">
 
                             <strong>
-                                {{ $currentUser->name }}
+                                {{ $currentUser->user_name }}
                             </strong>
 
                             <span>

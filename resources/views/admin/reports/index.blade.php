@@ -1064,9 +1064,9 @@
                 @foreach($projects as $project)
 
                 <option
-                    value="{{ $project->id }}"
+                    value="{{ $project->project_id }}"
                     @selected(
-                    (string) $projectId===(string) $project->id
+                    (string) $projectId===(string) $project->project_id
                     )
                     >
 
@@ -1075,7 +1075,6 @@
                 </option>
 
                 @endforeach
-
             </select>
 
         </div>
@@ -1397,40 +1396,31 @@
 
                     $statusLabel =
                     match(
-                    $project->status
+                    $project->project_status
                     ) {
 
-                    'ongoing'
-                    => 'Berjalan',
+                    'ongoing' => 'Berjalan',
 
-                    'completed'
-                    => 'Selesai',
+                    'completed' => 'Selesai',
 
-                    'paused'
-                    => 'Ditunda',
+                    'paused' => 'Ditunda',
 
-                    default
-                    => 'Perencanaan',
-
+                    default => 'Perencanaan',
                     };
+
 
                     $statusClass =
                     match(
-                    $project->status
+                    $project->project_status
                     ) {
 
-                    'ongoing'
-                    => 'ongoing',
+                    'ongoing' => 'ongoing',
 
-                    'completed'
-                    => 'completed',
+                    'completed' => 'completed',
 
-                    'paused'
-                    => 'paused',
+                    'paused' => 'paused',
 
-                    default
-                    => 'planning',
-
+                    default => 'planning',
                     };
 
 
@@ -1475,7 +1465,7 @@
                                             $project
                                                 ->client
                                         )->user
-                                    )->name
+                                    )->user_name
                                     ??
                                     '-'
                                 }}

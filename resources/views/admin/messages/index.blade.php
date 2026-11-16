@@ -1,11 +1,9 @@
 @extends('layouts.admin')
 
 @php
-
 $lang = auth()->user()->language ?? 'id';
 
 $translations = [
-
 'id' => [
 'title' => 'Pesan',
 'subtitle' => 'Kelola percakapan dengan client berdasarkan proyek.',
@@ -41,15 +39,12 @@ $translations = [
 'open_file' => 'Open file',
 'no_message' => 'No messages yet.',
 ],
-
 ];
 
 $t = $translations[$lang] ?? $translations['id'];
-
 @endphp
 
 @section('title', $t['title'] . ' - RuangKita')
-
 
 @push('styles')
 <style>
@@ -72,7 +67,6 @@ $t = $translations[$lang] ?? $translations['id'];
         color: var(--text-muted);
         font-size: 13px;
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -144,7 +138,6 @@ $t = $translations[$lang] ?? $translations['id'];
         font-weight: 700;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | MAIN LAYOUT
@@ -160,7 +153,6 @@ $t = $translations[$lang] ?? $translations['id'];
         overflow: hidden;
         background: var(--card-bg);
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -301,7 +293,6 @@ $t = $translations[$lang] ?? $translations['id'];
         font-weight: 700;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | CHAT AREA
@@ -369,7 +360,6 @@ $t = $translations[$lang] ?? $translations['id'];
         color: #72bdf5;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | CHAT BODY
@@ -380,8 +370,7 @@ $t = $translations[$lang] ?? $translations['id'];
         height: 440px;
         padding: 20px;
         overflow-y: auto;
-        background:
-            linear-gradient(180deg,
+        background: linear-gradient(180deg,
                 rgba(246, 249, 252, .65),
                 rgba(246, 249, 252, .28));
     }
@@ -445,7 +434,6 @@ $t = $translations[$lang] ?? $translations['id'];
         font-weight: 700;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | ATTACHMENT
@@ -497,7 +485,6 @@ $t = $translations[$lang] ?? $translations['id'];
         color: var(--text-muted);
         font-size: 8px;
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -573,7 +560,6 @@ $t = $translations[$lang] ?? $translations['id'];
         font-weight: 700;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | EMPTY
@@ -614,15 +600,13 @@ $t = $translations[$lang] ?? $translations['id'];
         font-size: 10px;
     }
 
-
     /*
     |--------------------------------------------------------------------------
     | RESPONSIVE
     |--------------------------------------------------------------------------
     */
 
-    @media(max-width: 1000px) {
-
+    @media (max-width: 1000px) {
         .messages-layout {
             grid-template-columns: 280px minmax(0, 1fr);
         }
@@ -630,11 +614,9 @@ $t = $translations[$lang] ?? $translations['id'];
         .message-summary-grid {
             grid-template-columns: repeat(3, 1fr);
         }
-
     }
 
-    @media(max-width: 760px) {
-
+    @media (max-width: 760px) {
         .message-summary-grid {
             grid-template-columns: 1fr;
         }
@@ -655,19 +637,14 @@ $t = $translations[$lang] ?? $translations['id'];
         .message-wrapper {
             max-width: 88%;
         }
-
     }
 </style>
 @endpush
 
-
 @section('content')
 
-
 <div class="messages-page-header">
-
     <div>
-
         <h1>
             {{ $t['title'] }}
         </h1>
@@ -675,39 +652,27 @@ $t = $translations[$lang] ?? $translations['id'];
         <p>
             {{ $t['subtitle'] }}
         </p>
-
     </div>
-
 </div>
 
-
-@if($errors->any())
-
+@if ($errors->any())
 <div class="error-box">
-
-    @foreach($errors->all() as $error)
-
+    @foreach ($errors->all() as $error)
     <div>
         {{ $error }}
     </div>
-
     @endforeach
-
 </div>
-
 @endif
-
 
 <div class="message-summary-grid">
 
     <div class="message-summary-card">
-
         <div class="message-summary-icon">
             💬
         </div>
 
         <div>
-
             <div class="message-summary-label">
                 {{ $t['total_chat'] }}
             </div>
@@ -715,20 +680,15 @@ $t = $translations[$lang] ?? $translations['id'];
             <div class="message-summary-number">
                 {{ $totalConversations ?? 0 }}
             </div>
-
         </div>
-
     </div>
 
-
     <div class="message-summary-card">
-
         <div class="message-summary-icon orange">
             ●
         </div>
 
         <div>
-
             <div class="message-summary-label">
                 {{ $t['unread'] }}
             </div>
@@ -736,20 +696,15 @@ $t = $translations[$lang] ?? $translations['id'];
             <div class="message-summary-number">
                 {{ $totalUnread ?? 0 }}
             </div>
-
         </div>
-
     </div>
 
-
     <div class="message-summary-card">
-
         <div class="message-summary-icon green">
             ↗
         </div>
 
         <div>
-
             <div class="message-summary-label">
                 {{ $t['today'] }}
             </div>
@@ -757,25 +712,20 @@ $t = $translations[$lang] ?? $translations['id'];
             <div class="message-summary-number">
                 {{ $todayMessages ?? 0 }}
             </div>
-
         </div>
-
     </div>
 
 </div>
 
-
-
 <div class="messages-layout">
 
     {{-- =========================================================
-         DAFTAR PERCAKAPAN
-    ========================================================== --}}
+             DAFTAR PERCAKAPAN
+        ========================================================== --}}
 
     <aside class="conversation-panel">
 
         <div class="conversation-header">
-
             <div class="conversation-title">
                 {{ $t['conversations'] }}
             </div>
@@ -785,127 +735,85 @@ $t = $translations[$lang] ?? $translations['id'];
                 id="conversationSearch"
                 class="conversation-search"
                 placeholder="{{ $t['search'] }}">
-
         </div>
 
+        <div id="conversationList" class="conversation-list">
 
-        <div
-            id="conversationList"
-            class="conversation-list">
-
-            @forelse($conversations as $conversation)
+            @forelse ($conversations as $conversation)
 
             @php
+            $clientUser = $conversation['user'];
+            $project = $conversation['project'];
+            $lastMessage = $conversation['last_message'];
+            $unread = $conversation['unread'];
 
-            $clientUser =
-            $conversation['user'];
-
-            $project =
-            $conversation['project'];
-
-            $lastMessage =
-            $conversation['last_message'];
-
-            $unread =
-            $conversation['unread'];
-
-            $initial =
-            strtoupper(
+            $initial = strtoupper(
             mb_substr(
-            $clientUser->name ?? 'C',
+            $clientUser->user_name ?? 'C',
             0,
             1
             )
             );
 
-            $isActive =
-            $selectedProject
-            &&
-            (int) $selectedProject->id
-            ===
-            (int) $project->id;
-
+            $isActive = $selectedProject
+            && (int) $selectedProject->project_id
+            === (int) $project->project_id;
             @endphp
 
-
             <a
-                href="{{ route('admin.messages.index', ['project' => $project->id]) }}"
+                href="{{ route('admin.messages.index', ['project' => $project->project_id]) }}"
                 class="conversation-item {{ $isActive ? 'active' : '' }}"
-                data-name="{{ strtolower($clientUser->name ?? '') }}">
+                data-name="{{ strtolower($clientUser->user_name ?? '') }}">
 
                 <div class="conversation-avatar">
                     {{ $initial }}
                 </div>
 
-
                 <div class="conversation-content">
 
                     <div class="conversation-top">
-
                         <div class="conversation-name">
-                            {{ $clientUser->name }}
+                            {{ $clientUser->user_name }}
                         </div>
 
                         <div class="conversation-time">
-
-                            @if($lastMessage && $lastMessage->sent_at)
-
+                            @if ($lastMessage && $lastMessage->sent_at)
                             {{ $lastMessage->sent_at->format('H:i') }}
-
                             @endif
-
                         </div>
-
                     </div>
-
 
                     <div class="conversation-project">
-
-                        {{
-                                $project
-                                    ? $project->project_name
-                                    : '-'
-                            }}
-
+                        {{ $project ? $project->project_name : '-' }}
                     </div>
-
 
                     <div class="conversation-bottom">
 
                         <div class="conversation-preview">
 
-                            @if($lastMessage)
+                            @if ($lastMessage)
 
-                            @if($lastMessage->message_text)
-
+                            @if ($lastMessage->message_text)
                             {{
-                                            \Illuminate\Support\Str::limit(
-                                                $lastMessage->message_text,
-                                                34
-                                            )
-                                        }}
-
-                            @elseif($lastMessage->attachment_path)
-
+                                                \Illuminate\Support\Str::limit(
+                                                    $lastMessage->message_text,
+                                                    34
+                                                )
+                                            }}
+                            @elseif ($lastMessage->attachment_path)
                             📎 {{ $t['attachment'] }}
-
                             @endif
 
                             @else
-
                             {{ $t['no_message'] }}
-
                             @endif
 
                         </div>
 
-
-                        @if($unread > 0)
-
+                        @if ($unread > 0)
                         <div class="unread-badge">
                             {{ $unread }}
                         </div>
-
                         @endif
 
                     </div>
@@ -926,107 +834,77 @@ $t = $translations[$lang] ?? $translations['id'];
 
     </aside>
 
-
-
     {{-- =========================================================
-         CHAT
-    ========================================================== --}}
+             CHAT
+        ========================================================== --}}
 
     <section class="chat-panel">
 
-        @if($selectedUser)
+        @if ($selectedUser)
 
         <div class="chat-header">
 
             <div class="chat-client">
 
                 <div class="chat-avatar">
-
                     {{
-                            strtoupper(
-                                mb_substr(
-                                    $selectedUser->name ?? 'C',
-                                    0,
-                                    1
+                                strtoupper(
+                                    mb_substr(
+                                        $selectedUser->user_name ?? 'C',
+                                        0,
+                                        1
+                                    )
                                 )
-                            )
-                        }}
-
+                            }}
                 </div>
 
-
                 <div>
-
                     <div class="chat-client-name">
-                        {{ $selectedUser->name }}
+                        {{ $selectedUser->user_name }}
                     </div>
 
                     <div class="chat-client-project">
-
                         {{ $t['project'] }}:
-
-                        {{
-                                $selectedProject
-                                    ? $selectedProject->project_name
-                                    : '-'
-                            }}
-
+                        {{ $selectedProject ? $selectedProject->project_name : '-' }}
                     </div>
-
                 </div>
 
             </div>
 
-
-            @if($selectedProject)
-
+            @if ($selectedProject)
             <div class="chat-project-badge">
                 {{ $selectedProject->project_name }}
             </div>
-
             @endif
 
         </div>
 
+        <div id="chatBody" class="chat-body">
 
-        <div
-            id="chatBody"
-            class="chat-body">
-
-            @forelse($chatMessages as $message)
+            @forelse ($chatMessages as $message)
 
             @php
-
-            $mine =
-            (int) $message->sender_id
-            ===
-            (int) auth()->id();
-
+            $mine = (int) $message->sender_id
+            === (int) auth()->id();
             @endphp
 
-
-            <div
-                class="message-row {{ $mine ? 'mine' : 'them' }}">
+            <div class="message-row {{ $mine ? 'mine' : 'them' }}">
 
                 <div class="message-wrapper">
 
-                    @if($message->message_text)
-
+                    @if ($message->message_text)
                     <div class="message-bubble">
                         {{ $message->message_text }}
                     </div>
-
                     @endif
 
-
-                    @if($message->attachment_path)
+                    @if ($message->attachment_path)
 
                     <div class="attachment-preview">
 
-                        @if(
+                        @if (
                         $message->attachment_type
-                        &&
-                        str_starts_with(
+                        && str_starts_with(
                         $message->attachment_type,
                         'image/'
                         )
@@ -1035,34 +913,25 @@ $t = $translations[$lang] ?? $translations['id'];
                         <a
                             href="{{ asset('storage/' . $message->attachment_path) }}"
                             target="_blank">
-
                             <img
                                 src="{{ asset('storage/' . $message->attachment_path) }}"
                                 alt="{{ $message->attachment_name ?? 'Attachment' }}"
                                 class="attachment-image">
-
                         </a>
 
-
-                        @elseif(
+                        @elseif (
                         $message->attachment_type
-                        &&
-                        str_starts_with(
+                        && str_starts_with(
                         $message->attachment_type,
                         'video/'
                         )
                         )
 
-                        <video
-                            class="attachment-video"
-                            controls>
-
+                        <video class="attachment-video" controls>
                             <source
                                 src="{{ asset('storage/' . $message->attachment_path) }}"
                                 type="{{ $message->attachment_type }}">
-
                         </video>
-
 
                         @else
 
@@ -1076,23 +945,16 @@ $t = $translations[$lang] ?? $translations['id'];
                             </div>
 
                             <div>
-
                                 <div class="attachment-file-name">
-
                                     {{
-                                                        $message->attachment_name
-                                                        ??
-                                                        basename(
-                                                            $message->attachment_path
-                                                        )
-                                                    }}
-
+                                                            $message->attachment_name
+                                                            ?? basename($message->attachment_path)
+                                                        }}
                                 </div>
 
                                 <div class="attachment-file-open">
                                     {{ $t['open_file'] }}
                                 </div>
-
                             </div>
 
                         </a>
@@ -1103,29 +965,19 @@ $t = $translations[$lang] ?? $translations['id'];
 
                     @endif
 
-
                     <div class="message-meta">
 
-                        @if($mine)
-
+                        @if ($mine)
                         <span class="read-status">
-
-                            {{
-                                            $message->is_read
-                                                ? '✓✓'
-                                                : '✓'
-                                        }}
-
+                            {{ $message->is_read ? '✓✓' : '✓' }}
                         </span>
-
                         @endif
 
-
                         {{
-                                    $message->sent_at
-                                        ? $message->sent_at->format('H:i')
-                                        : '-'
-                                }}
+                                        $message->sent_at
+                                            ? $message->sent_at->format('H:i')
+                                            : '-'
+                                    }}
 
                     </div>
 
@@ -1136,7 +988,6 @@ $t = $translations[$lang] ?? $translations['id'];
             @empty
 
             <div class="chat-empty">
-
                 <div class="chat-empty-icon">
                     💬
                 </div>
@@ -1144,15 +995,13 @@ $t = $translations[$lang] ?? $translations['id'];
                 <div>
                     {{ $t['no_message'] }}
                 </div>
-
             </div>
 
             @endforelse
 
         </div>
 
-
-        @if($selectedProject)
+        @if ($selectedProject)
 
         <form
             method="POST"
@@ -1162,22 +1011,17 @@ $t = $translations[$lang] ?? $translations['id'];
 
             @csrf
 
-
             <input
                 type="hidden"
                 name="receiver_id"
-                value="{{ $selectedUser->id }}">
+                value="{{ $selectedUser->user_id }}">
 
             <input
                 type="hidden"
                 name="project_id"
-                value="{{ $selectedProject->id }}">
+                value="{{ $selectedProject->project_id }}">
 
-
-            <div
-                id="selectedFile"
-                class="selected-file"></div>
-
+            <div id="selectedFile" class="selected-file"></div>
 
             <div class="chat-input-row">
 
@@ -1188,7 +1032,6 @@ $t = $translations[$lang] ?? $translations['id'];
                     📎
                 </label>
 
-
                 <input
                     type="file"
                     id="attachment"
@@ -1196,16 +1039,12 @@ $t = $translations[$lang] ?? $translations['id'];
                     class="attachment-input"
                     accept=".jpg,.jpeg,.png,.webp,.mp4,.mov,.webm,.pdf,.doc,.docx,.xls,.xlsx,.zip">
 
-
                 <textarea
                     name="message_text"
                     class="message-input"
                     placeholder="{{ $t['type_message'] }}">{{ old('message_text') }}</textarea>
 
-
-                <button
-                    type="submit"
-                    class="send-button">
+                <button type="submit" class="send-button">
                     {{ $t['send'] }}
                 </button>
 
@@ -1215,11 +1054,9 @@ $t = $translations[$lang] ?? $translations['id'];
 
         @endif
 
-
         @else
 
         <div class="chat-empty">
-
             <div class="chat-empty-icon">
                 💬
             </div>
@@ -1227,7 +1064,6 @@ $t = $translations[$lang] ?? $translations['id'];
             <div>
                 {{ $t['select_conversation'] }}
             </div>
-
         </div>
 
         @endif
@@ -1238,139 +1074,88 @@ $t = $translations[$lang] ?? $translations['id'];
 
 @endsection
 
-
-
 @push('scripts')
 <script>
-    document.addEventListener(
-        'DOMContentLoaded',
-        function() {
+    document.addEventListener('DOMContentLoaded', function() {
 
-            /*
-            |--------------------------------------------------------------------------
-            | AUTO SCROLL CHAT
-            |--------------------------------------------------------------------------
-            */
+        /*
+        |--------------------------------------------------------------------------
+        | AUTO SCROLL CHAT
+        |--------------------------------------------------------------------------
+        */
 
-            const chatBody =
-                document.getElementById(
-                    'chatBody'
-                );
+        const chatBody = document.getElementById('chatBody');
 
-            if (chatBody) {
+        if (chatBody) {
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
 
-                chatBody.scrollTop =
-                    chatBody.scrollHeight;
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH CLIENT
+        |--------------------------------------------------------------------------
+        */
 
-            }
+        const searchInput = document.getElementById('conversationSearch');
 
+        const conversationItems = document.querySelectorAll(
+            '.conversation-item'
+        );
 
-            /*
-            |--------------------------------------------------------------------------
-            | SEARCH CLIENT
-            |--------------------------------------------------------------------------
-            */
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
 
-            const searchInput =
-                document.getElementById(
-                    'conversationSearch'
-                );
+                const keyword = searchInput.value
+                    .toLowerCase()
+                    .trim();
 
-            const conversationItems =
-                document.querySelectorAll(
-                    '.conversation-item'
-                );
+                conversationItems.forEach(function(item) {
 
+                    const name = item.dataset.name || '';
 
-            if (searchInput) {
+                    item.style.display = name.includes(keyword) ?
+                        'flex' :
+                        'none';
 
-                searchInput.addEventListener(
-                    'input',
-                    function() {
+                });
 
-                        const keyword =
-                            searchInput
-                            .value
-                            .toLowerCase()
-                            .trim();
+            });
+        }
 
+        /*
+        |--------------------------------------------------------------------------
+        | FILE NAME
+        |--------------------------------------------------------------------------
+        */
 
-                        conversationItems.forEach(
-                            function(item) {
+        const attachment = document.getElementById('attachment');
+        const selectedFile = document.getElementById('selectedFile');
 
-                                const name =
-                                    item.dataset.name ||
-                                    '';
+        if (attachment && selectedFile) {
 
+            attachment.addEventListener('change', function() {
 
-                                item.style.display =
-                                    name.includes(keyword) ?
-                                    'flex' :
-                                    'none';
+                if (
+                    attachment.files &&
+                    attachment.files.length > 0
+                ) {
 
-                            }
-                        );
+                    selectedFile.textContent =
+                        '📎 ' + attachment.files[0].name;
 
-                    }
-                );
+                    selectedFile.style.display = 'block';
 
-            }
+                } else {
 
+                    selectedFile.textContent = '';
+                    selectedFile.style.display = 'none';
 
-            /*
-            |--------------------------------------------------------------------------
-            | FILE NAME
-            |--------------------------------------------------------------------------
-            */
+                }
 
-            const attachment =
-                document.getElementById(
-                    'attachment'
-                );
-
-            const selectedFile =
-                document.getElementById(
-                    'selectedFile'
-                );
-
-
-            if (
-                attachment &&
-                selectedFile
-            ) {
-
-                attachment.addEventListener(
-                    'change',
-                    function() {
-
-                        if (
-                            attachment.files &&
-                            attachment.files.length > 0
-                        ) {
-
-                            selectedFile.textContent =
-                                '📎 ' +
-                                attachment.files[0].name;
-
-                            selectedFile.style.display =
-                                'block';
-
-                        } else {
-
-                            selectedFile.textContent =
-                                '';
-
-                            selectedFile.style.display =
-                                'none';
-
-                        }
-
-                    }
-                );
-
-            }
+            });
 
         }
-    );
+
+    });
 </script>
 @endpush

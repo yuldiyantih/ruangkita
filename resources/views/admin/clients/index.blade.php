@@ -1,11 +1,9 @@
 @extends('layouts.admin')
 
-
 @section(
 'title',
 'Data Client - RuangKita'
 )
-
 
 @php
 
@@ -14,90 +12,126 @@ auth()->user()->language
 ??
 'id';
 
-
 $translations = [
 
 'id' => [
 
 'title' => 'Data Client',
+
 'subtitle' => 'Kelola data client dan informasi proyek pelanggan.',
+
 'add_client' => 'Tambah Client',
 
 'total_client' => 'Total Client',
+
 'active_client' => 'Client Aktif',
+
 'inactive_client' => 'Client Nonaktif',
+
 'total_projects' => 'Total Proyek Client',
 
 'client_list' => 'Daftar Client',
 
 'search_placeholder' => 'Cari nama, email, atau nomor telepon...',
+
 'all_status' => 'Semua Status',
+
 'active' => 'Aktif',
+
 'inactive' => 'Nonaktif',
+
 'search' => 'Cari',
+
 'reset' => 'Reset',
 
 'no' => 'No',
+
 'client_name' => 'Nama Client',
+
 'email' => 'Email',
+
 'phone' => 'No. Telepon',
+
 'address' => 'Alamat',
+
 'project_count' => 'Jumlah Proyek',
+
 'status' => 'Status',
+
 'action' => 'Aksi',
 
 'detail' => 'Detail Client',
+
 'edit' => 'Edit Client',
+
 'activate' => 'Aktifkan Client',
+
 'deactivate' => 'Nonaktifkan Client',
 
 'confirm_status' => 'Yakin ingin mengubah status client ini?',
+
 'empty' => 'Belum ada data client.',
-
 ],
-
 
 'en' => [
 
 'title' => 'Clients',
+
 'subtitle' => 'Manage client data and customer project information.',
+
 'add_client' => 'Add Client',
 
 'total_client' => 'Total Clients',
+
 'active_client' => 'Active Clients',
+
 'inactive_client' => 'Inactive Clients',
+
 'total_projects' => 'Total Client Projects',
 
 'client_list' => 'Client List',
 
 'search_placeholder' => 'Search name, email, or phone number...',
+
 'all_status' => 'All Status',
+
 'active' => 'Active',
+
 'inactive' => 'Inactive',
+
 'search' => 'Search',
+
 'reset' => 'Reset',
 
 'no' => 'No',
+
 'client_name' => 'Client Name',
+
 'email' => 'Email',
+
 'phone' => 'Phone Number',
+
 'address' => 'Address',
+
 'project_count' => 'Projects',
+
 'status' => 'Status',
+
 'action' => 'Action',
 
 'detail' => 'Client Detail',
+
 'edit' => 'Edit Client',
+
 'activate' => 'Activate Client',
+
 'deactivate' => 'Deactivate Client',
 
 'confirm_status' => 'Are you sure you want to change this client status?',
+
 'empty' => 'No client data available.',
-
 ],
-
 ];
-
 
 $it =
 $translations[$pageLang]
@@ -139,8 +173,7 @@ $translations['id'];
         display: grid;
 
         grid-template-columns:
-            repeat(4,
-                minmax(0, 1fr));
+            repeat(4, minmax(0, 1fr));
 
         gap: 14px;
     }
@@ -163,6 +196,7 @@ $translations['id'];
     .client-summary-icon {
 
         width: 50px;
+
         height: 50px;
 
         flex-shrink: 0;
@@ -346,6 +380,7 @@ $translations['id'];
     .client-action {
 
         width: 34px;
+
         height: 34px;
 
         padding: 0;
@@ -478,7 +513,6 @@ $translations['id'];
             flex-wrap:
                 wrap;
         }
-
     }
 
 
@@ -513,198 +547,144 @@ $translations['id'];
             flex:
                 1;
         }
-
     }
 </style>
 
 @endpush
 
 
-
 @section('content')
 
 
 {{-- =====================================================
-         PAGE HEADER
-    ====================================================== --}}
+     PAGE HEADER
+====================================================== --}}
 
 <div class="client-page-header">
 
-
     <div>
 
-
         <h1 class="admin-page-title">
-
             {{ $it['title'] }}
-
         </h1>
 
-
         <p class="admin-page-subtitle">
-
             {{ $it['subtitle'] }}
-
         </p>
 
-
     </div>
-
 
 
     <a
         href="{{ route('admin.clients.create') }}"
         class="
-                admin-btn
-                admin-btn-primary
-            ">
+            admin-btn
+            admin-btn-primary
+        ">
 
         ＋ {{ $it['add_client'] }}
 
     </a>
 
-
 </div>
 
 
-
 {{-- =====================================================
-         SUMMARY
-    ====================================================== --}}
+     SUMMARY
+====================================================== --}}
 
 <div class="client-summary-grid">
 
 
     <div class="admin-card client-summary-card">
 
-
         <div class="client-summary-icon blue">
-
             ♙
-
         </div>
-
 
         <div>
 
             <div class="client-summary-label">
-
                 {{ $it['total_client'] }}
-
             </div>
 
             <div class="client-summary-number">
-
                 {{ $totalClients }}
-
             </div>
 
         </div>
 
-
     </div>
 
 
-
     <div class="admin-card client-summary-card">
-
 
         <div class="client-summary-icon green">
-
             ●
-
         </div>
-
 
         <div>
 
             <div class="client-summary-label">
-
                 {{ $it['active_client'] }}
-
             </div>
 
             <div class="client-summary-number">
-
                 {{ $activeClients }}
-
             </div>
 
         </div>
 
-
     </div>
 
 
-
     <div class="admin-card client-summary-card">
-
 
         <div class="client-summary-icon red">
-
             ○
-
         </div>
-
 
         <div>
 
             <div class="client-summary-label">
-
                 {{ $it['inactive_client'] }}
-
             </div>
 
             <div class="client-summary-number">
-
                 {{ $inactiveClients }}
-
             </div>
 
         </div>
 
-
     </div>
-
 
 
     <div class="admin-card client-summary-card">
 
-
         <div class="client-summary-icon purple">
-
             ▣
-
         </div>
-
 
         <div>
 
             <div class="client-summary-label">
-
                 {{ $it['total_projects'] }}
-
             </div>
 
             <div class="client-summary-number">
-
                 {{ $totalProjects }}
-
             </div>
 
         </div>
 
-
     </div>
-
 
 </div>
 
 
-
 {{-- =====================================================
-         CLIENT PANEL
-    ====================================================== --}}
+     CLIENT PANEL
+====================================================== --}}
 
 <div class="admin-card client-panel">
 
@@ -713,11 +693,8 @@ $translations['id'];
 
 
         <div class="client-panel-title">
-
             {{ $it['client_list'] }}
-
         </div>
-
 
 
         <form
@@ -725,17 +702,15 @@ $translations['id'];
             action="{{ route('admin.clients.index') }}"
             class="client-filter-form">
 
-
             <input
                 type="text"
                 name="search"
                 value="{{ $search }}"
                 class="
-                        admin-form-control
-                        client-search
-                    "
+                    admin-form-control
+                    client-search
+                "
                 placeholder="{{ $it['search_placeholder'] }}">
-
 
 
             <select
@@ -743,44 +718,34 @@ $translations['id'];
                 class="admin-form-control">
 
                 <option value="">
-
                     {{ $it['all_status'] }}
-
                 </option>
 
 
                 <option
                     value="active"
                     @selected($status==='active' )>
-
                     {{ $it['active'] }}
-
                 </option>
 
 
                 <option
                     value="inactive"
                     @selected($status==='inactive' )>
-
                     {{ $it['inactive'] }}
-
                 </option>
 
             </select>
 
 
-
             <button
                 type="submit"
                 class="
-                        admin-btn
-                        admin-btn-primary
-                    ">
-
+                    admin-btn
+                    admin-btn-primary
+                ">
                 {{ $it['search'] }}
-
             </button>
-
 
 
             @if($search || $status)
@@ -788,33 +753,26 @@ $translations['id'];
             <a
                 href="{{ route('admin.clients.index') }}"
                 class="
-                            admin-btn
-                            admin-btn-secondary
-                        ">
-
+                        admin-btn
+                        admin-btn-secondary
+                    ">
                 {{ $it['reset'] }}
-
             </a>
 
             @endif
 
-
         </form>
-
 
     </div>
 
 
-
     {{-- =================================================
-             TABLE
-        ================================================== --}}
+         TABLE
+    ================================================== --}}
 
     <div class="admin-table-wrapper">
 
-
         <table class="admin-table">
-
 
             <thead>
 
@@ -853,73 +811,67 @@ $translations['id'];
                     <td>
 
                         {{
-                                    $clients->firstItem()
-                                    +
-                                    $loop->index
-                                }}
+                                $clients->firstItem()
+                                +
+                                $loop->index
+                            }}
 
                     </td>
-
 
 
                     <td class="client-name">
 
                         {{
-                                    $client->user->name
-                                    ??
-                                    '-'
-                                }}
+                                $client->user->user_name
+                                ??
+                                '-'
+                            }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                    $client->user->email
-                                    ??
-                                    '-'
-                                }}
+                                $client->user->email
+                                ??
+                                '-'
+                            }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                    $client->user->phone
-                                    ??
-                                    '-'
-                                }}
+                                $client->user->phone
+                                ??
+                                '-'
+                            }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                    $client->address
-                                    ??
-                                    '-'
-                                }}
+                                $client->address
+                                ??
+                                '-'
+                            }}
 
                     </td>
-
 
 
                     <td>
 
                         {{
-                                    $client
-                                        ->projects
-                                        ->count()
-                                }}
+                                $client
+                                    ->projects
+                                    ->count()
+                            }}
 
                     </td>
-
 
 
                     <td>
@@ -929,9 +881,9 @@ $translations['id'];
 
                         <span
                             class="
-                                            admin-badge
-                                            admin-badge-success
-                                        ">
+                                        admin-badge
+                                        admin-badge-success
+                                    ">
 
                             ● {{ $it['active'] }}
 
@@ -941,9 +893,9 @@ $translations['id'];
 
                         <span
                             class="
-                                            admin-badge
-                                            admin-badge-danger
-                                        ">
+                                        admin-badge
+                                        admin-badge-danger
+                                    ">
 
                             ● {{ $it['inactive'] }}
 
@@ -953,7 +905,6 @@ $translations['id'];
 
 
                     </td>
-
 
 
                     <td>
@@ -966,42 +917,36 @@ $translations['id'];
 
                             <a
                                 href="{{
-                                            route(
-                                                'admin.clients.show',
-                                                $client
-                                            )
-                                        }}"
+                                        route(
+                                            'admin.clients.show',
+                                            $client
+                                        )
+                                    }}"
                                 class="
-                                            client-action
-                                            view
-                                        "
+                                        client-action
+                                        view
+                                    "
                                 title="{{ $it['detail'] }}">
-
                                 ◉
-
                             </a>
-
 
 
                             {{-- EDIT --}}
 
                             <a
                                 href="{{
-                                            route(
-                                                'admin.clients.edit',
-                                                $client
-                                            )
-                                        }}"
+                                        route(
+                                            'admin.clients.edit',
+                                            $client
+                                        )
+                                    }}"
                                 class="
-                                            client-action
-                                            edit
-                                        "
+                                        client-action
+                                        edit
+                                    "
                                 title="{{ $it['edit'] }}">
-
                                 ✎
-
                             </a>
-
 
 
                             {{-- STATUS --}}
@@ -1009,49 +954,52 @@ $translations['id'];
                             <form
                                 method="POST"
                                 action="{{
-                                            route(
-                                                'admin.clients.toggle-status',
-                                                $client
-                                            )
-                                        }}">
+                                        route(
+                                            'admin.clients.toggle-status',
+                                            $client
+                                        )
+                                    }}">
 
                                 @csrf
                                 @method('PATCH')
 
+
                                 <button
                                     type="submit"
                                     class="
-                                    client-action
-                                     {{
-                                        $client->user
-                                        &&
-                                        $client->user->is_active
-                                        ?
-                                        'deactivate'
-                                        :
-                                        'activate'
-                                    }}
-    "
+                                            client-action
+                                            {{
+                                                $client->user
+                                                &&
+                                                $client->user->is_active
+                                                ?
+                                                'deactivate'
+                                                :
+                                                'activate'
+                                            }}
+                                        "
                                     title="{{
-                                        $client->user
-                                        &&
-                                        $client->user->is_active
-                                        ?
-                                        $it['deactivate']
+                                            $client->user
+                                            &&
+                                            $client->user->is_active
+                                            ?
+                                            $it['deactivate']
                                             :
                                             $it['activate']
                                         }}"
                                     data-confirm="{{ $it['confirm_status'] }}"
                                     onclick="return confirm(this.dataset.confirm);">
+
                                     {{
-                                    $client->user
-                                    &&
-                                    $client->user->is_active
-                                    ?
-                                    '×'
-                                    :
-                                    '✓'
-                                    }}
+                                            $client->user
+                                            &&
+                                            $client->user->is_active
+                                            ?
+                                            '×'
+                                            :
+                                            '✓'
+                                        }}
+
                                 </button>
 
                             </form>
@@ -1074,9 +1022,7 @@ $translations['id'];
                     <td
                         colspan="8"
                         class="client-empty">
-
                         {{ $it['empty'] }}
-
                     </td>
 
                 </tr>
@@ -1087,12 +1033,9 @@ $translations['id'];
 
             </tbody>
 
-
         </table>
 
-
     </div>
-
 
 
     @if($clients->hasPages())

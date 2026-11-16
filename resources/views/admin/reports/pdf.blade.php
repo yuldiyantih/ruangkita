@@ -179,13 +179,20 @@
             @forelse($reportProjects as $project)
 
             @php
-            $statusLabel = match($project->status) {
+
+            $statusLabel = match($project->project_status) {
+
             'ongoing' => 'Berjalan',
+
             'completed' => 'Selesai',
+
             'paused' => 'Ditunda',
+
             default => 'Perencanaan',
             };
+
             @endphp
+
 
             <tr>
 
@@ -200,27 +207,70 @@
 
 
                 <td>
-                    {{ optional(optional($project->client)->user)->name ?? '-' }}
+
+                    {{
+                            optional(
+                                optional(
+                                    $project->client
+                                )->user
+                            )->user_name
+                            ??
+                            '-'
+                        }}
+
                 </td>
 
 
                 <td class="right">
-                    Rp {{ number_format($project->budget_total ?? 0, 0, ',', '.') }}
+
+                    Rp {{
+                            number_format(
+                                $project->budget_total ?? 0,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
                 </td>
 
 
                 <td class="right">
-                    Rp {{ number_format($project->report_expense ?? 0, 0, ',', '.') }}
+
+                    Rp {{
+                            number_format(
+                                $project->report_expense ?? 0,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
                 </td>
 
 
                 <td class="right">
-                    Rp {{ number_format($project->report_remaining ?? 0, 0, ',', '.') }}
+
+                    Rp {{
+                            number_format(
+                                $project->report_remaining ?? 0,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        }}
+
                 </td>
 
 
                 <td class="center">
-                    {{ $project->progress_percentage ?? 0 }}%
+
+                    {{
+                            $project->progress_percentage
+                            ??
+                            0
+                        }}%
+
                 </td>
 
 
@@ -230,7 +280,9 @@
 
             </tr>
 
+
             @empty
+
 
             <tr>
 
@@ -241,6 +293,7 @@
                 </td>
 
             </tr>
+
 
             @endforelse
 

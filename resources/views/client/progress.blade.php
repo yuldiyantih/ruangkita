@@ -1117,7 +1117,7 @@ $completedWorks =
 $project
 ->works
 ->where(
-'status',
+'work_status',
 'completed'
 )
 ->count();
@@ -1127,7 +1127,7 @@ $ongoingWorks =
 $project
 ->works
 ->where(
-'status',
+'work_status',
 'ongoing'
 )
 ->count();
@@ -1270,7 +1270,7 @@ $ongoingWorks
             <div class="project-status">
 
                 @if(
-                $project->status
+                $project->project_status
                 ===
                 'ongoing'
                 )
@@ -1282,7 +1282,7 @@ $ongoingWorks
                             }}
 
                 @elseif(
-                $project->status
+                $project->project_status
                 ===
                 'completed'
                 )
@@ -1294,7 +1294,7 @@ $ongoingWorks
                             }}
 
                 @elseif(
-                $project->status
+                $project->project_status
                 ===
                 'paused'
                 )
@@ -1547,7 +1547,7 @@ $ongoingWorks
                     class="
                                     step-number
                                     {{
-                                        $work->status
+                                        $work->work_status
                                         ===
                                         'completed'
                                         ?
@@ -1603,7 +1603,7 @@ $ongoingWorks
                 @php
 
                 $workStatus =
-                $work->status
+                $work->work_status
                 ??
                 'planned';
 

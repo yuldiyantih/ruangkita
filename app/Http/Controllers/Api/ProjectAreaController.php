@@ -15,9 +15,15 @@ class ProjectAreaController extends Controller
         $query = ProjectArea::with('project');
 
         if ($user->role !== 'admin') {
-            $query->whereHas('project.client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
+            $query->whereHas(
+                'project.client',
+                function ($q) use ($user) {
+                    $q->where(
+                        'user_id',
+                        $user->user_id
+                    );
+                }
+            );
         }
 
         $areas = $query
@@ -42,13 +48,22 @@ class ProjectAreaController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'area_name' => 'required|string|max:150',
-            'description' => 'nullable|string',
-            'photo' => 'nullable|string|max:255',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'area_name' =>
+            'required|string|max:150',
+
+            'description' =>
+            'nullable|string',
+
+            'photo' =>
+            'nullable|string|max:255',
         ]);
 
-        $area = ProjectArea::create($validated);
+        $area = ProjectArea::create(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -57,13 +72,19 @@ class ProjectAreaController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, ProjectArea $projectArea)
-    {
+    public function show(
+        Request $request,
+        ProjectArea $projectArea
+    ) {
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $projectArea->project?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $projectArea
+            ->project
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -71,7 +92,9 @@ class ProjectAreaController extends Controller
             ], 403);
         }
 
-        $projectArea->load('project');
+        $projectArea->load(
+            'project'
+        );
 
         return response()->json([
             'success' => true,
@@ -93,12 +116,19 @@ class ProjectAreaController extends Controller
         }
 
         $validated = $request->validate([
-            'area_name' => 'sometimes|string|max:150',
-            'description' => 'nullable|string',
-            'photo' => 'nullable|string|max:255',
+            'area_name' =>
+            'sometimes|string|max:150',
+
+            'description' =>
+            'nullable|string',
+
+            'photo' =>
+            'nullable|string|max:255',
         ]);
 
-        $projectArea->update($validated);
+        $projectArea->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,

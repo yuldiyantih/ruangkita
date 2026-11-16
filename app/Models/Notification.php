@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
+    protected $primaryKey = 'notification_id';
+
     protected $fillable = [
         'user_id',
         'project_id',
@@ -21,11 +23,19 @@ class Notification extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(
+            User::class,
+            'user_id',
+            'user_id'
+        );
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 }

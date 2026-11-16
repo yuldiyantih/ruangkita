@@ -20,7 +20,7 @@ class RuangKitaSeeder extends Seeder
         $admin = User::updateOrCreate(
             ['email' => 'admin@ruangkita.test'],
             [
-                'name' => 'Admin RuangKita',
+                'user_name' => 'Admin RuangKita',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'is_active' => true,
@@ -33,7 +33,7 @@ class RuangKitaSeeder extends Seeder
         $clientUser = User::updateOrCreate(
             ['email' => 'andi@ruangkita.test'],
             [
-                'name' => 'Bapak Andi',
+                'user_name' => 'Bapak Andi',
                 'password' => Hash::make('password'),
                 'role' => 'client',
                 'is_active' => true,
@@ -41,7 +41,7 @@ class RuangKitaSeeder extends Seeder
         );
 
         $client = Client::updateOrCreate(
-            ['user_id' => $clientUser->id],
+            ['user_id' => $clientUser->user_id],
             [
                 'address' => 'Jakarta',
                 'notes' => 'Client contoh RuangKita',
@@ -53,14 +53,14 @@ class RuangKitaSeeder extends Seeder
         // =========================
         $project = Project::updateOrCreate(
             [
-                'client_id' => $client->id,
+                'client_id' => $client->client_id,
                 'project_name' => 'Renovasi Rumah Bapak Andi',
             ],
             [
-                'admin_id' => $admin->id,
+                'admin_id' => $admin->user_id,
                 'description' => 'Proyek renovasi rumah contoh untuk sistem RuangKita.',
                 'location' => 'Jakarta',
-                'status' => 'planning',
+                'project_status' => 'planning',
                 'progress_percentage' => 0,
                 'budget_total' => 0,
             ]
@@ -87,7 +87,7 @@ class RuangKitaSeeder extends Seeder
         foreach ($areas as $area) {
             ProjectArea::updateOrCreate(
                 [
-                    'project_id' => $project->id,
+                    'project_id' => $project->project_id,
                     'area_name' => $area['area_name'],
                 ],
                 [
@@ -101,20 +101,20 @@ class RuangKitaSeeder extends Seeder
         // =========================
         $arAssets = [
             [
-                'name' => 'Beige',
+                'ar_asset_name' => 'Beige',
                 'asset_type' => 'color',
                 'category' => 'Wall Color',
                 'color_code' => '#D8C3A5',
                 'is_active' => true,
             ],
             [
-                'name' => 'Kayu Oak',
+                'ar_asset_name' => 'Kayu Oak',
                 'asset_type' => 'material',
                 'category' => 'Wood',
                 'is_active' => true,
             ],
             [
-                'name' => 'Sofa Modern',
+                'ar_asset_name' => 'Sofa Modern',
                 'asset_type' => 'furniture',
                 'category' => 'Living Room',
                 'is_active' => true,
@@ -124,7 +124,7 @@ class RuangKitaSeeder extends Seeder
         foreach ($arAssets as $asset) {
             ArAsset::updateOrCreate(
                 [
-                    'name' => $asset['name'],
+                    'ar_asset_name' => $asset['ar_asset_name'],
                 ],
                 $asset
             );

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Work extends Model
 {
+    protected $primaryKey = 'work_id';
+
     protected $fillable = [
         'project_id',
         'work_name',
@@ -15,7 +17,7 @@ class Work extends Model
         'unit_price',
         'duration_days',
         'total_cost',
-        'status',
+        'work_status',
         'is_visible_to_client',
     ];
 
@@ -28,11 +30,19 @@ class Work extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(
+            Schedule::class,
+            'work_id',
+            'work_id'
+        );
     }
 }

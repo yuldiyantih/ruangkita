@@ -88,6 +88,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
         action="{{ route('admin.ar-assets.store') }}"
         method="POST"
         enctype="multipart/form-data">
+
         @csrf
 
         <div style="
@@ -97,6 +98,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
             padding:24px;
         ">
 
+            <!-- Nama Asset -->
             <div style="margin-bottom:18px;">
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['name'] }}
@@ -115,6 +117,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     ">
             </div>
 
+            <!-- Jenis Asset -->
             <div style="margin-bottom:18px;">
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['type'] }}
@@ -130,6 +133,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         border:1px solid #d1d5db;
                         border-radius:9px;
                     ">
+
                     <option value="">
                         {{ $t['choose_type'] }}
                     </option>
@@ -145,12 +149,15 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     <option value="furniture" {{ old('asset_type') === 'furniture' ? 'selected' : '' }}>
                         {{ $t['furniture'] }}
                     </option>
+
                 </select>
             </div>
 
+            <!-- Kategori -->
             <div style="margin-bottom:18px;">
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['category'] }}
+
                     <span style="color:#9ca3af; font-weight:400;">
                         ({{ $t['optional'] }})
                     </span>
@@ -169,14 +176,17 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     ">
             </div>
 
+            <!-- Kode Warna -->
             <div
                 id="color_field"
                 style="margin-bottom:18px; display:none;">
+
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['color_code'] }}
                 </label>
 
                 <div style="display:flex; gap:10px;">
+
                     <input
                         type="color"
                         id="color_picker"
@@ -201,12 +211,15 @@ $t = $translations[$pageLang] ?? $translations['id'];
                             border:1px solid #d1d5db;
                             border-radius:9px;
                         ">
+
                 </div>
             </div>
 
+            <!-- Texture -->
             <div
                 id="texture_field"
                 style="margin-bottom:18px;">
+
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['texture'] }}
                 </label>
@@ -221,9 +234,11 @@ $t = $translations[$pageLang] ?? $translations['id'];
                 </div>
             </div>
 
+            <!-- Model 3D -->
             <div
                 id="model_field"
                 style="margin-bottom:18px;">
+
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['model_3d'] }}
                 </label>
@@ -238,6 +253,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                 </div>
             </div>
 
+            <!-- Thumbnail -->
             <div style="margin-bottom:18px;">
                 <label style="display:block; margin-bottom:7px; font-weight:600;">
                     {{ $t['thumbnail'] }}
@@ -253,6 +269,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                 </div>
             </div>
 
+            <!-- Status Asset -->
             <div style="margin-bottom:24px;">
                 <label style="
                     display:flex;
@@ -261,6 +278,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     font-weight:600;
                     cursor:pointer;
                 ">
+
                     <input
                         type="checkbox"
                         name="is_active"
@@ -268,9 +286,11 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         {{ old('is_active', true) ? 'checked' : '' }}>
 
                     {{ $t['active'] }}
+
                 </label>
             </div>
 
+            <!-- Tombol -->
             <div style="
                 display:flex;
                 gap:10px;
@@ -316,6 +336,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
 @endsection
 
 @push('scripts')
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -328,6 +349,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
         const colorCode = document.getElementById('color_code');
 
         function updateFields() {
+
             const value = assetType.value;
 
             colorField.style.display =
@@ -346,8 +368,15 @@ $t = $translations[$pageLang] ?? $translations['id'];
             colorCode.value = colorPicker.value;
         });
 
+        colorCode.addEventListener('input', function() {
+            if (/^#[0-9A-Fa-f]{6}$/.test(colorCode.value)) {
+                colorPicker.value = colorCode.value;
+            }
+        });
+
         updateFields();
 
     });
 </script>
+
 @endpush

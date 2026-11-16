@@ -11,7 +11,10 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $notifications = Notification::with('project')
-            ->where('user_id', $request->user()->id)
+            ->where(
+                'user_id',
+                $request->user()->user_id
+            )
             ->latest()
             ->get();
 
@@ -33,15 +36,29 @@ class NotificationController extends Controller
         }
 
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'project_id' => 'nullable|exists:projects,id',
-            'title' => 'required|string|max:150',
-            'message' => 'required|string',
-            'type' => 'required|in:project,schedule,progress,expense,documentation,message,ar,system',
-            'is_read' => 'boolean',
+            'user_id' =>
+            'required|exists:users,user_id',
+
+            'project_id' =>
+            'nullable|exists:projects,project_id',
+
+            'title' =>
+            'required|string|max:150',
+
+            'message' =>
+            'required|string',
+
+            'type' =>
+            'required|in:project,schedule,progress,expense,documentation,message,ar,system',
+
+            'is_read' =>
+            'boolean',
         ]);
 
-        $notification = Notification::create($validated);
+        $notification =
+            Notification::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -54,14 +71,19 @@ class NotificationController extends Controller
         Request $request,
         Notification $notification
     ) {
-        if ($notification->user_id !== $request->user()->id) {
+        if (
+            $notification->user_id !==
+            $request->user()->user_id
+        ) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kamu tidak memiliki akses ke notifikasi ini.',
             ], 403);
         }
 
-        $notification->load('project');
+        $notification->load(
+            'project'
+        );
 
         return response()->json([
             'success' => true,
@@ -73,7 +95,10 @@ class NotificationController extends Controller
         Request $request,
         Notification $notification
     ) {
-        if ($notification->user_id !== $request->user()->id) {
+        if (
+            $notification->user_id !==
+            $request->user()->user_id
+        ) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kamu tidak memiliki akses ke notifikasi ini.',
@@ -81,10 +106,13 @@ class NotificationController extends Controller
         }
 
         $validated = $request->validate([
-            'is_read' => 'required|boolean',
+            'is_read' =>
+            'required|boolean',
         ]);
 
-        $notification->update($validated);
+        $notification->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -97,7 +125,10 @@ class NotificationController extends Controller
         Request $request,
         Notification $notification
     ) {
-        if ($notification->user_id !== $request->user()->id) {
+        if (
+            $notification->user_id !==
+            $request->user()->user_id
+        ) {
             return response()->json([
                 'success' => false,
                 'message' => 'Kamu tidak memiliki akses ke notifikasi ini.',

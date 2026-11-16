@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
 {
+    protected $primaryKey = 'schedule_id';
+
     protected $fillable = [
         'project_id',
         'work_id',
@@ -13,7 +15,7 @@ class Schedule extends Model
         'description',
         'start_date',
         'end_date',
-        'status',
+        'schedule_status',
     ];
 
     protected $casts = [
@@ -23,11 +25,19 @@ class Schedule extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
     public function work()
     {
-        return $this->belongsTo(Work::class);
+        return $this->belongsTo(
+            Work::class,
+            'work_id',
+            'work_id'
+        );
     }
 }

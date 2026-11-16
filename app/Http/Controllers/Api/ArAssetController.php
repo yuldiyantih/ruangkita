@@ -46,7 +46,37 @@ class ArAssetController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $asset = ArAsset::create($validated);
+        $asset = ArAsset::create([
+            'ar_asset_name' =>
+            $validated['name'],
+
+            'asset_type' =>
+            $validated['asset_type'],
+
+            'category' =>
+            $validated['category']
+                ?? null,
+
+            'color_code' =>
+            $validated['color_code']
+                ?? null,
+
+            'texture_path' =>
+            $validated['texture_path']
+                ?? null,
+
+            'model_3d_path' =>
+            $validated['model_3d_path']
+                ?? null,
+
+            'thumbnail_path' =>
+            $validated['thumbnail_path']
+                ?? null,
+
+            'is_active' =>
+            $validated['is_active']
+                ?? true,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -60,7 +90,8 @@ class ArAssetController extends Controller
         ArAsset $arAsset
     ) {
         if (
-            $request->user()->role !== 'admin' &&
+            $request->user()->role !== 'admin'
+            &&
             !$arAsset->is_active
         ) {
             return response()->json([
@@ -97,7 +128,49 @@ class ArAssetController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $arAsset->update($validated);
+        $data = [];
+
+        if (array_key_exists('name', $validated)) {
+            $data['ar_asset_name'] =
+                $validated['name'];
+        }
+
+        if (array_key_exists('asset_type', $validated)) {
+            $data['asset_type'] =
+                $validated['asset_type'];
+        }
+
+        if (array_key_exists('category', $validated)) {
+            $data['category'] =
+                $validated['category'];
+        }
+
+        if (array_key_exists('color_code', $validated)) {
+            $data['color_code'] =
+                $validated['color_code'];
+        }
+
+        if (array_key_exists('texture_path', $validated)) {
+            $data['texture_path'] =
+                $validated['texture_path'];
+        }
+
+        if (array_key_exists('model_3d_path', $validated)) {
+            $data['model_3d_path'] =
+                $validated['model_3d_path'];
+        }
+
+        if (array_key_exists('thumbnail_path', $validated)) {
+            $data['thumbnail_path'] =
+                $validated['thumbnail_path'];
+        }
+
+        if (array_key_exists('is_active', $validated)) {
+            $data['is_active'] =
+                $validated['is_active'];
+        }
+
+        $arAsset->update($data);
 
         return response()->json([
             'success' => true,

@@ -897,7 +897,7 @@ $st['page_title'] . ' - RuangKita'
                             type="text"
                             name="name"
                             class="settings-input"
-                            value="{{ old('name', $user->name) }}"
+                            value="{{ old('name', $user->user_name) }}"
                             required>
 
 
@@ -1380,14 +1380,14 @@ $st['page_title'] . ' - RuangKita'
 
                 <img
                     src="{{ asset('storage/' . $user->profile_photo) }}"
-                    alt="{{ $user->name }}">
+                    alt="{{ $user->user_name }}">
 
                 @else
 
                 {{
                         strtoupper(
                             mb_substr(
-                                $user->name ?? 'A',
+                                $user->user_name ?? 'A',
                                 0,
                                 1
                             )
@@ -1405,7 +1405,7 @@ $st['page_title'] . ' - RuangKita'
 
             <div class="profile-name">
 
-                {{ $user->name }}
+                {{ $user->user_name }}
 
             </div>
 

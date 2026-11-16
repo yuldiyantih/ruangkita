@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ArDesign;
 use App\Models\ArDesignItem;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,15 @@ class ArDesignItemController extends Controller
         ]);
 
         if ($user->role !== 'admin') {
-            $query->whereHas('design.client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
+            $query->whereHas(
+                'design.client',
+                function ($q) use ($user) {
+                    $q->where(
+                        'user_id',
+                        $user->user_id
+                    );
+                }
+            );
         }
 
         $items = $query
@@ -38,26 +45,48 @@ class ArDesignItemController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'ar_design_id' => 'required|exists:ar_designs,id',
-            'ar_asset_id' => 'required|exists:ar_assets,id',
-            'position_x' => 'required|numeric',
-            'position_y' => 'required|numeric',
-            'position_z' => 'required|numeric',
-            'rotation_x' => 'required|numeric',
-            'rotation_y' => 'required|numeric',
-            'rotation_z' => 'required|numeric',
-            'scale_x' => 'required|numeric',
-            'scale_y' => 'required|numeric',
-            'scale_z' => 'required|numeric',
+            'ar_design_id' =>
+            'required|exists:ar_designs,ar_design_id',
+
+            'ar_asset_id' =>
+            'required|exists:ar_assets,ar_asset_id',
+
+            'position_x' =>
+            'required|numeric',
+
+            'position_y' =>
+            'required|numeric',
+
+            'position_z' =>
+            'required|numeric',
+
+            'rotation_x' =>
+            'required|numeric',
+
+            'rotation_y' =>
+            'required|numeric',
+
+            'rotation_z' =>
+            'required|numeric',
+
+            'scale_x' =>
+            'required|numeric',
+
+            'scale_y' =>
+            'required|numeric',
+
+            'scale_z' =>
+            'required|numeric',
         ]);
 
-        $design = \App\Models\ArDesign::findOrFail(
+        $design = ArDesign::findOrFail(
             $validated['ar_design_id']
         );
 
         if (
-            $user->role !== 'admin' &&
-            $design->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $design->client?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -65,7 +94,9 @@ class ArDesignItemController extends Controller
             ], 403);
         }
 
-        $item = ArDesignItem::create($validated);
+        $item = ArDesignItem::create(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -86,8 +117,12 @@ class ArDesignItemController extends Controller
         ]);
 
         if (
-            $user->role !== 'admin' &&
-            $arDesignItem->design?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $arDesignItem
+            ->design
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -107,11 +142,17 @@ class ArDesignItemController extends Controller
     ) {
         $user = $request->user();
 
-        $arDesignItem->load('design.client');
+        $arDesignItem->load(
+            'design.client'
+        );
 
         if (
-            $user->role !== 'admin' &&
-            $arDesignItem->design?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $arDesignItem
+            ->design
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -120,19 +161,40 @@ class ArDesignItemController extends Controller
         }
 
         $validated = $request->validate([
-            'ar_asset_id' => 'sometimes|exists:ar_assets,id',
-            'position_x' => 'sometimes|numeric',
-            'position_y' => 'sometimes|numeric',
-            'position_z' => 'sometimes|numeric',
-            'rotation_x' => 'sometimes|numeric',
-            'rotation_y' => 'sometimes|numeric',
-            'rotation_z' => 'sometimes|numeric',
-            'scale_x' => 'sometimes|numeric',
-            'scale_y' => 'sometimes|numeric',
-            'scale_z' => 'sometimes|numeric',
+            'ar_asset_id' =>
+            'sometimes|exists:ar_assets,ar_asset_id',
+
+            'position_x' =>
+            'sometimes|numeric',
+
+            'position_y' =>
+            'sometimes|numeric',
+
+            'position_z' =>
+            'sometimes|numeric',
+
+            'rotation_x' =>
+            'sometimes|numeric',
+
+            'rotation_y' =>
+            'sometimes|numeric',
+
+            'rotation_z' =>
+            'sometimes|numeric',
+
+            'scale_x' =>
+            'sometimes|numeric',
+
+            'scale_y' =>
+            'sometimes|numeric',
+
+            'scale_z' =>
+            'sometimes|numeric',
         ]);
 
-        $arDesignItem->update($validated);
+        $arDesignItem->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -147,11 +209,17 @@ class ArDesignItemController extends Controller
     ) {
         $user = $request->user();
 
-        $arDesignItem->load('design.client');
+        $arDesignItem->load(
+            'design.client'
+        );
 
         if (
-            $user->role !== 'admin' &&
-            $arDesignItem->design?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $arDesignItem
+            ->design
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,

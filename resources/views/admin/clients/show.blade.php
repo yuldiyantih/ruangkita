@@ -99,7 +99,6 @@ $translations = [
 
 'empty_projects' =>
 'Client ini belum memiliki proyek.',
-
 ],
 
 
@@ -191,7 +190,6 @@ $translations = [
 
 'empty_projects' =>
 'This client does not have any projects yet.',
-
 ],
 
 ];
@@ -205,12 +203,10 @@ $translations['id'];
 @endphp
 
 
-
 @section(
 'title',
 $dt['page_title'] . ' - RuangKita'
 )
-
 
 
 @push('styles')
@@ -221,6 +217,7 @@ $dt['page_title'] . ' - RuangKita'
     ===================================================== */
 
     .client-detail-header {
+
         margin-bottom: 22px;
 
         display: flex;
@@ -233,12 +230,12 @@ $dt['page_title'] . ' - RuangKita'
     }
 
 
-
     /* =====================================================
        PROFILE
     ===================================================== */
 
     .client-profile-card {
+
         margin-bottom: 18px;
 
         padding: 22px;
@@ -255,7 +252,9 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .client-profile-avatar {
+
         width: 90px;
+
         height: 90px;
 
         overflow: hidden;
@@ -281,7 +280,9 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .client-profile-avatar img {
+
         width: 100%;
+
         height: 100%;
 
         display: block;
@@ -294,6 +295,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .client-profile-name {
+
         margin-bottom: 7px;
 
         color:
@@ -306,6 +308,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .client-profile-meta {
+
         margin-bottom: 5px;
 
         color:
@@ -315,30 +318,31 @@ $dt['page_title'] . ' - RuangKita'
     }
 
 
-
     /* =====================================================
        INFO SUMMARY
     ===================================================== */
 
     .client-info-grid {
+
         margin-bottom: 18px;
 
         display: grid;
 
         grid-template-columns:
-            repeat(3,
-                minmax(0, 1fr));
+            repeat(3, minmax(0, 1fr));
 
         gap: 14px;
     }
 
 
     .client-info-card {
+
         padding: 19px;
     }
 
 
     .info-label {
+
         margin-bottom: 7px;
 
         color:
@@ -349,6 +353,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .info-value {
+
         color:
             var(--text-heading);
 
@@ -358,12 +363,12 @@ $dt['page_title'] . ' - RuangKita'
     }
 
 
-
     /* =====================================================
        DETAIL PANEL
     ===================================================== */
 
     .detail-panel {
+
         margin-bottom: 18px;
 
         padding: 20px;
@@ -371,6 +376,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .detail-panel-title {
+
         margin-bottom: 16px;
 
         color:
@@ -383,6 +389,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .detail-row {
+
         padding:
             12px 0;
 
@@ -401,17 +408,20 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .detail-row:last-child {
+
         border-bottom: none;
     }
 
 
     .detail-label {
+
         color:
             var(--text-muted);
     }
 
 
     .detail-value {
+
         color:
             var(--text-main);
 
@@ -419,12 +429,12 @@ $dt['page_title'] . ' - RuangKita'
     }
 
 
-
     /* =====================================================
        PROJECT
     ===================================================== */
 
     .project-name {
+
         color:
             var(--text-heading);
 
@@ -433,17 +443,18 @@ $dt['page_title'] . ' - RuangKita'
 
 
     .empty-project {
+
         padding:
             32px 15px;
 
         color:
             var(--text-muted);
 
-        text-align: center;
+        text-align:
+            center;
 
         font-size: 14px;
     }
-
 
 
     /* =====================================================
@@ -453,28 +464,31 @@ $dt['page_title'] . ' - RuangKita'
     @media(max-width: 950px) {
 
         .client-info-grid {
+
             grid-template-columns:
                 1fr 1fr;
         }
 
 
         .client-profile-card {
+
             grid-template-columns:
                 90px 1fr;
         }
 
 
         .client-profile-status {
+
             grid-column:
                 1 / -1;
         }
-
     }
 
 
     @media(max-width: 650px) {
 
         .client-detail-header {
+
             align-items:
                 flex-start;
 
@@ -484,6 +498,7 @@ $dt['page_title'] . ' - RuangKita'
 
 
         .client-profile-card {
+
             grid-template-columns:
                 1fr;
 
@@ -493,35 +508,37 @@ $dt['page_title'] . ' - RuangKita'
 
 
         .client-profile-avatar {
+
             margin:
                 0 auto;
         }
 
 
         .client-profile-status {
+
             grid-column:
                 auto;
         }
 
 
         .client-info-grid {
+
             grid-template-columns:
                 1fr;
         }
 
 
         .detail-row {
+
             grid-template-columns:
                 1fr;
 
             gap: 5px;
         }
-
     }
 </style>
 
 @endpush
-
 
 
 @section('content')
@@ -529,7 +546,7 @@ $dt['page_title'] . ' - RuangKita'
 
 {{-- =====================================================
      BREADCRUMB
-===================================================== --}}
+====================================================== --}}
 
 <div class="admin-breadcrumb">
 
@@ -558,10 +575,9 @@ $dt['page_title'] . ' - RuangKita'
 </div>
 
 
-
 {{-- =====================================================
      HEADER
-===================================================== --}}
+====================================================== --}}
 
 <div class="client-detail-header">
 
@@ -586,7 +602,6 @@ $dt['page_title'] . ' - RuangKita'
     </div>
 
 
-
     <a
         href="{{ route('admin.clients.edit', $client) }}"
         class="
@@ -602,10 +617,9 @@ $dt['page_title'] . ' - RuangKita'
 </div>
 
 
-
 {{-- =====================================================
      PROFILE
-===================================================== --}}
+====================================================== --}}
 
 <div class="admin-card client-profile-card">
 
@@ -623,7 +637,7 @@ $dt['page_title'] . ' - RuangKita'
                     )
                 }}"
             alt="{{
-                    $client->user->name
+                    $client->user->user_name
                     ??
                     'Client'
                 }}">
@@ -633,7 +647,7 @@ $dt['page_title'] . ' - RuangKita'
         {{
                 strtoupper(
                     substr(
-                        $client->user->name
+                        $client->user->user_name
                         ??
                         'C',
                         0,
@@ -648,14 +662,13 @@ $dt['page_title'] . ' - RuangKita'
     </div>
 
 
-
     <div>
 
 
         <div class="client-profile-name">
 
             {{
-                $client->user->name
+                $client->user->user_name
                 ??
                 '-'
             }}
@@ -688,7 +701,6 @@ $dt['page_title'] . ' - RuangKita'
 
 
     </div>
-
 
 
     <div class="client-profile-status">
@@ -727,10 +739,9 @@ $dt['page_title'] . ' - RuangKita'
 </div>
 
 
-
 {{-- =====================================================
      SUMMARY
-===================================================== --}}
+====================================================== --}}
 
 <div class="client-info-grid">
 
@@ -759,7 +770,6 @@ $dt['page_title'] . ' - RuangKita'
     </div>
 
 
-
     <div class="admin-card client-info-card">
 
 
@@ -776,7 +786,7 @@ $dt['page_title'] . ' - RuangKita'
                 $client
                     ->projects
                     ->where(
-                        'status',
+                        'project_status',
                         'ongoing'
                     )
                     ->count()
@@ -786,7 +796,6 @@ $dt['page_title'] . ' - RuangKita'
 
 
     </div>
-
 
 
     <div class="admin-card client-info-card">
@@ -805,7 +814,7 @@ $dt['page_title'] . ' - RuangKita'
                 $client
                     ->projects
                     ->where(
-                        'status',
+                        'project_status',
                         'completed'
                     )
                     ->count()
@@ -820,10 +829,9 @@ $dt['page_title'] . ' - RuangKita'
 </div>
 
 
-
 {{-- =====================================================
      CLIENT INFORMATION
-===================================================== --}}
+====================================================== --}}
 
 <div class="admin-card detail-panel">
 
@@ -833,7 +841,6 @@ $dt['page_title'] . ' - RuangKita'
         {{ $dt['client_information'] }}
 
     </div>
-
 
 
     <div class="detail-row">
@@ -849,7 +856,7 @@ $dt['page_title'] . ' - RuangKita'
         <div class="detail-value">
 
             {{
-                $client->user->name
+                $client->user->user_name
                 ??
                 '-'
             }}
@@ -858,7 +865,6 @@ $dt['page_title'] . ' - RuangKita'
 
 
     </div>
-
 
 
     <div class="detail-row">
@@ -885,7 +891,6 @@ $dt['page_title'] . ' - RuangKita'
     </div>
 
 
-
     <div class="detail-row">
 
 
@@ -910,7 +915,6 @@ $dt['page_title'] . ' - RuangKita'
     </div>
 
 
-
     <div class="detail-row">
 
 
@@ -933,7 +937,6 @@ $dt['page_title'] . ' - RuangKita'
 
 
     </div>
-
 
 
     <div class="detail-row">
@@ -963,10 +966,9 @@ $dt['page_title'] . ' - RuangKita'
 </div>
 
 
-
 {{-- =====================================================
      PROJECT LIST
-===================================================== --}}
+====================================================== --}}
 
 <div class="admin-card detail-panel">
 
@@ -976,7 +978,6 @@ $dt['page_title'] . ' - RuangKita'
         {{ $dt['client_projects'] }}
 
     </div>
-
 
 
     @if($client->projects->count() > 0)
@@ -1026,7 +1027,7 @@ $dt['page_title'] . ' - RuangKita'
                 @php
 
                 $projectStatus =
-                $project->status
+                $project->project_status
                 ??
                 'planning';
 
@@ -1049,7 +1050,6 @@ $dt['page_title'] . ' - RuangKita'
                 default
                 =>
                 $dt['planning'],
-
                 };
 
 
@@ -1071,7 +1071,6 @@ $dt['page_title'] . ' - RuangKita'
                 default
                 =>
                 'admin-badge-warning',
-
                 };
 
                 @endphp

@@ -78,7 +78,7 @@ $projectDetailTranslations['id'];
 
 
 $projectStatus =
-$project->status
+$project->project_status
 ??
 'planning';
 
@@ -657,7 +657,7 @@ $pdt['title'] . ' - RuangKita'
                             optional(
                                 $project->client
                             )->user
-                        )->name
+                        )->user_name
                         ??
                         '-'
                     }}
@@ -895,7 +895,7 @@ $pdt['title'] . ' - RuangKita'
                         [
                             'project'
                             =>
-                            $project->id
+                            $project->project_id
                         ]
                     )
                 }}"
@@ -916,7 +916,7 @@ $pdt['title'] . ' - RuangKita'
                         [
                             'project'
                             =>
-                            $project->id
+                            $project->project_id
                         ]
                     )
                 }}"

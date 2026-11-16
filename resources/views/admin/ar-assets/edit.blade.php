@@ -5,64 +5,114 @@
 @section('content')
 
 @php
+
 $pageLang = auth()->user()->language ?? 'id';
 
 $translations = [
+
 'id' => [
+
 'title' => 'Edit AR Asset',
+
 'subtitle' => 'Perbarui data AR Asset yang sudah tersedia.',
+
 'name' => 'Nama Asset',
+
 'type' => 'Jenis Asset',
+
 'category' => 'Kategori',
+
 'color_code' => 'Kode Warna',
+
 'texture' => 'Texture',
+
 'model_3d' => 'Model 3D',
+
 'thumbnail' => 'Thumbnail',
+
 'active' => 'Aktifkan Asset',
+
 'update' => 'Simpan Perubahan',
+
 'cancel' => 'Batal',
+
 'choose_type' => 'Pilih jenis asset',
+
 'color' => 'Warna',
+
 'material' => 'Material',
+
 'furniture' => 'Furniture',
+
 'optional' => 'Opsional',
+
 'current_file' => 'File saat ini',
+
 'replace_file' => 'Upload file baru jika ingin mengganti.',
+
 'model_help' => 'Format model: GLB atau GLTF. Maksimal 20 MB.',
+
 'image_help' => 'Format gambar: JPG, JPEG, PNG, atau WEBP. Maksimal 5 MB.',
+
 ],
 
 'en' => [
+
 'title' => 'Edit AR Asset',
+
 'subtitle' => 'Update the selected AR Asset data.',
+
 'name' => 'Asset Name',
+
 'type' => 'Asset Type',
+
 'category' => 'Category',
+
 'color_code' => 'Color Code',
+
 'texture' => 'Texture',
+
 'model_3d' => '3D Model',
+
 'thumbnail' => 'Thumbnail',
+
 'active' => 'Activate Asset',
+
 'update' => 'Save Changes',
+
 'cancel' => 'Cancel',
+
 'choose_type' => 'Select asset type',
+
 'color' => 'Color',
+
 'material' => 'Material',
+
 'furniture' => 'Furniture',
+
 'optional' => 'Optional',
+
 'current_file' => 'Current file',
+
 'replace_file' => 'Upload a new file only if you want to replace it.',
+
 'model_help' => 'Model format: GLB or GLTF. Maximum 20 MB.',
+
 'image_help' => 'Image format: JPG, JPEG, PNG, or WEBP. Maximum 5 MB.',
+
 ],
+
 ];
 
 $t = $translations[$pageLang] ?? $translations['id'];
+
 @endphp
+
 
 <div style="padding:24px; max-width:900px; margin:auto;">
 
     <div style="margin-bottom:24px;">
+
         <h1 style="margin:0; font-size:28px; font-weight:700;">
             {{ $t['title'] }}
         </h1>
@@ -70,9 +120,12 @@ $t = $translations[$pageLang] ?? $translations['id'];
         <p style="margin:6px 0 0; color:#6b7280;">
             {{ $t['subtitle'] }}
         </p>
+
     </div>
 
+
     @if($errors->any())
+
     <div style="
             margin-bottom:20px;
             padding:16px;
@@ -80,20 +133,30 @@ $t = $translations[$pageLang] ?? $translations['id'];
             background:#fee2e2;
             color:#991b1b;
         ">
+
         <ul style="margin:0; padding-left:20px;">
+
             @foreach($errors->all() as $error)
+
             <li>{{ $error }}</li>
+
             @endforeach
+
         </ul>
+
     </div>
+
     @endif
+
 
     <form
         action="{{ route('admin.ar-assets.update', $arAsset) }}"
         method="POST"
         enctype="multipart/form-data">
+
         @csrf
         @method('PUT')
+
 
         <div style="
             background:white;
@@ -102,15 +165,22 @@ $t = $translations[$pageLang] ?? $translations['id'];
             padding:24px;
         ">
 
+
+            {{-- NAMA ASSET --}}
             <div style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['name'] }}
                 </label>
 
                 <input
                     type="text"
                     name="name"
-                    value="{{ old('name', $arAsset->name) }}"
+                    value="{{ old('name', $arAsset->ar_asset_name) }}"
                     required
                     style="
                         width:100%;
@@ -118,10 +188,18 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         border:1px solid #d1d5db;
                         border-radius:9px;
                     ">
+
             </div>
 
+
+            {{-- JENIS ASSET --}}
             <div style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['type'] }}
                 </label>
 
@@ -135,6 +213,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         border:1px solid #d1d5db;
                         border-radius:9px;
                     ">
+
                     <option value="">
                         {{ $t['choose_type'] }}
                     </option>
@@ -156,15 +235,30 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         {{ old('asset_type', $arAsset->asset_type) === 'furniture' ? 'selected' : '' }}>
                         {{ $t['furniture'] }}
                     </option>
+
                 </select>
+
             </div>
 
+
+            {{-- CATEGORY --}}
             <div style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
+
                     {{ $t['category'] }}
-                    <span style="color:#9ca3af; font-weight:400;">
+
+                    <span style="
+                        color:#9ca3af;
+                        font-weight:400;
+                    ">
                         ({{ $t['optional'] }})
                     </span>
+
                 </label>
 
                 <input
@@ -177,16 +271,28 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         border:1px solid #d1d5db;
                         border-radius:9px;
                     ">
+
             </div>
 
+
+            {{-- COLOR --}}
             <div
                 id="color_field"
                 style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['color_code'] }}
                 </label>
 
-                <div style="display:flex; gap:10px;">
+                <div style="
+                    display:flex;
+                    gap:10px;
+                ">
+
                     <input
                         type="color"
                         id="color_picker"
@@ -211,77 +317,133 @@ $t = $translations[$pageLang] ?? $translations['id'];
                             border:1px solid #d1d5db;
                             border-radius:9px;
                         ">
+
                 </div>
+
             </div>
 
+
+            {{-- TEXTURE --}}
             <div
                 id="texture_field"
                 style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['texture'] }}
                 </label>
 
+
                 @if($arAsset->texture_path)
-                <div style="margin-bottom:8px; font-size:13px;">
+
+                <div style="
+                        margin-bottom:8px;
+                        font-size:13px;
+                    ">
+
                     {{ $t['current_file'] }}:
+
                     <a
                         href="{{ asset('storage/' . $arAsset->texture_path) }}"
                         target="_blank">
                         {{ basename($arAsset->texture_path) }}
                     </a>
+
                 </div>
+
                 @endif
+
 
                 <input
                     type="file"
                     name="texture"
                     accept=".jpg,.jpeg,.png,.webp">
 
-                <div style="margin-top:6px; color:#6b7280; font-size:12px;">
+                <div style="
+                    margin-top:6px;
+                    color:#6b7280;
+                    font-size:12px;
+                ">
                     {{ $t['replace_file'] }}
                     {{ $t['image_help'] }}
                 </div>
+
             </div>
 
+
+            {{-- MODEL 3D --}}
             <div
                 id="model_field"
                 style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['model_3d'] }}
                 </label>
 
+
                 @if($arAsset->model_3d_path)
-                <div style="margin-bottom:8px; font-size:13px;">
+
+                <div style="
+                        margin-bottom:8px;
+                        font-size:13px;
+                    ">
+
                     {{ $t['current_file'] }}:
+
                     <a
                         href="{{ asset('storage/' . $arAsset->model_3d_path) }}"
                         target="_blank">
                         {{ basename($arAsset->model_3d_path) }}
                     </a>
+
                 </div>
+
                 @endif
+
 
                 <input
                     type="file"
                     name="model_3d"
                     accept=".glb,.gltf">
 
-                <div style="margin-top:6px; color:#6b7280; font-size:12px;">
+                <div style="
+                    margin-top:6px;
+                    color:#6b7280;
+                    font-size:12px;
+                ">
                     {{ $t['replace_file'] }}
                     {{ $t['model_help'] }}
                 </div>
+
             </div>
 
+
+            {{-- THUMBNAIL --}}
             <div style="margin-bottom:18px;">
-                <label style="display:block; margin-bottom:7px; font-weight:600;">
+
+                <label style="
+                    display:block;
+                    margin-bottom:7px;
+                    font-weight:600;
+                ">
                     {{ $t['thumbnail'] }}
                 </label>
 
+
                 @if($arAsset->thumbnail_path)
+
                 <div style="margin-bottom:10px;">
+
                     <img
                         src="{{ asset('storage/' . $arAsset->thumbnail_path) }}"
-                        alt="{{ $arAsset->name }}"
+                        alt="{{ $arAsset->ar_asset_name }}"
                         style="
                                 width:120px;
                                 height:120px;
@@ -289,21 +451,32 @@ $t = $translations[$pageLang] ?? $translations['id'];
                                 border-radius:10px;
                                 border:1px solid #e5e7eb;
                             ">
+
                 </div>
+
                 @endif
+
 
                 <input
                     type="file"
                     name="thumbnail"
                     accept=".jpg,.jpeg,.png,.webp">
 
-                <div style="margin-top:6px; color:#6b7280; font-size:12px;">
+                <div style="
+                    margin-top:6px;
+                    color:#6b7280;
+                    font-size:12px;
+                ">
                     {{ $t['replace_file'] }}
                     {{ $t['image_help'] }}
                 </div>
+
             </div>
 
+
+            {{-- ACTIVE --}}
             <div style="margin-bottom:24px;">
+
                 <label style="
                     display:flex;
                     align-items:center;
@@ -311,6 +484,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     font-weight:600;
                     cursor:pointer;
                 ">
+
                     <input
                         type="checkbox"
                         name="is_active"
@@ -318,9 +492,13 @@ $t = $translations[$pageLang] ?? $translations['id'];
                         {{ old('is_active', $arAsset->is_active) ? 'checked' : '' }}>
 
                     {{ $t['active'] }}
+
                 </label>
+
             </div>
 
+
+            {{-- BUTTON --}}
             <div style="
                 display:flex;
                 gap:10px;
@@ -340,6 +518,7 @@ $t = $translations[$pageLang] ?? $translations['id'];
                     ">
                     {{ $t['cancel'] }}
                 </a>
+
 
                 <button
                     type="submit"
@@ -365,39 +544,73 @@ $t = $translations[$pageLang] ?? $translations['id'];
 
 @endsection
 
+
 @push('scripts')
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        const assetType = document.getElementById('asset_type');
-        const colorField = document.getElementById('color_field');
-        const textureField = document.getElementById('texture_field');
-        const modelField = document.getElementById('model_field');
+        const assetType =
+            document.getElementById('asset_type');
 
-        const colorPicker = document.getElementById('color_picker');
-        const colorCode = document.getElementById('color_code');
+        const colorField =
+            document.getElementById('color_field');
+
+        const textureField =
+            document.getElementById('texture_field');
+
+        const modelField =
+            document.getElementById('model_field');
+
+        const colorPicker =
+            document.getElementById('color_picker');
+
+        const colorCode =
+            document.getElementById('color_code');
+
 
         function updateFields() {
-            const value = assetType.value;
+
+            const value =
+                assetType.value;
 
             colorField.style.display =
-                value === 'color' ? 'block' : 'none';
+                value === 'color' ?
+                'block' :
+                'none';
 
             textureField.style.display =
-                value === 'material' ? 'block' : 'none';
+                value === 'material' ?
+                'block' :
+                'none';
 
             modelField.style.display =
-                value === 'furniture' ? 'block' : 'none';
+                value === 'furniture' ?
+                'block' :
+                'none';
         }
 
-        assetType.addEventListener('change', updateFields);
 
-        colorPicker.addEventListener('input', function() {
-            colorCode.value = colorPicker.value;
-        });
+        assetType.addEventListener(
+            'change',
+            updateFields
+        );
+
+
+        colorPicker.addEventListener(
+            'input',
+            function() {
+
+                colorCode.value =
+                    colorPicker.value;
+
+            }
+        );
+
 
         updateFields();
 
     });
 </script>
+
 @endpush

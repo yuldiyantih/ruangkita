@@ -1,13 +1,11 @@
 @extends('layouts.admin')
 
-
 @php
 
 $pageLang =
 auth()->user()->language
 ??
 'id';
-
 
 $translations = [
 
@@ -60,7 +58,6 @@ $translations = [
 
 'address_placeholder' =>
 'Masukkan alamat client',
-
 ],
 
 
@@ -113,11 +110,8 @@ $translations = [
 
 'address_placeholder' =>
 'Enter client address',
-
 ],
-
 ];
-
 
 $et =
 $translations[$pageLang]
@@ -127,12 +121,10 @@ $translations['id'];
 @endphp
 
 
-
 @section(
 'title',
 $et['page_title'] . ' - RuangKita'
 )
-
 
 
 @push('styles')
@@ -142,11 +134,9 @@ $et['page_title'] . ' - RuangKita'
         max-width: 980px;
     }
 
-
     .client-edit-header {
         margin-bottom: 22px;
     }
-
 
     .client-edit-subtitle {
         max-width: 620px;
@@ -156,9 +146,7 @@ $et['page_title'] . ' - RuangKita'
 @endpush
 
 
-
 @section('content')
-
 
 <div class="client-form-page">
 
@@ -169,40 +157,27 @@ $et['page_title'] . ' - RuangKita'
 
     <div class="admin-breadcrumb">
 
-
         <a href="{{ route('admin.clients.index') }}">
-
             {{ $et['data_client'] }}
-
         </a>
-
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
-
 
         <a href="{{ route('admin.clients.show', $client) }}">
-
             {{ $et['detail_client'] }}
-
         </a>
-
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
 
-
         <span class="admin-breadcrumb-current">
-
             {{ $et['edit_client'] }}
-
         </span>
 
-
     </div>
-
 
 
     {{-- =====================================================
@@ -211,23 +186,38 @@ $et['page_title'] . ' - RuangKita'
 
     <div class="admin-page-header client-edit-header">
 
-
         <h1 class="admin-page-title">
-
             {{ $et['edit_client'] }}
-
         </h1>
 
-
         <p class="admin-page-subtitle client-edit-subtitle">
-
             {{ $et['subtitle'] }}
-
         </p>
-
 
     </div>
 
+
+    {{-- =====================================================
+         ERROR VALIDATION
+    ====================================================== --}}
+
+    @if($errors->any())
+
+    <div class="admin-alert admin-alert-danger">
+
+        <ul style="margin:0; padding-left:20px;">
+
+            @foreach($errors->all() as $error)
+
+            <li>{{ $error }}</li>
+
+            @endforeach
+
+        </ul>
+
+    </div>
+
+    @endif
 
 
     {{-- =====================================================
@@ -243,13 +233,9 @@ $et['page_title'] . ' - RuangKita'
         @method('PUT')
 
 
-
         <div class="admin-form-title">
-
             {{ $et['client_information'] }}
-
         </div>
-
 
 
         <div class="admin-form-grid">
@@ -260,7 +246,6 @@ $et['page_title'] . ' - RuangKita'
             ================================================== --}}
 
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
@@ -279,7 +264,7 @@ $et['page_title'] . ' - RuangKita'
                     value="{{
                         old(
                             'name',
-                            $client->user->name
+                            $client->user->user_name
                             ??
                             ''
                         )
@@ -287,9 +272,7 @@ $et['page_title'] . ' - RuangKita'
                     class="admin-form-control"
                     required>
 
-
             </div>
-
 
 
             {{-- =================================================
@@ -297,7 +280,6 @@ $et['page_title'] . ' - RuangKita'
             ================================================== --}}
 
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
@@ -324,9 +306,7 @@ $et['page_title'] . ' - RuangKita'
                     class="admin-form-control"
                     required>
 
-
             </div>
-
 
 
             {{-- =================================================
@@ -335,11 +315,8 @@ $et['page_title'] . ' - RuangKita'
 
             <div class="admin-form-group">
 
-
                 <label class="admin-form-label">
-
                     {{ $et['phone'] }}
-
                 </label>
 
 
@@ -357,9 +334,7 @@ $et['page_title'] . ' - RuangKita'
                     class="admin-form-control"
                     placeholder="{{ $et['phone_placeholder'] }}">
 
-
             </div>
-
 
 
             {{-- =================================================
@@ -368,11 +343,8 @@ $et['page_title'] . ' - RuangKita'
 
             <div class="admin-form-group full">
 
-
                 <label class="admin-form-label">
-
                     {{ $et['address'] }}
-
                 </label>
 
 
@@ -381,12 +353,10 @@ $et['page_title'] . ' - RuangKita'
                     class="admin-form-control"
                     placeholder="{{ $et['address_placeholder'] }}">{{ old('address', $client->address ?? '') }}</textarea>
 
-
             </div>
 
 
         </div>
-
 
 
         {{-- =====================================================
@@ -395,38 +365,23 @@ $et['page_title'] . ' - RuangKita'
 
         <div class="admin-form-actions">
 
-
             <a
                 href="{{ route('admin.clients.show', $client) }}"
-                class="
-                    admin-btn
-                    admin-btn-secondary
-                ">
-
+                class="admin-btn admin-btn-secondary">
                 {{ $et['cancel'] }}
-
             </a>
 
 
             <button
                 type="submit"
-                class="
-                    admin-btn
-                    admin-btn-primary
-                ">
-
+                class="admin-btn admin-btn-primary">
                 {{ $et['save'] }}
-
             </button>
-
 
         </div>
 
-
     </form>
 
-
 </div>
-
 
 @endsection

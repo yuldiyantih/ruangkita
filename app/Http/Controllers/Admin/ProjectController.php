@@ -38,7 +38,7 @@ class ProjectController extends Controller
                             function ($userQuery) use ($search) {
 
                                 $userQuery->where(
-                                    'name',
+                                    'user_name',
                                     'like',
                                     '%' . $search . '%'
                                 );
@@ -49,7 +49,7 @@ class ProjectController extends Controller
             ->when($status, function ($query) use ($status) {
 
                 $query->where(
-                    'status',
+                    'project_status',
                     $status
                 );
             })
@@ -64,21 +64,21 @@ class ProjectController extends Controller
 
         $ongoingProjects =
             Project::where(
-                'status',
+                'project_status',
                 'ongoing'
             )->count();
 
 
         $completedProjects =
             Project::where(
-                'status',
+                'project_status',
                 'completed'
             )->count();
 
 
         $planningProjects =
             Project::where(
-                'status',
+                'project_status',
                 'planning'
             )->count();
 
@@ -96,7 +96,6 @@ class ProjectController extends Controller
             )
         );
     }
-
 
 
     public function create()
@@ -125,7 +124,6 @@ class ProjectController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
         $validated =
@@ -133,7 +131,7 @@ class ProjectController extends Controller
 
                 'client_id' => [
                     'required',
-                    'exists:clients,id',
+                    'exists:clients,client_id',
                 ],
 
                 'project_name' => [
@@ -247,7 +245,7 @@ class ProjectController extends Controller
                 ??
                 null,
 
-            'status' =>
+            'project_status' =>
             $validated['status'],
 
             'progress_percentage' =>
@@ -276,6 +274,7 @@ class ProjectController extends Controller
             );
     }
 
+
     public function show(Project $project)
     {
         $project->load([
@@ -294,6 +293,8 @@ class ProjectController extends Controller
             )
         );
     }
+
+
     public function edit(Project $project)
     {
         $clients =
@@ -321,7 +322,6 @@ class ProjectController extends Controller
     }
 
 
-
     public function update(
         Request $request,
         Project $project
@@ -331,7 +331,7 @@ class ProjectController extends Controller
 
                 'client_id' => [
                     'required',
-                    'exists:clients,id',
+                    'exists:clients,client_id',
                 ],
 
                 'project_name' => [
@@ -402,7 +402,6 @@ class ProjectController extends Controller
 
         if ($request->hasFile('cover_image')) {
 
-
             if (
                 $coverImage
                 &&
@@ -456,7 +455,7 @@ class ProjectController extends Controller
                 ??
                 null,
 
-            'status' =>
+            'project_status' =>
             $validated['status'],
 
             'progress_percentage' =>

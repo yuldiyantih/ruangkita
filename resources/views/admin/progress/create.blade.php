@@ -478,10 +478,11 @@ $pt['page_title'] . ' - RuangKita'
                             @foreach($projects as $project)
 
                             <option
-                                value="{{ $project->id }}"
+                                value="{{ $project->project_id }}"
                                 @selected(
-                                old('project_id')==$project->id
-                                )>
+                                old('project_id')==$project->project_id
+                                )
+                                >
 
                                 {{ $project->project_name }}
 

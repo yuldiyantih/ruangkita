@@ -846,9 +846,9 @@ $translations['id'];
             @foreach($projects as $project)
 
             <option
-                value="{{ $project->id }}"
+                value="{{ $project->project_id }}"
                 @selected(
-                (string) ($projectId ?? '' )===(string) $project->id
+                (string) ($projectId ?? '' )===(string) $project->project_id
                 )
                 >
                 {{ $project->project_name }}
@@ -1031,7 +1031,7 @@ $translations['id'];
                     {{
                             $documentation
                                 ->uploader
-                                ?->name
+                                ?->user_name
                             ??
                             '-'
                         }}

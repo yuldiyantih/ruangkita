@@ -805,7 +805,7 @@ $dt['page_title'] . ' - RuangKita'
                             ->project
                             ?->client
                             ?->user
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}
@@ -857,7 +857,7 @@ $dt['page_title'] . ' - RuangKita'
                     {{
                         $progressUpdate
                             ->creator
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}

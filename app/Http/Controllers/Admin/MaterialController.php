@@ -148,7 +148,7 @@ class MaterialController extends Controller
             $request->validate([
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'material_name' => [
@@ -289,7 +289,7 @@ class MaterialController extends Controller
             $request->validate([
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'material_name' => [

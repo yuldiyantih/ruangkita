@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    protected $primaryKey = 'project_id';
+
     protected $fillable = [
         'client_id',
         'admin_id',
@@ -14,7 +16,7 @@ class Project extends Model
         'location',
         'start_date',
         'target_end_date',
-        'status',
+        'project_status',
         'progress_percentage',
         'budget_total',
         'cover_image',
@@ -28,69 +30,74 @@ class Project extends Model
 
     public function client()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(
+            Client::class,
+            'client_id',
+            'client_id'
+        );
     }
 
     public function admin()
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(
+            User::class,
+            'admin_id',
+            'user_id'
+        );
     }
 
     public function areas()
     {
-        return $this->hasMany(ProjectArea::class);
+        return $this->hasMany(ProjectArea::class, 'project_id', 'project_id');
     }
 
     public function works()
     {
-        return $this->hasMany(Work::class);
+        return $this->hasMany(Work::class, 'project_id', 'project_id');
     }
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'project_id', 'project_id');
     }
 
     public function materials()
     {
-        return $this->hasMany(Material::class);
+        return $this->hasMany(Material::class, 'project_id', 'project_id');
     }
 
     public function expenses()
     {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Expense::class, 'project_id', 'project_id');
     }
 
     public function progressUpdates()
     {
-        return $this->hasMany(ProgressUpdate::class);
+        return $this->hasMany(ProgressUpdate::class, 'project_id', 'project_id');
     }
 
     public function documentations()
     {
-        return $this->hasMany(
-            Documentation::class
-        );
+        return $this->hasMany(Documentation::class, 'project_id', 'project_id');
     }
 
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'project_id', 'project_id');
     }
 
     public function arDesigns()
     {
-        return $this->hasMany(ArDesign::class);
+        return $this->hasMany(ArDesign::class, 'project_id', 'project_id');
     }
 
     public function paymentStages()
     {
-        return $this->hasMany(PaymentStage::class);
+        return $this->hasMany(PaymentStage::class, 'project_id', 'project_id');
     }
-
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'project_id', 'project_id');
     }
 }

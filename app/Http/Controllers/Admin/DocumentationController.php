@@ -100,7 +100,7 @@ class DocumentationController extends Controller
 
             ->orderByDesc('photo_date')
 
-            ->orderByDesc('id')
+            ->orderByDesc('documentation_id')
 
             ->paginate(12)
 
@@ -203,7 +203,7 @@ class DocumentationController extends Controller
 
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'category' => [
@@ -372,7 +372,7 @@ class DocumentationController extends Controller
 
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'category' => [

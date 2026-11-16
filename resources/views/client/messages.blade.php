@@ -1060,7 +1060,7 @@ $mt['title'] . ' - RuangKita'
                                 [
                                     'user'
                                     =>
-                                    $member->id
+                                    $member->user_id
                                 ]
                             )
                         }}"
@@ -1070,9 +1070,9 @@ $mt['title'] . ' - RuangKita'
                             {{
                                 $selectedUser
                                 &&
-                                $selectedUser->id
+                                $selectedUser->user_id
                                 ===
-                                $member->id
+                                $member->user_id
                                 ?
                                 'active'
                                 :
@@ -1082,7 +1082,7 @@ $mt['title'] . ' - RuangKita'
 
                 data-name="{{
                             strtolower(
-                                $member->name
+                                $member->user_name
                             )
                         }}">
 
@@ -1092,7 +1092,7 @@ $mt['title'] . ' - RuangKita'
                     {{
                                 strtoupper(
                                     substr(
-                                        $member->name,
+                                        $member->user_name,
                                         0,
                                         2
                                     )
@@ -1108,7 +1108,7 @@ $mt['title'] . ' - RuangKita'
 
                     <div class="conversation-name">
 
-                        {{ $member->name }}
+                        {{ $member->user_name }}
 
                     </div>
 
@@ -1229,7 +1229,7 @@ $mt['title'] . ' - RuangKita'
                     {{
                                 strtoupper(
                                     substr(
-                                        $selectedUser->name,
+                                        $selectedUser->user_name,
                                         0,
                                         2
                                     )
@@ -1246,7 +1246,7 @@ $mt['title'] . ' - RuangKita'
                     <div class="chat-name">
 
                         {{
-                                    $selectedUser->name
+                                    $selectedUser->user_name
                                 }}
 
                     </div>
@@ -1580,7 +1580,7 @@ $mt['title'] . ' - RuangKita'
                 name="receiver_id"
 
                 value="{{
-                            $selectedUser->id
+                            $selectedUser->user_id
                         }}">
 
 
@@ -1596,7 +1596,7 @@ $mt['title'] . ' - RuangKita'
                 value="{{
                                 $projects
                                     ->first()
-                                    ->id
+                                    ->project_id
                             }}">
 
             @endif

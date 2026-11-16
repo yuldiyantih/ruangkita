@@ -1,216 +1,98 @@
 @extends('layouts.admin')
 
-
 @php
-
-$pageLang =
-auth()->user()->language
-??
-'id';
-
+$pageLang = auth()->user()->language ?? 'id';
 
 $translations = [
-
 'id' => [
-
-'page_title' =>
-'Tambah Material',
-
-'material_data' =>
-'Data Material',
-
-'add_material' =>
-'Tambah Material',
-
-'subtitle' =>
-'Tambahkan material baru ke dalam proyek RuangKita.',
-
-'error_title' =>
-'Data belum dapat disimpan.',
-
-'material_information' =>
-'Informasi Material',
-
-'project' =>
-'Proyek',
-
-'select_project' =>
-'Pilih Proyek',
-
-'material_name' =>
-'Nama Material',
-
-'material_name_placeholder' =>
-'Contoh: Keramik 60x60',
-
-'quantity' =>
-'Jumlah',
-
-'unit' =>
-'Satuan',
-
-'unit_placeholder' =>
-'Contoh: sak, m², batang, unit',
-
-'unit_price' =>
-'Harga Satuan',
-
-'total_price' =>
-'Total Harga',
-
-'supplier' =>
-'Supplier',
-
-'supplier_placeholder' =>
-'Nama supplier / toko',
-
-'purchase_date' =>
-'Tanggal Pembelian',
-
-'visible_to_client' =>
-'Tampilkan material ini kepada Client',
-
-'cancel' =>
-'Batal',
-
-'save' =>
-'Simpan Material',
-
+'page_title' => 'Tambah Material',
+'material_data' => 'Data Material',
+'add_material' => 'Tambah Material',
+'subtitle' => 'Tambahkan material baru ke dalam proyek RuangKita.',
+'error_title' => 'Data belum dapat disimpan.',
+'material_information' => 'Informasi Material',
+'project' => 'Proyek',
+'select_project' => 'Pilih Proyek',
+'material_name' => 'Nama Material',
+'material_name_placeholder' => 'Contoh: Keramik 60x60',
+'quantity' => 'Jumlah',
+'unit' => 'Satuan',
+'unit_placeholder' => 'Contoh: sak, m², batang, unit',
+'unit_price' => 'Harga Satuan',
+'total_price' => 'Total Harga',
+'supplier' => 'Supplier',
+'supplier_placeholder' => 'Nama supplier / toko',
+'purchase_date' => 'Tanggal Pembelian',
+'visible_to_client' => 'Tampilkan material ini kepada Client',
+'cancel' => 'Batal',
+'save' => 'Simpan Material',
 ],
-
 
 'en' => [
-
-'page_title' =>
-'Add Material',
-
-'material_data' =>
-'Material Data',
-
-'add_material' =>
-'Add Material',
-
-'subtitle' =>
-'Add a new material to the RuangKita project.',
-
-'error_title' =>
-'The data could not be saved.',
-
-'material_information' =>
-'Material Information',
-
-'project' =>
-'Project',
-
-'select_project' =>
-'Select Project',
-
-'material_name' =>
-'Material Name',
-
-'material_name_placeholder' =>
-'Example: 60x60 Ceramic Tile',
-
-'quantity' =>
-'Quantity',
-
-'unit' =>
-'Unit',
-
-'unit_placeholder' =>
-'Example: bag, m², rod, unit',
-
-'unit_price' =>
-'Unit Price',
-
-'total_price' =>
-'Total Price',
-
-'supplier' =>
-'Supplier',
-
-'supplier_placeholder' =>
-'Supplier / store name',
-
-'purchase_date' =>
-'Purchase Date',
-
-'visible_to_client' =>
-'Show this material to the Client',
-
-'cancel' =>
-'Cancel',
-
-'save' =>
-'Save Material',
-
+'page_title' => 'Add Material',
+'material_data' => 'Material Data',
+'add_material' => 'Add Material',
+'subtitle' => 'Add a new material to the RuangKita project.',
+'error_title' => 'The data could not be saved.',
+'material_information' => 'Material Information',
+'project' => 'Project',
+'select_project' => 'Select Project',
+'material_name' => 'Material Name',
+'material_name_placeholder' => 'Example: 60x60 Ceramic Tile',
+'quantity' => 'Quantity',
+'unit' => 'Unit',
+'unit_placeholder' => 'Example: bag, m², rod, unit',
+'unit_price' => 'Unit Price',
+'total_price' => 'Total Price',
+'supplier' => 'Supplier',
+'supplier_placeholder' => 'Supplier / store name',
+'purchase_date' => 'Purchase Date',
+'visible_to_client' => 'Show this material to the Client',
+'cancel' => 'Cancel',
+'save' => 'Save Material',
 ],
-
 ];
 
-
-$mt =
-$translations[$pageLang]
-??
-$translations['id'];
-
+$mt = $translations[$pageLang] ?? $translations['id'];
 @endphp
 
-
-@section(
-'title',
-$mt['page_title'] . ' - RuangKita'
-)
-
+@section('title', $mt['page_title'] . ' - RuangKita')
 
 @section('content')
 
 <div style="max-width: 1050px;">
 
-
+    <!-- Breadcrumb -->
     <div class="admin-breadcrumb">
 
         <a href="{{ route('admin.materials.index') }}">
-
             {{ $mt['material_data'] }}
-
         </a>
-
 
         <span class="admin-breadcrumb-separator">
             /
         </span>
 
-
         <span class="admin-breadcrumb-current">
-
             {{ $mt['add_material'] }}
-
         </span>
 
     </div>
 
-
-
+    <!-- Page Header -->
     <div class="admin-page-header">
 
         <h1 class="admin-page-title">
-
             {{ $mt['add_material'] }}
-
         </h1>
 
-
         <p class="admin-page-subtitle">
-
             {{ $mt['subtitle'] }}
-
         </p>
 
     </div>
 
-
-
+    <!-- Error Message -->
     @if($errors->any())
 
     <div
@@ -218,11 +100,8 @@ $mt['page_title'] . ' - RuangKita'
         style="margin-bottom: 18px;">
 
         <strong>
-
             {{ $mt['error_title'] }}
-
         </strong>
-
 
         <ul style="margin: 8px 0 0 18px;">
 
@@ -240,8 +119,7 @@ $mt['page_title'] . ' - RuangKita'
 
     @endif
 
-
-
+    <!-- Add Material Form -->
     <form
         method="POST"
         action="{{ route('admin.materials.store') }}"
@@ -249,19 +127,13 @@ $mt['page_title'] . ' - RuangKita'
 
         @csrf
 
-
-
         <div class="admin-form-title">
-
             {{ $mt['material_information'] }}
-
         </div>
-
-
 
         <div class="admin-form-grid">
 
-
+            <!-- Project -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
@@ -274,30 +146,30 @@ $mt['page_title'] . ' - RuangKita'
 
                 </label>
 
-
                 <select
                     name="project_id"
                     class="admin-form-control"
                     required>
 
                     <option value="">
-
                         {{ $mt['select_project'] }}
-
                     </option>
-
 
                     @foreach($projects as $project)
 
                     <option
-                        value="{{ $project->id }}"
+                        value="{{ $project->project_id }}"
                         @selected(
-                        old('project_id')==$project->id
+                        old('project_id')==$project->project_id
                         )>
 
-                        {{ $project->project_name }}
-                        -
-                        {{ optional($project->client)->user->name ?? '-' }}
+                        {{ $project->project_name }} -
+
+                        {{
+                                optional(
+                                    optional($project->client)->user
+                                )->user_name ?? '-'
+                            }}
 
                     </option>
 
@@ -307,8 +179,7 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Material Name -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
@@ -321,7 +192,6 @@ $mt['page_title'] . ' - RuangKita'
 
                 </label>
 
-
                 <input
                     type="text"
                     name="material_name"
@@ -332,8 +202,7 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Quantity -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
@@ -345,7 +214,6 @@ $mt['page_title'] . ' - RuangKita'
                     </span>
 
                 </label>
-
 
                 <input
                     type="number"
@@ -359,16 +227,12 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Unit -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
-
                     {{ $mt['unit'] }}
-
                 </label>
-
 
                 <input
                     type="text"
@@ -379,8 +243,7 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Unit Price -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
@@ -392,7 +255,6 @@ $mt['page_title'] . ' - RuangKita'
                     </span>
 
                 </label>
-
 
                 <input
                     type="number"
@@ -406,16 +268,12 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Total Price -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
-
                     {{ $mt['total_price'] }}
-
                 </label>
-
 
                 <input
                     type="text"
@@ -426,16 +284,12 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Supplier -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
-
                     {{ $mt['supplier'] }}
-
                 </label>
-
 
                 <input
                     type="text"
@@ -446,16 +300,12 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Purchase Date -->
             <div class="admin-form-group">
 
                 <label class="admin-form-label">
-
                     {{ $mt['purchase_date'] }}
-
                 </label>
-
 
                 <input
                     type="date"
@@ -465,8 +315,7 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
-
+            <!-- Visibility to Client -->
             <div class="admin-form-group full">
 
                 <label
@@ -482,11 +331,8 @@ $mt['page_title'] . ' - RuangKita'
                         name="is_visible_to_client"
                         value="1"
                         @checked(
-                        old( 'is_visible_to_client' ,
-                        false
-                        )
+                        old('is_visible_to_client', false)
                         )>
-
 
                     <span
                         class="admin-form-label"
@@ -500,11 +346,9 @@ $mt['page_title'] . ' - RuangKita'
 
             </div>
 
-
         </div>
 
-
-
+        <!-- Form Actions -->
         <div class="admin-form-actions">
 
             <a
@@ -514,7 +358,6 @@ $mt['page_title'] . ' - RuangKita'
                 {{ $mt['cancel'] }}
 
             </a>
-
 
             <button
                 type="submit"
@@ -526,15 +369,11 @@ $mt['page_title'] . ' - RuangKita'
 
         </div>
 
-
     </form>
-
 
 </div>
 
 @endsection
-
-
 
 @push('scripts')
 
@@ -550,7 +389,6 @@ $mt['page_title'] . ' - RuangKita'
         const totalPreview =
             document.getElementById('materialTotalPreview');
 
-
         function calculateTotal() {
 
             const qty =
@@ -562,7 +400,6 @@ $mt['page_title'] . ' - RuangKita'
             const total =
                 qty * price;
 
-
             totalPreview.value =
                 new Intl.NumberFormat(
                     'id-ID', {
@@ -571,8 +408,8 @@ $mt['page_title'] . ' - RuangKita'
                         maximumFractionDigits: 0
                     }
                 ).format(total);
-        }
 
+        }
 
         quantity.addEventListener(
             'input',
@@ -584,8 +421,8 @@ $mt['page_title'] . ' - RuangKita'
             calculateTotal
         );
 
-
         calculateTotal();
+
     });
 </script>
 

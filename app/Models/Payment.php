@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    protected $primaryKey = 'payment_id';
+
     protected $fillable = [
         'project_id',
         'payment_stage_id',
@@ -13,11 +15,10 @@ class Payment extends Model
         'payment_date',
         'reference_number',
         'proof_file',
-        'status',
+        'payment_status',
         'note',
         'is_visible_to_client',
     ];
-
 
     protected function casts(): array
     {
@@ -30,12 +31,20 @@ class Payment extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
 
 
     public function paymentStage()
     {
-        return $this->belongsTo(PaymentStage::class);
+        return $this->belongsTo(
+            PaymentStage::class,
+            'payment_stage_id',
+            'payment_stage_id'
+        );
     }
 }

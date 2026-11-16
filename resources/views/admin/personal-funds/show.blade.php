@@ -850,7 +850,7 @@ $pt['other'],
                             ?->project
                             ?->client
                             ?->user
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}
@@ -874,7 +874,7 @@ $pt['other'],
                     {{
                         $personalFund
                             ->user
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}
@@ -983,7 +983,7 @@ $pt['other'],
                         $personalFund
                             ->expense
                             ?->creator
-                            ?->name
+                            ?->user_name
                         ??
                         '-'
                     }}

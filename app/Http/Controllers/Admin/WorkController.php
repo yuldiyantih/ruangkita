@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Schedule;
 use App\Models\Work;
 use Illuminate\Http\Request;
 
@@ -11,24 +12,16 @@ class WorkController extends Controller
 {
     public function index(Request $request)
     {
-        $search =
-            $request->get('search');
+        $search = $request->get('search');
+        $projectId = $request->get('project');
+        $status = $request->get('status');
 
-        $projectId =
-            $request->get('project');
-
-        $status =
-            $request->get('status');
-
-
-        $works =
-            Work::with([
-                'project.client.user'
-            ])
+        $works = Work::with([
+            'project.client.user'
+        ])
             ->when(
                 $search,
                 function ($query) use ($search) {
-
                     $query->where(
                         'work_name',
                         'like',
@@ -39,7 +32,6 @@ class WorkController extends Controller
             ->when(
                 $projectId,
                 function ($query) use ($projectId) {
-
                     $query->where(
                         'project_id',
                         $projectId
@@ -49,9 +41,8 @@ class WorkController extends Controller
             ->when(
                 $status,
                 function ($query) use ($status) {
-
                     $query->where(
-                        'status',
+                        'work_status',
                         $status
                     );
                 }
@@ -60,41 +51,28 @@ class WorkController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-
-        $projects =
-            Project::with(
-                'client.user'
-            )
-            ->orderBy(
-                'project_name'
-            )
+        $projects = Project::with(
+            'client.user'
+        )
+            ->orderBy('project_name')
             ->get();
 
+        $totalWorks = Work::count();
 
-        $totalWorks =
-            Work::count();
+        $plannedWorks = Work::where(
+            'work_status',
+            'planned'
+        )->count();
 
+        $ongoingWorks = Work::where(
+            'work_status',
+            'ongoing'
+        )->count();
 
-        $plannedWorks =
-            Work::where(
-                'status',
-                'planned'
-            )->count();
-
-
-        $ongoingWorks =
-            Work::where(
-                'status',
-                'ongoing'
-            )->count();
-
-
-        $completedWorks =
-            Work::where(
-                'status',
-                'completed'
-            )->count();
-
+        $completedWorks = Work::where(
+            'work_status',
+            'completed'
+        )->count();
 
         return view(
             'admin.works.index',
@@ -112,109 +90,100 @@ class WorkController extends Controller
         );
     }
 
-
-
     public function create()
     {
-        $projects =
-            Project::with(
-                'client.user'
-            )
-            ->orderBy(
-                'project_name'
-            )
+        $projects = Project::with(
+            'client.user'
+        )
+            ->orderBy('project_name')
             ->get();
-
 
         return view(
             'admin.works.create',
-            compact(
-                'projects'
-            )
+            compact('projects')
         );
     }
 
-
-
     public function store(Request $request)
     {
-        $validated =
-            $request->validate([
+        $validated = $request->validate([
 
-                'project_id' => [
-                    'required',
-                    'exists:projects,id',
-                ],
+            'project_id' => [
+                'required',
+                'exists:projects,project_id',
+            ],
 
-                'work_name' => [
-                    'required',
-                    'string',
-                    'max:150',
-                ],
+            'work_name' => [
+                'required',
+                'string',
+                'max:150',
+            ],
 
-                'method_type' => [
-                    'required',
-                    'in:daily,contract',
-                ],
+            'method_type' => [
+                'required',
+                'in:daily,contract',
+            ],
 
-                'volume' => [
-                    'nullable',
-                    'numeric',
-                    'min:0',
-                ],
+            'volume' => [
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
 
-                'unit' => [
-                    'nullable',
-                    'string',
-                    'max:50',
-                ],
+            'unit' => [
+                'nullable',
+                'string',
+                'max:50',
+            ],
 
-                'unit_price' => [
-                    'required',
-                    'numeric',
-                    'min:0',
-                ],
+            'unit_price' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
 
-                'duration_days' => [
-                    'nullable',
-                    'integer',
-                    'min:1',
-                ],
+            'duration_days' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
 
-                'status' => [
-                    'required',
-                    'in:planned,ongoing,completed,cancelled',
-                ],
+            'status' => [
+                'required',
+                'in:planned,ongoing,completed,cancelled',
+            ],
 
-                'is_visible_to_client' => [
-                    'nullable',
-                    'boolean',
-                ],
+            'start_date' => [
+                'required',
+                'date',
+            ],
 
-            ]);
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date',
+            ],
 
+            'is_visible_to_client' => [
+                'nullable',
+                'boolean',
+            ],
 
-        $volume =
-            (float) (
-                $validated['volume']
-                ??
-                0
-            );
+        ]);
 
+        $volume = (float) (
+            $validated['volume']
+            ?? 0
+        );
 
-        $unitPrice =
-            (float) (
-                $validated['unit_price']
-                ??
-                0
-            );
+        $unitPrice = (float) (
+            $validated['unit_price']
+            ?? 0
+        );
 
+        $totalCost = $volume * $unitPrice;
 
-        $totalCost =
-            $volume * $unitPrice;
-
-
-        Work::create([
+        $work = Work::create([
 
             'project_id' =>
             $validated['project_id'],
@@ -227,26 +196,23 @@ class WorkController extends Controller
 
             'volume' =>
             $validated['volume']
-                ??
-                null,
+                ?? null,
 
             'unit' =>
             $validated['unit']
-                ??
-                null,
+                ?? null,
 
             'unit_price' =>
             $unitPrice,
 
             'duration_days' =>
             $validated['duration_days']
-                ??
-                null,
+                ?? null,
 
             'total_cost' =>
             $totalCost,
 
-            'status' =>
+            'work_status' =>
             $validated['status'],
 
             'is_visible_to_client' =>
@@ -256,6 +222,31 @@ class WorkController extends Controller
 
         ]);
 
+        Schedule::updateOrCreate(
+            [
+                'work_id' => $work->work_id,
+            ],
+            [
+                'project_id' =>
+                $work->project_id,
+
+                'title' =>
+                $work->work_name,
+
+                'description' =>
+                'Jadwal pekerjaan ' .
+                    $work->work_name,
+
+                'start_date' =>
+                $validated['start_date'],
+
+                'end_date' =>
+                $validated['end_date'],
+
+                'schedule_status' =>
+                $validated['status'],
+            ]
+        );
 
         return redirect()
             ->route(
@@ -263,9 +254,10 @@ class WorkController extends Controller
             )
             ->with(
                 'success',
-                'Pekerjaan berhasil ditambahkan.'
+                'Pekerjaan dan jadwal berhasil ditambahkan.'
             );
     }
+
     public function show(Work $work)
     {
         $work->load([
@@ -279,14 +271,15 @@ class WorkController extends Controller
         );
     }
 
-
-
     public function edit(Work $work)
     {
-        $projects =
-            Project::with('client.user')
+        $projects = Project::with(
+            'client.user'
+        )
             ->orderBy('project_name')
             ->get();
+
+        $work->load('schedules');
 
         return view(
             'admin.works.edit',
@@ -297,89 +290,86 @@ class WorkController extends Controller
         );
     }
 
-
-
     public function update(
         Request $request,
         Work $work
     ) {
-        $validated =
-            $request->validate([
+        $validated = $request->validate([
 
-                'project_id' => [
-                    'required',
-                    'exists:projects,id',
-                ],
+            'project_id' => [
+                'required',
+                'exists:projects,project_id',
+            ],
 
-                'work_name' => [
-                    'required',
-                    'string',
-                    'max:150',
-                ],
+            'work_name' => [
+                'required',
+                'string',
+                'max:150',
+            ],
 
-                'method_type' => [
-                    'required',
-                    'in:daily,contract',
-                ],
+            'method_type' => [
+                'required',
+                'in:daily,contract',
+            ],
 
-                'volume' => [
-                    'nullable',
-                    'numeric',
-                    'min:0',
-                ],
+            'volume' => [
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
 
-                'unit' => [
-                    'nullable',
-                    'string',
-                    'max:50',
-                ],
+            'unit' => [
+                'nullable',
+                'string',
+                'max:50',
+            ],
 
-                'unit_price' => [
-                    'required',
-                    'numeric',
-                    'min:0',
-                ],
+            'unit_price' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
 
-                'duration_days' => [
-                    'nullable',
-                    'integer',
-                    'min:1',
-                ],
+            'duration_days' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
 
-                'status' => [
-                    'required',
-                    'in:planned,ongoing,completed,cancelled',
-                ],
+            'status' => [
+                'required',
+                'in:planned,ongoing,completed,cancelled',
+            ],
 
-                'is_visible_to_client' => [
-                    'nullable',
-                    'boolean',
-                ],
+            'start_date' => [
+                'required',
+                'date',
+            ],
 
-            ]);
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date',
+            ],
 
+            'is_visible_to_client' => [
+                'nullable',
+                'boolean',
+            ],
 
-        $volume =
-            (float) (
-                $validated['volume']
-                ??
-                0
-            );
+        ]);
 
+        $volume = (float) (
+            $validated['volume']
+            ?? 0
+        );
 
-        $unitPrice =
-            (float) (
-                $validated['unit_price']
-                ??
-                0
-            );
+        $unitPrice = (float) (
+            $validated['unit_price']
+            ?? 0
+        );
 
-
-        $totalCost =
-            $volume
-            *
-            $unitPrice;
-
+        $totalCost = $volume * $unitPrice;
 
         $work->update([
 
@@ -394,26 +384,23 @@ class WorkController extends Controller
 
             'volume' =>
             $validated['volume']
-                ??
-                null,
+                ?? null,
 
             'unit' =>
             $validated['unit']
-                ??
-                null,
+                ?? null,
 
             'unit_price' =>
             $unitPrice,
 
             'duration_days' =>
             $validated['duration_days']
-                ??
-                null,
+                ?? null,
 
             'total_cost' =>
             $totalCost,
 
-            'status' =>
+            'work_status' =>
             $validated['status'],
 
             'is_visible_to_client' =>
@@ -423,6 +410,31 @@ class WorkController extends Controller
 
         ]);
 
+        Schedule::updateOrCreate(
+            [
+                'work_id' => $work->work_id,
+            ],
+            [
+                'project_id' =>
+                $work->project_id,
+
+                'title' =>
+                $work->work_name,
+
+                'description' =>
+                'Jadwal pekerjaan ' .
+                    $work->work_name,
+
+                'start_date' =>
+                $validated['start_date'],
+
+                'end_date' =>
+                $validated['end_date'],
+
+                'schedule_status' =>
+                $validated['status'],
+            ]
+        );
 
         return redirect()
             ->route(
@@ -431,7 +443,7 @@ class WorkController extends Controller
             )
             ->with(
                 'success',
-                'Data pekerjaan berhasil diperbarui.'
+                'Data pekerjaan dan jadwal berhasil diperbarui.'
             );
     }
 }

@@ -45,15 +45,19 @@ class ExpenseController extends Controller
                         });
                 });
             })
+
             ->when($projectId, function ($query) use ($projectId) {
                 $query->where('project_id', $projectId);
             })
+
             ->when($category, function ($query) use ($category) {
                 $query->where('category', $category);
             })
+
             ->when($fundingSource, function ($query) use ($fundingSource) {
                 $query->where('funding_source', $fundingSource);
             })
+
             ->when(
                 $visibility !== null && $visibility !== '',
                 function ($query) use ($visibility) {
@@ -63,8 +67,9 @@ class ExpenseController extends Controller
                     );
                 }
             )
+
             ->orderByDesc('expense_date')
-            ->orderByDesc('id')
+            ->orderByDesc('expense_id')
             ->paginate(10)
             ->withQueryString();
 
@@ -148,12 +153,12 @@ class ExpenseController extends Controller
         $validated = $request->validate([
             'project_id' => [
                 'required',
-                'exists:projects,id',
+                'exists:projects,project_id',
             ],
 
             'material_id' => [
                 'nullable',
-                'exists:materials,id',
+                'exists:materials,material_id',
             ],
 
             'expense_date' => [
@@ -304,7 +309,7 @@ class ExpenseController extends Controller
         ) {
 
             PersonalFund::create([
-                'expense_id' => $expense->id,
+                'expense_id' => $expense->expense_id,
                 'user_id' => Auth::id(),
                 'amount' => $expense->amount,
                 'reimbursement_status' => 'unpaid',
@@ -367,12 +372,12 @@ class ExpenseController extends Controller
         $validated = $request->validate([
             'project_id' => [
                 'required',
-                'exists:projects,id',
+                'exists:projects,project_id',
             ],
 
             'material_id' => [
                 'nullable',
-                'exists:materials,id',
+                'exists:materials,material_id',
             ],
 
             'expense_date' => [
@@ -514,7 +519,7 @@ class ExpenseController extends Controller
         ) {
             PersonalFund::updateOrCreate(
                 [
-                    'expense_id' => $expense->id,
+                    'expense_id' => $expense->expense_id,
                 ],
                 [
                     'user_id' => $expense->personalFund?->user_id ?? Auth::id(),
@@ -532,7 +537,7 @@ class ExpenseController extends Controller
         ) {
             PersonalFund::where(
                 'expense_id',
-                $expense->id
+                $expense->expense_id
             )->delete();
         }
 
@@ -548,13 +553,14 @@ class ExpenseController extends Controller
             );
     }
 
+
     public function destroy(Expense $expense)
     {
         /*
-    |--------------------------------------------------------------------------
-    | HAPUS DATA UANG PRIBADI TERKAIT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | HAPUS DATA UANG PRIBADI TERKAIT
+        |--------------------------------------------------------------------------
+        */
 
         if ($expense->personalFund) {
             $expense->personalFund()->delete();
@@ -562,10 +568,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | HAPUS FILE BUKTI
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | HAPUS FILE BUKTI
+        |--------------------------------------------------------------------------
+        */
 
         if (
             $expense->receipt_path
@@ -577,10 +583,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | HAPUS TRANSAKSI
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | HAPUS TRANSAKSI
+        |--------------------------------------------------------------------------
+        */
 
         $expense->delete();
 
@@ -592,6 +598,8 @@ class ExpenseController extends Controller
                 'Pengeluaran berhasil dihapus.'
             );
     }
+
+
     private function exportQuery(Request $request)
     {
         $search =
@@ -688,8 +696,9 @@ class ExpenseController extends Controller
 
         return $query
             ->orderByDesc('expense_date')
-            ->orderByDesc('id');
+            ->orderByDesc('expense_id');
     }
+
 
     public function exportExcel(Request $request)
     {
@@ -712,10 +721,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | JUDUL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | JUDUL
+        |--------------------------------------------------------------------------
+        */
 
         $sheet->mergeCells(
             'A1:J1'
@@ -739,10 +748,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | HEADER
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | HEADER
+        |--------------------------------------------------------------------------
+        */
 
         $headers = [
             'No',
@@ -772,10 +781,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DATA
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DATA
+        |--------------------------------------------------------------------------
+        */
 
         $row = 5;
 
@@ -872,7 +881,7 @@ class ExpenseController extends Controller
 
             $sheet->setCellValue(
                 'J' . $row,
-                $expense->creator->name
+                $expense->creator->user_name
                     ??
                     '-'
             );
@@ -889,10 +898,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | TOTAL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | TOTAL
+        |--------------------------------------------------------------------------
+        */
 
         $sheet->mergeCells(
             'A' . $row .
@@ -911,10 +920,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | FORMAT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | FORMAT
+        |--------------------------------------------------------------------------
+        */
 
         $sheet
             ->getStyle('A1:J1')
@@ -960,10 +969,10 @@ class ExpenseController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DOWNLOAD
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DOWNLOAD
+        |--------------------------------------------------------------------------
+        */
 
         $fileName =
             'pengeluaran-ruangkita-' .
@@ -991,6 +1000,7 @@ class ExpenseController extends Controller
                 ]
             );
     }
+
 
     public function exportPdf(Request $request)
     {

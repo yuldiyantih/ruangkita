@@ -368,26 +368,27 @@ $et['page_title'] . ' - RuangKita'
                     @foreach($projects as $project)
 
                     <option
-                        value="{{ $project->id }}"
+                        value="{{ $project->project_id }}"
                         @selected(
                         old( 'project_id' ,
                         $expense->project_id
-                        ) == $project->id
-                        )>
+                        ) == $project->project_id
+                        )
+                        >
 
                         {{ $project->project_name }}
 
                         -
 
                         {{
-                                optional(
-                                    optional(
-                                        $project->client
-                                    )->user
-                                )->name
-                                ??
-                                '-'
-                            }}
+            optional(
+                optional(
+                    $project->client
+                )->user
+            )->user_name
+            ??
+            '-'
+        }}
 
                     </option>
 
@@ -429,20 +430,20 @@ $et['page_title'] . ' - RuangKita'
                     @foreach($materials as $material)
 
                     <option
-                        value="{{ $material->id }}"
+                        value="{{ $material->material_id }}"
                         data-project="{{ $material->project_id }}"
                         @selected(
                         old( 'material_id' ,
                         $expense->material_id
-                        ) == $material->id
-                        )>
+                        ) == $material->material_id
+                        )
+                        >
 
                         {{ $material->material_name }}
 
                     </option>
 
                     @endforeach
-
 
                 </select>
 

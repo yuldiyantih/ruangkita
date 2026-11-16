@@ -322,7 +322,7 @@
                     {{
                     $personalFund
                         ->user
-                        ?->name
+                        ?->user_name
                     ??
                     '-'
                 }}

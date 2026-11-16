@@ -715,7 +715,7 @@ $dt['dashboard'] . ' - RuangKita'
 
         {{ $dt['welcome'] }},
 
-        {{ auth()->user()->name }}!
+        {{ auth()->user()->user_name }}!
 
     </p>
 
@@ -786,7 +786,7 @@ $dt['dashboard'] . ' - RuangKita'
 
 
                 @if(
-                $project->status
+                $project->project_status
                 ===
                 'ongoing'
                 )

@@ -120,15 +120,15 @@ foreach ($summaryProject->schedules as $summarySchedule) {
 
 $totalSchedules++;
 
-if ($summarySchedule->status === 'ongoing') {
+if ($summarySchedule->schedule_status === 'ongoing') {
 $ongoingSchedules++;
 }
 
-if ($summarySchedule->status === 'completed') {
+if ($summarySchedule->schedule_status === 'completed') {
 $completedSchedules++;
 }
 
-if ($summarySchedule->status === 'delayed') {
+if ($summarySchedule->schedule_status === 'delayed') {
 $delayedSchedules++;
 }
 
@@ -1212,7 +1212,7 @@ $st['title'] . ' - RuangKita'
             @php
 
             $status =
-            $schedule->status
+            $schedule->schedule_status
             ??
             'planned';
 

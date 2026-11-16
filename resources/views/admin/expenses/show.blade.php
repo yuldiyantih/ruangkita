@@ -252,7 +252,7 @@ $expense->funding_source === 'personal'
         </div>
 
         <div class="expense-info-value">
-            {{ $expense->creator->name ?? '-' }}
+            {{ $expense->creator->user_name ?? '-' }}
         </div>
     </div>
 
@@ -303,9 +303,9 @@ $expense->funding_source === 'personal'
         <div class="expense-info-value">
 
             @if(
-            optional($expense->personalFund)->status
+            optional($expense->personalFund)->reimbursement_status
             ===
-            'sudah_diganti'
+            'paid'
             )
 
             <span class="admin-badge admin-badge-success">

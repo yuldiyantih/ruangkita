@@ -623,7 +623,7 @@ $pt['title'] . ' - RuangKita'
 
 
 
-            @if($project->status === 'ongoing')
+            @if($project->project_status === 'ongoing')
 
             <span
                 class="
@@ -635,7 +635,7 @@ $pt['title'] . ' - RuangKita'
 
             </span>
 
-            @elseif($project->status === 'completed')
+            @elseif($project->project_status === 'completed')
 
             <span
                 class="
@@ -647,7 +647,7 @@ $pt['title'] . ' - RuangKita'
 
             </span>
 
-            @elseif($project->status === 'paused')
+            @elseif($project->project_status === 'paused')
 
             <span
                 class="

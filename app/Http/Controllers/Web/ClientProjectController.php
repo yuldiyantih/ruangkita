@@ -39,9 +39,10 @@ class ClientProjectController extends Controller
             ->get()
             : collect();
 
-        return view('client.projects.index', compact(
-            'projects'
-        ));
+        return view(
+            'client.projects.index',
+            compact('projects')
+        );
     }
 
 
@@ -64,9 +65,12 @@ class ClientProjectController extends Controller
         // Client hanya boleh membuka proyek miliknya sendiri
         if (
             !$client ||
-            $project->client_id !== $client->id
+            $project->client_id !== $client->client_id
         ) {
-            abort(403, 'Anda tidak memiliki akses ke proyek ini.');
+            abort(
+                403,
+                'Anda tidak memiliki akses ke proyek ini.'
+            );
         }
 
         $project->load([
@@ -77,15 +81,16 @@ class ClientProjectController extends Controller
             'documentations'
         ]);
 
-        return view('client.projects.show', compact(
-            'project'
-        ));
+        return view(
+            'client.projects.show',
+            compact('project')
+        );
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    |  JADWAL PROYEK
+    | JADWAL PROYEK
     |--------------------------------------------------------------------------
     */
 
@@ -99,18 +104,32 @@ class ClientProjectController extends Controller
 
         $client = $user->client;
 
-        if (!$client || $project->client_id !== $client->id) {
-            abort(403, 'Anda tidak memiliki akses ke proyek ini.');
+        if (
+            !$client ||
+            $project->client_id !== $client->client_id
+        ) {
+            abort(
+                403,
+                'Anda tidak memiliki akses ke proyek ini.'
+            );
         }
 
         $project->load([
             'schedules' => function ($query) {
-                $query->orderBy('start_date', 'asc');
+                $query->orderBy(
+                    'start_date',
+                    'asc'
+                );
             }
         ]);
 
-        return view('client.projects.schedule', compact('project'));
+        return view(
+            'client.projects.schedule',
+            compact('project')
+        );
     }
+
+
     /*
     |--------------------------------------------------------------------------
     | JADWAL SEMUA PROYEK CLIENT
@@ -128,20 +147,30 @@ class ClientProjectController extends Controller
         $client = $user->client;
 
         if (!$client) {
-            abort(403, 'Data client tidak ditemukan.');
+            abort(
+                403,
+                'Data client tidak ditemukan.'
+            );
         }
 
         $projects = $client->projects()
             ->with([
                 'schedules' => function ($query) {
-                    $query->orderBy('start_date', 'asc');
+                    $query->orderBy(
+                        'start_date',
+                        'asc'
+                    );
                 }
             ])
             ->latest()
             ->get();
 
-        return view('client.schedule', compact('projects'));
+        return view(
+            'client.schedule',
+            compact('projects')
+        );
     }
+
 
     public function allProgress()
     {
@@ -154,15 +183,23 @@ class ClientProjectController extends Controller
         $client = $user->client;
 
         if (!$client) {
-            abort(403, 'Data client tidak ditemukan.');
+            abort(
+                403,
+                'Data client tidak ditemukan.'
+            );
         }
 
         $projects = $client->projects()
             ->with([
                 'works',
+
                 'progressUpdates' => function ($query) {
-                    $query->orderBy('update_date', 'desc');
+                    $query->orderBy(
+                        'update_date',
+                        'desc'
+                    );
                 },
+
                 'areas',
             ])
             ->latest()
@@ -187,20 +224,29 @@ class ClientProjectController extends Controller
 
         if (
             !$client ||
-            $project->client_id !== $client->id
+            $project->client_id !== $client->client_id
         ) {
-            abort(403, 'Anda tidak memiliki akses ke proyek ini.');
+            abort(
+                403,
+                'Anda tidak memiliki akses ke proyek ini.'
+            );
         }
 
         $project->load([
             'progressUpdates' => function ($query) {
-                $query->orderBy('update_date', 'desc');
+                $query->orderBy(
+                    'update_date',
+                    'desc'
+                );
             },
+
             'areas',
             'works'
         ]);
 
-        $projects = collect([$project]);
+        $projects = collect([
+            $project
+        ]);
 
         return view(
             'client.progress',
@@ -229,10 +275,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | SEMUA PROJECT MILIK CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | SEMUA PROJECT MILIK CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $projects =
             $client
@@ -242,10 +288,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PILIH PROJECT AKTIF
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PILIH PROJECT AKTIF
+        |--------------------------------------------------------------------------
+        */
 
         $selectedProject = null;
 
@@ -260,7 +306,7 @@ class ClientProjectController extends Controller
 
                 $selectedProject =
                     $projects->firstWhere(
-                        'id',
+                        'project_id',
                         (int) $requestedProjectId
                     );
             }
@@ -275,10 +321,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | LOAD DOCUMENTATION PROJECT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | LOAD DOCUMENTATION PROJECT
+        |--------------------------------------------------------------------------
+        */
 
         if ($selectedProject) {
 
@@ -305,10 +351,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | STATISTIK DOCUMENTATION
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | STATISTIK DOCUMENTATION
+        |--------------------------------------------------------------------------
+        */
 
         $documentationStats = [
 
@@ -393,10 +439,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $projects = $client->projects()
             ->latest()
@@ -404,10 +450,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT AKTIF
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT AKTIF
+        |--------------------------------------------------------------------------
+        */
 
         $selectedProject = null;
 
@@ -422,7 +468,7 @@ class ClientProjectController extends Controller
 
                 $selectedProject =
                     $projects->firstWhere(
-                        'id',
+                        'project_id',
                         (int) $requestedProjectId
                     );
             }
@@ -437,10 +483,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | LOAD BIAYA
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | LOAD BIAYA
+        |--------------------------------------------------------------------------
+        */
 
         if ($selectedProject) {
 
@@ -482,10 +528,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | STATISTIK
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | STATISTIK
+        |--------------------------------------------------------------------------
+        */
 
         $totalProject = 0;
         $totalPaid = 0;
@@ -506,7 +552,7 @@ class ClientProjectController extends Controller
                 (int) $selectedProject
                     ->payments
                     ->where(
-                        'status',
+                        'payment_status',
                         'verified'
                     )
                     ->sum(
@@ -563,10 +609,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DATA CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DATA CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $client = $user->client;
 
@@ -579,10 +625,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT MILIK CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT MILIK CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $projects = $client
             ->projects()
@@ -591,10 +637,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT TERPILIH
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT TERPILIH
+        |--------------------------------------------------------------------------
+        */
 
         $selectedProject = null;
 
@@ -608,7 +654,7 @@ class ClientProjectController extends Controller
 
                 $selectedProject =
                     $projects->firstWhere(
-                        'id',
+                        'project_id',
                         (int) $requestedProjectId
                     );
             }
@@ -623,23 +669,31 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | TEAM / ADMIN
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | TEAM / ADMIN
+        |--------------------------------------------------------------------------
+        */
 
         $teamMembers = User::query()
-            ->where('role', 'admin')
-            ->where('is_active', true)
-            ->orderBy('name')
+            ->where(
+                'role',
+                'admin'
+            )
+            ->where(
+                'is_active',
+                true
+            )
+            ->orderBy(
+                'user_name'
+            )
             ->get();
 
 
         /*
-    |--------------------------------------------------------------------------
-    | ADMIN TERPILIH
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | ADMIN TERPILIH
+        |--------------------------------------------------------------------------
+        */
 
         $selectedUser = null;
 
@@ -653,7 +707,7 @@ class ClientProjectController extends Controller
 
                 $selectedUser =
                     $teamMembers->firstWhere(
-                        'id',
+                        'user_id',
                         (int) $selectedUserId
                     );
             }
@@ -668,10 +722,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PESAN AKTIF
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PESAN AKTIF
+        |--------------------------------------------------------------------------
+        */
 
         $chatMessages = collect();
 
@@ -691,7 +745,7 @@ class ClientProjectController extends Controller
 
                 ->where(
                     'project_id',
-                    $selectedProject->id
+                    $selectedProject->project_id
                 )
 
                 ->where(function ($query) use (
@@ -708,11 +762,11 @@ class ClientProjectController extends Controller
                             $subQuery
                                 ->where(
                                     'sender_id',
-                                    $user->id
+                                    $user->user_id
                                 )
                                 ->where(
                                     'receiver_id',
-                                    $selectedUser->id
+                                    $selectedUser->user_id
                                 );
                         })
 
@@ -724,37 +778,39 @@ class ClientProjectController extends Controller
                             $subQuery
                                 ->where(
                                     'sender_id',
-                                    $selectedUser->id
+                                    $selectedUser->user_id
                                 )
                                 ->where(
                                     'receiver_id',
-                                    $user->id
+                                    $user->user_id
                                 );
                         });
                 })
 
-                ->orderBy('sent_at')
+                ->orderBy(
+                    'sent_at'
+                )
                 ->get();
 
 
             /*
-        |--------------------------------------------------------------------------
-        | TANDAI PESAN SEBAGAI SUDAH DIBACA
-        |--------------------------------------------------------------------------
-        */
+            |--------------------------------------------------------------------------
+            | TANDAI PESAN SEBAGAI SUDAH DIBACA
+            |--------------------------------------------------------------------------
+            */
 
             Message::query()
                 ->where(
                     'project_id',
-                    $selectedProject->id
+                    $selectedProject->project_id
                 )
                 ->where(
                     'sender_id',
-                    $selectedUser->id
+                    $selectedUser->user_id
                 )
                 ->where(
                     'receiver_id',
-                    $user->id
+                    $user->user_id
                 )
                 ->where(
                     'is_read',
@@ -767,10 +823,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | RINGKASAN PERCAKAPAN
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | RINGKASAN PERCAKAPAN
+        |--------------------------------------------------------------------------
+        */
 
         $conversations =
             $teamMembers->map(
@@ -790,7 +846,7 @@ class ClientProjectController extends Controller
 
                             ->where(
                                 'project_id',
-                                $selectedProject->id
+                                $selectedProject->project_id
                             )
 
                             ->where(function ($query) use (
@@ -807,11 +863,11 @@ class ClientProjectController extends Controller
                                         $subQuery
                                             ->where(
                                                 'sender_id',
-                                                $user->id
+                                                $user->user_id
                                             )
                                             ->where(
                                                 'receiver_id',
-                                                $member->id
+                                                $member->user_id
                                             );
                                     })
 
@@ -823,16 +879,18 @@ class ClientProjectController extends Controller
                                         $subQuery
                                             ->where(
                                                 'sender_id',
-                                                $member->id
+                                                $member->user_id
                                             )
                                             ->where(
                                                 'receiver_id',
-                                                $user->id
+                                                $user->user_id
                                             );
                                     });
                             })
 
-                            ->latest('sent_at')
+                            ->latest(
+                                'sent_at'
+                            )
                             ->first();
 
 
@@ -840,15 +898,15 @@ class ClientProjectController extends Controller
                             Message::query()
                             ->where(
                                 'project_id',
-                                $selectedProject->id
+                                $selectedProject->project_id
                             )
                             ->where(
                                 'sender_id',
-                                $member->id
+                                $member->user_id
                             )
                             ->where(
                                 'receiver_id',
-                                $user->id
+                                $user->user_id
                             )
                             ->where(
                                 'is_read',
@@ -878,6 +936,8 @@ class ClientProjectController extends Controller
             )
         );
     }
+
+
     public function sendMessage(Request $request)
     {
         $user = Auth::user();
@@ -888,21 +948,21 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | VALIDASI
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
 
         $validated = $request->validate([
 
             'receiver_id' => [
                 'required',
-                'exists:users,id',
+                'exists:users,user_id',
             ],
 
             'project_id' => [
                 'required',
-                'exists:projects,id',
+                'exists:projects,project_id',
             ],
 
             'message_text' => [
@@ -922,10 +982,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PESAN ATAU ATTACHMENT WAJIB ADA
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PESAN ATAU ATTACHMENT WAJIB ADA
+        |--------------------------------------------------------------------------
+        */
 
         if (
             !$request->filled('message_text')
@@ -943,10 +1003,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | DATA CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | DATA CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $client = $user->client;
 
@@ -960,29 +1020,29 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | VALIDASI PROJECT MILIK CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | VALIDASI PROJECT MILIK CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $project = $client
             ->projects()
             ->where(
-                'id',
+                'project_id',
                 $validated['project_id']
             )
             ->firstOrFail();
 
 
         /*
-    |--------------------------------------------------------------------------
-    | VALIDASI RECEIVER HARUS ADMIN
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | VALIDASI RECEIVER HARUS ADMIN
+        |--------------------------------------------------------------------------
+        */
 
         $receiver = User::query()
             ->where(
-                'id',
+                'user_id',
                 $validated['receiver_id']
             )
             ->where(
@@ -993,10 +1053,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | ATTACHMENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | ATTACHMENT
+        |--------------------------------------------------------------------------
+        */
 
         $attachmentPath = null;
         $attachmentName = null;
@@ -1033,21 +1093,21 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | SIMPAN PESAN
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | SIMPAN PESAN
+        |--------------------------------------------------------------------------
+        */
 
         Message::create([
 
             'project_id' =>
-            $project->id,
+            $project->project_id,
 
             'sender_id' =>
-            $user->id,
+            $user->user_id,
 
             'receiver_id' =>
-            $receiver->id,
+            $receiver->user_id,
 
             'message_text' =>
             $validated['message_text']
@@ -1075,17 +1135,17 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | KEMBALI KE CHAT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | KEMBALI KE CHAT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route(
                 'client.messages',
                 [
                     'user' =>
-                    $receiver->id,
+                    $receiver->user_id,
                 ]
             )
             ->with(
@@ -1093,6 +1153,7 @@ class ClientProjectController extends Controller
                 'Pesan berhasil dikirim.'
             );
     }
+
 
     public function ar()
     {
@@ -1113,10 +1174,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $projects = $client->projects()
             ->with([
@@ -1127,10 +1188,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PROJECT TERPILIH
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PROJECT TERPILIH
+        |--------------------------------------------------------------------------
+        */
 
         $selectedProject = null;
 
@@ -1143,7 +1204,7 @@ class ClientProjectController extends Controller
 
                 $selectedProject =
                     $projects->firstWhere(
-                        'id',
+                        'project_id',
                         (int) $requestedProjectId
                     );
             }
@@ -1157,10 +1218,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | AREA / RUANGAN
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | AREA / RUANGAN
+        |--------------------------------------------------------------------------
+        */
 
         $areas = collect();
 
@@ -1171,7 +1232,9 @@ class ClientProjectController extends Controller
             $areas =
                 $selectedProject
                 ->areas
-                ->sortBy('area_name')
+                ->sortBy(
+                    'area_name'
+                )
                 ->values();
 
             $requestedAreaId =
@@ -1181,12 +1244,16 @@ class ClientProjectController extends Controller
 
                 $selectedArea =
                     $areas->firstWhere(
-                        'id',
+                        'project_area_id',
                         (int) $requestedAreaId
                     );
             }
 
-            if (!$selectedArea && $areas->count() > 0) {
+            if (
+                !$selectedArea
+                &&
+                $areas->count() > 0
+            ) {
 
                 $selectedArea =
                     $areas->first();
@@ -1195,17 +1262,20 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | AR ASSET
-    |--------------------------------------------------------------------------
-    |
-    | Sementara ambil semua asset.
-    | Nanti pada Tahap 3 Admin akan mengatur asset.
-    |
-    */
+        |--------------------------------------------------------------------------
+        | AR ASSET
+        |--------------------------------------------------------------------------
+        |
+        | Sementara ambil semua asset.
+        | Nanti pada Tahap 3 Admin akan mengatur asset.
+        |
+        */
 
         $arAssets = ArAsset::query()
-            ->where('is_active', true)
+            ->where(
+                'is_active',
+                true
+            )
             ->latest()
             ->get();
 
@@ -1225,10 +1295,16 @@ class ClientProjectController extends Controller
 
     public function settings()
     {
-        $user = User::findOrFail(Auth::id());
+        $user =
+            User::findOrFail(
+                Auth::id()
+            );
 
         if ($user->role !== 'client') {
-            return redirect()->route('admin.dashboard');
+            return redirect()
+                ->route(
+                    'admin.dashboard'
+                );
         }
 
         $client = $user->client;
@@ -1249,9 +1325,13 @@ class ClientProjectController extends Controller
         );
     }
 
+
     public function updateProfile(Request $request)
     {
-        $user = User::findOrFail(Auth::id());
+        $user =
+            User::findOrFail(
+                Auth::id()
+            );
 
         if ($user->role !== 'client') {
             abort(403);
@@ -1260,7 +1340,10 @@ class ClientProjectController extends Controller
         $client = $user->client;
 
         if (!$client) {
-            abort(403, 'Data client tidak ditemukan.');
+            abort(
+                403,
+                'Data client tidak ditemukan.'
+            );
         }
 
         $validated = $request->validate([
@@ -1274,7 +1357,14 @@ class ClientProjectController extends Controller
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($user->id),
+
+                Rule::unique(
+                    'users',
+                    'email'
+                )->ignore(
+                    $user->user_id,
+                    'user_id'
+                ),
             ],
 
             'phone' => [
@@ -1297,72 +1387,109 @@ class ClientProjectController extends Controller
             ],
         ]);
 
+
         /*
-    |--------------------------------------------------------------------------
-    | FOTO PROFIL
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | FOTO PROFIL
+        |--------------------------------------------------------------------------
+        */
 
-        $profilePhoto = $user->profile_photo;
+        $profilePhoto =
+            $user->profile_photo;
 
-        if ($request->hasFile('profile_photo')) {
+        if (
+            $request->hasFile(
+                'profile_photo'
+            )
+        ) {
 
             // hapus foto lama
             if ($user->profile_photo) {
-                Storage::disk('public')->delete(
+
+                Storage::disk(
+                    'public'
+                )->delete(
                     $user->profile_photo
                 );
             }
 
+
             // simpan foto baru
-            $profilePhoto = $request
-                ->file('profile_photo')
+            $profilePhoto =
+                $request
+                ->file(
+                    'profile_photo'
+                )
                 ->store(
                     'profile-photos',
                     'public'
                 );
         }
 
+
         /*
-    |--------------------------------------------------------------------------
-    | UPDATE USER
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | UPDATE USER
+        |--------------------------------------------------------------------------
+        */
 
         $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'profile_photo' => $profilePhoto,
+
+            'user_name' =>
+            $validated['name'],
+
+            'email' =>
+            $validated['email'],
+
+            'phone' =>
+            $validated['phone']
+                ?? null,
+
+            'profile_photo' =>
+            $profilePhoto,
+
         ]);
+
 
         /*
-    |--------------------------------------------------------------------------
-    | UPDATE CLIENT
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | UPDATE CLIENT
+        |--------------------------------------------------------------------------
+        */
 
         $client->update([
-            'address' => $validated['address'] ?? null,
+
+            'address' =>
+            $validated['address']
+                ?? null,
+
         ]);
 
+
         return redirect()
-            ->route('client.settings')
+            ->route(
+                'client.settings'
+            )
             ->with(
                 'success',
                 'Profil berhasil diperbarui.'
             );
     }
 
+
     public function updatePassword(Request $request)
     {
-        $user = User::findOrFail(Auth::id());
+        $user =
+            User::findOrFail(
+                Auth::id()
+            );
 
         if ($user->role !== 'client') {
             abort(403);
         }
 
         $validated = $request->validate([
+
             'current_password' => [
                 'required',
             ],
@@ -1373,6 +1500,7 @@ class ClientProjectController extends Controller
                 'min:8',
                 'confirmed',
             ],
+
         ]);
 
 
@@ -1393,14 +1521,14 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | User model kamu menggunakan cast "hashed"
-    |--------------------------------------------------------------------------
-    |
-    | Jadi kita cukup memberikan password baru.
-    | Laravel akan melakukan hashing.
-    |
-    */
+        |--------------------------------------------------------------------------
+        | User model menggunakan cast "hashed"
+        |--------------------------------------------------------------------------
+        |
+        | Jadi cukup memberikan password baru.
+        | Laravel akan melakukan hashing.
+        |
+        */
 
         $user->password =
             $validated['password'];
@@ -1418,15 +1546,21 @@ class ClientProjectController extends Controller
             );
     }
 
+
     public function updatePreferences(Request $request)
     {
-        $user = User::findOrFail(Auth::id());
+        $user =
+            User::findOrFail(
+                Auth::id()
+            );
+
         if ($user->role !== 'client') {
             abort(403);
         }
 
 
         $validated = $request->validate([
+
             'language' => [
                 'required',
                 'in:id,en',
@@ -1442,14 +1576,15 @@ class ClientProjectController extends Controller
                 'required',
                 'in:light,dark',
             ],
+
         ]);
 
 
         /*
-    |--------------------------------------------------------------------------
-    | NOTIFIKASI
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI
+        |--------------------------------------------------------------------------
+        */
 
         $user->notify_messages =
             $request->boolean(
@@ -1478,10 +1613,10 @@ class ClientProjectController extends Controller
 
 
         /*
-    |--------------------------------------------------------------------------
-    | PREFERENSI APLIKASI
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | PREFERENSI APLIKASI
+        |--------------------------------------------------------------------------
+        */
 
         $user->language =
             $validated['language'];

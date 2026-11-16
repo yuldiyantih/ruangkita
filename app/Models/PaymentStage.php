@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentStage extends Model
 {
+    protected $primaryKey = 'payment_stage_id';
+
     protected $fillable = [
         'project_id',
         'title',
         'percentage',
         'amount',
         'due_date',
-        'status',
+        'payment_stage_status',
         'sort_order',
         'is_visible_to_client',
     ];
@@ -30,12 +32,19 @@ class PaymentStage extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(
+            Project::class,
+            'project_id',
+            'project_id'
+        );
     }
-
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(
+            Payment::class,
+            'payment_stage_id',
+            'payment_stage_id'
+        );
     }
 }

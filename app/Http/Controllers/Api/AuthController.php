@@ -25,7 +25,7 @@ class AuthController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
+            'user_name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'],
             'role' => 'client',
@@ -34,7 +34,7 @@ class AuthController extends Controller
         ]);
 
         Client::create([
-            'user_id' => $user->id,
+            'user_id' => $user->user_id,
             'address' => $validated['address'] ?? null,
         ]);
 
@@ -60,11 +60,23 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $user = User::where(
+            'email',
+            $validated['email']
+        )->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (
+            !$user
+            ||
+            !Hash::check(
+                $validated['password'],
+                $user->password
+            )
+        ) {
             throw ValidationException::withMessages([
-                'email' => ['Email atau password salah.'],
+                'email' => [
+                    'Email atau password salah.'
+                ],
             ]);
         }
 
@@ -86,8 +98,8 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Login berhasil.',
             'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
+                'id' => $user->user_id,
+                'name' => $user->user_name,
                 'email' => $user->email,
                 'role' => $user->role,
                 'phone' => $user->phone,

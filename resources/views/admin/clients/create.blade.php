@@ -1,11 +1,9 @@
 @extends('layouts.admin')
 
-
 @section(
 'title',
 'Tambah Client - RuangKita'
 )
-
 
 @php
 
@@ -13,7 +11,6 @@ $pageLang =
 auth()->user()->language
 ??
 'id';
-
 
 $translations = [
 
@@ -72,9 +69,7 @@ $translations = [
 
 'address_placeholder' =>
 'Masukkan alamat client',
-
 ],
-
 
 'en' => [
 
@@ -131,11 +126,8 @@ $translations = [
 
 'address_placeholder' =>
 'Enter client address',
-
 ],
-
 ];
-
 
 $ct =
 $translations[$pageLang]
@@ -149,35 +141,24 @@ $translations['id'];
 
 <style>
     .client-form-page {
-
-        max-width:
-            980px;
+        max-width: 980px;
     }
-
 
     .client-create-header {
-
-        margin-bottom:
-            22px;
+        margin-bottom: 22px;
     }
 
-
     .client-create-subtitle {
-
-        max-width:
-            620px;
+        max-width: 620px;
     }
 </style>
 
 @endpush
 
 
-
 @section('content')
 
-
 <div class="client-form-page">
-
 
     {{-- =====================================================
          BREADCRUMB
@@ -185,30 +166,19 @@ $translations['id'];
 
     <div class="admin-breadcrumb">
 
-
         <a href="{{ route('admin.clients.index') }}">
-
             {{ $ct['data_client'] }}
-
         </a>
 
-
         <span class="admin-breadcrumb-separator">
-
             /
-
         </span>
-
 
         <span class="admin-breadcrumb-current">
-
             {{ $ct['add_client'] }}
-
         </span>
 
-
     </div>
-
 
 
     {{-- =====================================================
@@ -217,23 +187,38 @@ $translations['id'];
 
     <div class="admin-page-header client-create-header">
 
-
         <h1 class="admin-page-title">
-
             {{ $ct['add_client'] }}
-
         </h1>
 
-
         <p class="admin-page-subtitle client-create-subtitle">
-
             {{ $ct['subtitle'] }}
-
         </p>
-
 
     </div>
 
+
+    {{-- =====================================================
+         ERROR VALIDATION
+    ====================================================== --}}
+
+    @if($errors->any())
+
+    <div class="admin-alert admin-alert-danger">
+
+        <ul style="margin:0; padding-left:20px;">
+
+            @foreach($errors->all() as $error)
+
+            <li>{{ $error }}</li>
+
+            @endforeach
+
+        </ul>
+
+    </div>
+
+    @endif
 
 
     {{-- =====================================================
@@ -248,33 +233,24 @@ $translations['id'];
         @csrf
 
 
-
         <div class="admin-form-title">
-
             {{ $ct['client_information'] }}
-
         </div>
-
 
 
         <div class="admin-form-grid">
 
 
             {{-- NAME --}}
-
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
                     {{ $ct['name'] }}
 
-                    <span class="admin-required">
-                        *
-                    </span>
+                    <span class="admin-required">*</span>
 
                 </label>
-
 
                 <input
                     type="text"
@@ -284,26 +260,19 @@ $translations['id'];
                     placeholder="{{ $ct['name_placeholder'] }}"
                     required>
 
-
             </div>
 
 
-
             {{-- EMAIL --}}
-
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
                     {{ $ct['email'] }}
 
-                    <span class="admin-required">
-                        *
-                    </span>
+                    <span class="admin-required">*</span>
 
                 </label>
-
 
                 <input
                     type="email"
@@ -313,22 +282,15 @@ $translations['id'];
                     placeholder="{{ $ct['email_placeholder'] }}"
                     required>
 
-
             </div>
 
 
-
             {{-- PHONE --}}
-
             <div class="admin-form-group">
 
-
                 <label class="admin-form-label">
-
                     {{ $ct['phone'] }}
-
                 </label>
-
 
                 <input
                     type="text"
@@ -337,26 +299,19 @@ $translations['id'];
                     class="admin-form-control"
                     placeholder="{{ $ct['phone_placeholder'] }}">
 
-
             </div>
 
 
-
             {{-- PASSWORD --}}
-
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
                     {{ $ct['password'] }}
 
-                    <span class="admin-required">
-                        *
-                    </span>
+                    <span class="admin-required">*</span>
 
                 </label>
-
 
                 <input
                     type="password"
@@ -365,26 +320,19 @@ $translations['id'];
                     placeholder="{{ $ct['password_placeholder'] }}"
                     required>
 
-
             </div>
 
 
-
             {{-- PASSWORD CONFIRMATION --}}
-
             <div class="admin-form-group">
-
 
                 <label class="admin-form-label">
 
                     {{ $ct['password_confirmation'] }}
 
-                    <span class="admin-required">
-                        *
-                    </span>
+                    <span class="admin-required">*</span>
 
                 </label>
-
 
                 <input
                     type="password"
@@ -393,34 +341,24 @@ $translations['id'];
                     placeholder="{{ $ct['password_confirmation_placeholder'] }}"
                     required>
 
-
             </div>
 
 
-
             {{-- ADDRESS --}}
-
             <div class="admin-form-group full">
 
-
                 <label class="admin-form-label">
-
                     {{ $ct['address'] }}
-
                 </label>
-
 
                 <textarea
                     name="address"
                     class="admin-form-control"
                     placeholder="{{ $ct['address_placeholder'] }}">{{ old('address') }}</textarea>
 
-
             </div>
 
-
         </div>
-
 
 
         {{-- =================================================
@@ -429,38 +367,23 @@ $translations['id'];
 
         <div class="admin-form-actions">
 
-
             <a
                 href="{{ route('admin.clients.index') }}"
-                class="
-                    admin-btn
-                    admin-btn-secondary
-                ">
-
+                class="admin-btn admin-btn-secondary">
                 {{ $ct['cancel'] }}
-
             </a>
 
 
             <button
                 type="submit"
-                class="
-                    admin-btn
-                    admin-btn-primary
-                ">
-
+                class="admin-btn admin-btn-primary">
                 {{ $ct['save'] }}
-
             </button>
-
 
         </div>
 
-
     </form>
 
-
 </div>
-
 
 @endsection

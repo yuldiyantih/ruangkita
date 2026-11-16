@@ -604,13 +604,13 @@ $translations['id'];
                         @foreach($projects as $project)
 
                         <option
-                            value="{{ $project->id }}"
+                            value="{{ $project->project_id }}"
                             @selected(
                             (string) old( 'project_id' ,
                             $documentation->project_id
                             )
                             ===
-                            (string) $project->id
+                            (string) $project->project_id
                             )
                             >
                             {{ $project->project_name }}

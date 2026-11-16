@@ -174,8 +174,8 @@ $arTranslations = [
 $at = $arTranslations[$arLang] ?? $arTranslations['id'];
 
 $arMobileUrl = route('client.ar', [
-'project' => $selectedProject?->id,
-'area' => $selectedArea?->id,
+'project' => $selectedProject?->project_id,
+'area' => $selectedArea?->project_area_id,
 ]);
 
 @endphp
@@ -1063,12 +1063,12 @@ $at['title'] . ' - RuangKita'
 
                     <option
 
-                        value="{{ $project->id }}"
+                        value="{{ $project->project_id }}"
 
                         @selected(
-                        $project->id
+                        $project->project_id
                         ===
-                        $selectedProject->id
+                        $selectedProject->project_id
                         )
 
                         >
@@ -1113,7 +1113,7 @@ $at['title'] . ' - RuangKita'
 
                     value="{{
                                 $selectedProject
-                                    ->id
+                                    ->project_id
                             }}">
 
 
@@ -1129,14 +1129,14 @@ $at['title'] . ' - RuangKita'
 
                     <option
 
-                        value="{{ $area->id }}"
+                        value="{{ $area->project_area_id }}"
 
                         @selected(
                         $selectedArea
                         &&
-                        $area->id
+                        $area->project_area_id
                         ===
-                        $selectedArea->id
+                        $selectedArea->project_area_id
                         )
 
                         >
@@ -1426,11 +1426,11 @@ $at['title'] . ' - RuangKita'
                                 [
                                     'project'
                                     =>
-                                    $selectedProject->id,
+                                    $selectedProject->project_id,
 
                                     'area'
                                     =>
-                                    $area->id
+                                    $area->project_area_id
                                 ]
                             )
                         }}"
@@ -1440,9 +1440,9 @@ $at['title'] . ' - RuangKita'
                             {{
                                 $selectedArea
                                 &&
-                                $selectedArea->id
+                                $selectedArea->project_area_id
                                 ===
-                                $area->id
+                                $area->project_area_id
                                 ?
                                 'active'
                                 :
@@ -1566,7 +1566,7 @@ $at['title'] . ' - RuangKita'
 
         <div
             class="asset-card"
-            data-asset-id="{{ $asset->id }}"
+            data-asset-id="{{ $asset->ar_asset_id }}"
             data-asset-type="{{ $asset->asset_type }}"
             data-color-code="{{ $asset->color_code ?? '' }}"
             data-model-url="{{ $asset->model_3d_path ? asset('storage/' . $asset->model_3d_path) : '' }}"
@@ -1580,7 +1580,7 @@ $at['title'] . ' - RuangKita'
 
                 <img
                     src="{{ asset('storage/' . $asset->thumbnail_path) }}"
-                    alt="{{ $asset->name }}"
+                    alt="{{ $asset->ar_asset_name }}"
                     style="
                 width:100%;
                 height:100%;
@@ -1606,7 +1606,7 @@ $at['title'] . ' - RuangKita'
 
                 <img
                     src="{{ asset('storage/' . $asset->texture_path) }}"
-                    alt="{{ $asset->name }}"
+                    alt="{{ $asset->ar_asset_name }}"
                     style="
                 width:100%;
                 height:100%;
@@ -1635,9 +1635,9 @@ $at['title'] . ' - RuangKita'
             <div class="asset-name">
 
                 {{
-                                $asset->name
+                                $asset->ar_asset_name
                                 ??
-                                $asset->asset_name
+                                $asset->ar_asset_name
                                 ??
                                 'AR Asset'
                             }}

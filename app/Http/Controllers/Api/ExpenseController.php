@@ -12,12 +12,22 @@ class ExpenseController extends Controller
     {
         $user = $request->user();
 
-        $query = Expense::with(['project', 'material', 'creator']);
+        $query = Expense::with([
+            'project',
+            'material',
+            'creator'
+        ]);
 
         if ($user->role !== 'admin') {
-            $query->whereHas('project.client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            });
+            $query->whereHas(
+                'project.client',
+                function ($q) use ($user) {
+                    $q->where(
+                        'user_id',
+                        $user->user_id
+                    );
+                }
+            );
         }
 
         $expenses = $query
@@ -42,21 +52,44 @@ class ExpenseController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'material_id' => 'nullable|exists:materials,id',
-            'expense_date' => 'required|date',
-            'store_name' => 'nullable|string|max:150',
-            'category' => 'required|in:material,labor,transport,equipment,other',
-            'description' => 'nullable|string',
-            'amount' => 'required|numeric|min:0',
-            'funding_source' => 'required|in:project,personal',
-            'receipt_path' => 'nullable|string|max:255',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'material_id' =>
+            'nullable|exists:materials,material_id',
+
+            'expense_date' =>
+            'required|date',
+
+            'store_name' =>
+            'nullable|string|max:150',
+
+            'category' =>
+            'required|in:material,labor,transport,equipment,other',
+
+            'description' =>
+            'nullable|string',
+
+            'amount' =>
+            'required|numeric|min:0',
+
+            'funding_source' =>
+            'required|in:project,personal',
+
+            'receipt_path' =>
+            'nullable|string|max:255',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $validated['created_by'] = $user->id;
+        $validated['created_by'] =
+            $user->user_id;
 
-        $expense = Expense::create($validated);
+        $expense =
+            Expense::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -65,13 +98,19 @@ class ExpenseController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, Expense $expense)
-    {
+    public function show(
+        Request $request,
+        Expense $expense
+    ) {
         $user = $request->user();
 
         if (
-            $user->role !== 'admin' &&
-            $expense->project?->client?->user_id !== $user->id
+            $user->role !== 'admin'
+            &&
+            $expense
+            ->project
+            ?->client
+            ?->user_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -106,19 +145,40 @@ class ExpenseController extends Controller
         }
 
         $validated = $request->validate([
-            'project_id' => 'sometimes|exists:projects,id',
-            'material_id' => 'nullable|exists:materials,id',
-            'expense_date' => 'sometimes|date',
-            'store_name' => 'nullable|string|max:150',
-            'category' => 'sometimes|in:material,labor,transport,equipment,other',
-            'description' => 'nullable|string',
-            'amount' => 'sometimes|numeric|min:0',
-            'funding_source' => 'sometimes|in:project,personal',
-            'receipt_path' => 'nullable|string|max:255',
-            'is_visible_to_client' => 'boolean',
+            'project_id' =>
+            'sometimes|exists:projects,project_id',
+
+            'material_id' =>
+            'nullable|exists:materials,material_id',
+
+            'expense_date' =>
+            'sometimes|date',
+
+            'store_name' =>
+            'nullable|string|max:150',
+
+            'category' =>
+            'sometimes|in:material,labor,transport,equipment,other',
+
+            'description' =>
+            'nullable|string',
+
+            'amount' =>
+            'sometimes|numeric|min:0',
+
+            'funding_source' =>
+            'sometimes|in:project,personal',
+
+            'receipt_path' =>
+            'nullable|string|max:255',
+
+            'is_visible_to_client' =>
+            'boolean',
         ]);
 
-        $expense->update($validated);
+        $expense->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,

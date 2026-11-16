@@ -77,7 +77,7 @@ class ProgressController extends Controller
 
             ->orderByDesc('update_date')
 
-            ->orderByDesc('id')
+            ->orderByDesc('progress_update_id')
 
             ->paginate(10)
 
@@ -117,14 +117,14 @@ class ProgressController extends Controller
 
         $activeProjects =
             Project::where(
-                'status',
+                'project_status',
                 'ongoing'
             )->count();
 
 
         $completedProjects =
             Project::where(
-                'status',
+                'project_status',
                 'completed'
             )->count();
 
@@ -136,7 +136,7 @@ class ProgressController extends Controller
 
         $needsAttention =
             Project::where(
-                'status',
+                'project_status',
                 'paused'
             )->count();
 
@@ -153,21 +153,21 @@ class ProgressController extends Controller
 
         $completedCount =
             Project::where(
-                'status',
+                'project_status',
                 'completed'
             )->count();
 
 
         $runningCount =
             Project::where(
-                'status',
+                'project_status',
                 'ongoing'
             )->count();
 
 
         $pausedCount =
             Project::where(
-                'status',
+                'project_status',
                 'paused'
             )->count();
 
@@ -180,7 +180,7 @@ class ProgressController extends Controller
 
         $planningCount =
             Project::whereNotIn(
-                'status',
+                'project_status',
                 [
                     'ongoing',
                     'completed',
@@ -301,7 +301,7 @@ class ProgressController extends Controller
 
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'percentage' => [
@@ -473,7 +473,7 @@ class ProgressController extends Controller
 
                 'project_id' => [
                     'required',
-                    'exists:projects,id',
+                    'exists:projects,project_id',
                 ],
 
                 'percentage' => [
@@ -702,13 +702,13 @@ class ProgressController extends Controller
                 'update_date'
             )
             ->orderByDesc(
-                'id'
+                'progress_update_id'
             )
             ->first();
 
 
         Project::where(
-            'id',
+            'project_id',
             $projectId
         )->update([
 

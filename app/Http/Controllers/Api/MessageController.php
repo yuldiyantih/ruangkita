@@ -18,8 +18,15 @@ class MessageController extends Controller
             'receiver',
         ])
             ->where(function ($query) use ($user) {
-                $query->where('sender_id', $user->id)
-                    ->orWhere('receiver_id', $user->id);
+                $query
+                    ->where(
+                        'sender_id',
+                        $user->user_id
+                    )
+                    ->orWhere(
+                        'receiver_id',
+                        $user->user_id
+                    );
             })
             ->latest('sent_at')
             ->get();
@@ -35,15 +42,26 @@ class MessageController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'receiver_id' => 'required|exists:users,id',
-            'message_text' => 'required|string',
+            'project_id' =>
+            'required|exists:projects,project_id',
+
+            'receiver_id' =>
+            'required|exists:users,user_id',
+
+            'message_text' =>
+            'required|string',
         ]);
 
-        $validated['sender_id'] = $user->id;
-        $validated['sent_at'] = now();
+        $validated['sender_id'] =
+            $user->user_id;
 
-        $message = Message::create($validated);
+        $validated['sent_at'] =
+            now();
+
+        $message =
+            Message::create(
+                $validated
+            );
 
         return response()->json([
             'success' => true,
@@ -52,13 +70,16 @@ class MessageController extends Controller
         ], 201);
     }
 
-    public function show(Request $request, Message $message)
-    {
+    public function show(
+        Request $request,
+        Message $message
+    ) {
         $user = $request->user();
 
         if (
-            $message->sender_id !== $user->id &&
-            $message->receiver_id !== $user->id
+            $message->sender_id !== $user->user_id
+            &&
+            $message->receiver_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,
@@ -84,7 +105,10 @@ class MessageController extends Controller
     ) {
         $user = $request->user();
 
-        if ($message->receiver_id !== $user->id) {
+        if (
+            $message->receiver_id !==
+            $user->user_id
+        ) {
             return response()->json([
                 'success' => false,
                 'message' => 'Hanya penerima yang dapat mengubah status pesan.',
@@ -92,10 +116,13 @@ class MessageController extends Controller
         }
 
         $validated = $request->validate([
-            'is_read' => 'required|boolean',
+            'is_read' =>
+            'required|boolean',
         ]);
 
-        $message->update($validated);
+        $message->update(
+            $validated
+        );
 
         return response()->json([
             'success' => true,
@@ -111,8 +138,9 @@ class MessageController extends Controller
         $user = $request->user();
 
         if (
-            $message->sender_id !== $user->id &&
-            $message->receiver_id !== $user->id
+            $message->sender_id !== $user->user_id
+            &&
+            $message->receiver_id !== $user->user_id
         ) {
             return response()->json([
                 'success' => false,

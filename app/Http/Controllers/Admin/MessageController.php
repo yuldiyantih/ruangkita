@@ -71,7 +71,7 @@ class MessageController extends Controller
                 $lastMessage = Message::query()
                     ->where(
                         'project_id',
-                        $project->id
+                        $project->project_id
                     )
                     ->where(function ($query) use (
                         $admin,
@@ -87,11 +87,11 @@ class MessageController extends Controller
                                 $subQuery
                                     ->where(
                                         'sender_id',
-                                        $admin->id
+                                        $admin->user_id
                                     )
                                     ->where(
                                         'receiver_id',
-                                        $clientUser->id
+                                        $clientUser->user_id
                                     );
                             })
                             ->orWhere(function ($subQuery) use (
@@ -102,11 +102,11 @@ class MessageController extends Controller
                                 $subQuery
                                     ->where(
                                         'sender_id',
-                                        $clientUser->id
+                                        $clientUser->user_id
                                     )
                                     ->where(
                                         'receiver_id',
-                                        $admin->id
+                                        $admin->user_id
                                     );
                             });
                     })
@@ -123,15 +123,15 @@ class MessageController extends Controller
                 $unread = Message::query()
                     ->where(
                         'project_id',
-                        $project->id
+                        $project->project_id
                     )
                     ->where(
                         'sender_id',
-                        $clientUser->id
+                        $clientUser->user_id
                     )
                     ->where(
                         'receiver_id',
-                        $admin->id
+                        $admin->user_id
                     )
                     ->where(
                         'is_read',
@@ -171,7 +171,7 @@ class MessageController extends Controller
 
             $selectedProject =
                 $projects->firstWhere(
-                    'id',
+                    'project_id',
                     (int) $request->project
                 );
         }
@@ -227,7 +227,7 @@ class MessageController extends Controller
                 ])
                 ->where(
                     'project_id',
-                    $selectedProject->id
+                    $selectedProject->project_id
                 )
                 ->where(function ($query) use (
                     $admin,
@@ -243,11 +243,11 @@ class MessageController extends Controller
                             $subQuery
                                 ->where(
                                     'sender_id',
-                                    $admin->id
+                                    $admin->user_id
                                 )
                                 ->where(
                                     'receiver_id',
-                                    $selectedUser->id
+                                    $selectedUser->user_id
                                 );
                         })
                         ->orWhere(function ($subQuery) use (
@@ -258,11 +258,11 @@ class MessageController extends Controller
                             $subQuery
                                 ->where(
                                     'sender_id',
-                                    $selectedUser->id
+                                    $selectedUser->user_id
                                 )
                                 ->where(
                                     'receiver_id',
-                                    $admin->id
+                                    $admin->user_id
                                 );
                         });
                 })
@@ -279,15 +279,15 @@ class MessageController extends Controller
             Message::query()
                 ->where(
                     'project_id',
-                    $selectedProject->id
+                    $selectedProject->project_id
                 )
                 ->where(
                     'sender_id',
-                    $selectedUser->id
+                    $selectedUser->user_id
                 )
                 ->where(
                     'receiver_id',
-                    $admin->id
+                    $admin->user_id
                 )
                 ->where(
                     'is_read',
@@ -317,7 +317,7 @@ class MessageController extends Controller
         $totalUnread = Message::query()
             ->where(
                 'receiver_id',
-                $admin->id
+                $admin->user_id
             )
             ->where(
                 'is_read',
@@ -332,11 +332,11 @@ class MessageController extends Controller
                 $query
                     ->where(
                         'sender_id',
-                        $admin->id
+                        $admin->user_id
                     )
                     ->orWhere(
                         'receiver_id',
-                        $admin->id
+                        $admin->user_id
                     );
             })
             ->whereDate(
@@ -386,12 +386,12 @@ class MessageController extends Controller
 
             'receiver_id' => [
                 'required',
-                'exists:users,id',
+                'exists:users,user_id',
             ],
 
             'project_id' => [
                 'required',
-                'exists:projects,id',
+                'exists:projects,project_id',
             ],
 
             'message_text' => [
@@ -439,7 +439,7 @@ class MessageController extends Controller
 
         $receiver = User::query()
             ->where(
-                'id',
+                'user_id',
                 $validated['receiver_id']
             )
             ->where(
@@ -457,7 +457,7 @@ class MessageController extends Controller
 
         $project = Project::query()
             ->where(
-                'id',
+                'project_id',
                 $validated['project_id']
             )
             ->whereHas(
@@ -466,7 +466,7 @@ class MessageController extends Controller
 
                     $query->where(
                         'user_id',
-                        $receiver->id
+                        $receiver->user_id
                     );
                 }
             )
@@ -522,13 +522,13 @@ class MessageController extends Controller
         Message::create([
 
             'project_id' =>
-            $project->id,
+            $project->project_id,
 
             'sender_id' =>
-            $admin->id,
+            $admin->user_id,
 
             'receiver_id' =>
-            $receiver->id,
+            $receiver->user_id,
 
             'message_text' =>
             $validated['message_text']
@@ -566,7 +566,7 @@ class MessageController extends Controller
                 'admin.messages.index',
                 [
                     'project' =>
-                    $project->id,
+                    $project->project_id,
                 ]
             )
             ->with(
