@@ -190,14 +190,21 @@ class ClientController extends Controller
                 'string',
                 'max:1000',
             ],
+            'is_active' => [
+                'required',
+                'boolean',
+            ],
         ]);
 
+        // UPDATE DATA USER
         $user->update([
             'user_name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'is_active' => $validated['is_active'],
         ]);
 
+        // UPDATE DATA CLIENT
         $client->update([
             'address' => $validated['address'] ?? null,
         ]);

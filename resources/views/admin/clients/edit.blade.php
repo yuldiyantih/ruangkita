@@ -56,6 +56,10 @@ $translations = [
 'phone_placeholder' =>
 '08xxxxxxxxxx',
 
+'status' => 'Status Client',
+'active' => 'Aktif',
+'inactive' => 'Nonaktif',
+
 'address_placeholder' =>
 'Masukkan alamat client',
 ],
@@ -96,6 +100,10 @@ $translations = [
 'phone' =>
 'Phone Number',
 
+'status' => 'Client Status',
+'active' => 'Active',
+'inactive' => 'Inactive',
+
 'address' =>
 'Address',
 
@@ -110,6 +118,9 @@ $translations = [
 
 'address_placeholder' =>
 'Enter client address',
+
+'status_placeholder' =>
+'Select client status',
 ],
 ];
 
@@ -333,6 +344,44 @@ $et['page_title'] . ' - RuangKita'
                     }}"
                     class="admin-form-control"
                     placeholder="{{ $et['phone_placeholder'] }}">
+
+            </div>
+
+            {{-- STATUS CLIENT --}}
+
+            <div class="admin-form-group">
+
+                <label class="admin-form-label">
+                    {{ $et['status'] }}
+                    <span class="admin-required">*</span>
+                </label>
+
+                <select
+                    name="is_active"
+                    class="admin-form-control"
+                    required>
+
+                    <option
+                        value="1"
+                        @selected(
+                        old( 'is_active' ,
+                        $client->user->is_active ?? 1
+                        ) == 1
+                        )>
+                        {{ $et['active'] }}
+                    </option>
+
+                    <option
+                        value="0"
+                        @selected(
+                        old( 'is_active' ,
+                        $client->user->is_active ?? 1
+                        ) == 0
+                        )>
+                        {{ $et['inactive'] }}
+                    </option>
+
+                </select>
 
             </div>
 
