@@ -1432,30 +1432,80 @@ $adminTranslations['id'];
            RESPONSIVE
         ===================================================== */
 
+
         @media(max-width:850px) {
 
             .admin-sidebar {
-                display: none;
+                display: block;
+                width: var(--sidebar-width);
+                padding: 20px 14px;
+
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+
+                z-index: 1000;
+
+                transform: translateX(-100%);
+                transition: transform .3s ease;
             }
 
+            body.admin-mobile-sidebar-open .admin-sidebar {
+                transform: translateX(0);
+            }
+
+            /* Pastikan menu tetap lengkap */
+            body.admin-sidebar-collapsed .admin-sidebar {
+                width: var(--sidebar-width);
+            }
+
+            body.admin-sidebar-collapsed .admin-brand {
+                justify-content: flex-start;
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            body.admin-sidebar-collapsed .admin-brand-name,
+            body.admin-sidebar-collapsed .admin-menu-text {
+                display: inline;
+            }
+
+            body.admin-sidebar-collapsed .admin-menu-item {
+                padding-left: 13px;
+                padding-right: 13px;
+                justify-content: flex-start;
+                gap: 11px;
+            }
+
+            body.admin-sidebar-collapsed .admin-menu-icon {
+                width: 21px;
+            }
 
             .admin-main {
-
                 width: 100%;
-
                 margin-left: 0;
             }
 
-
             body.admin-sidebar-collapsed .admin-main {
-
                 width: 100%;
-
                 margin-left: 0;
+            }
+
+            /* Overlay */
+            .admin-sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .45);
+                z-index: 999;
+            }
+
+            body.admin-mobile-sidebar-open .admin-sidebar-overlay {
+                display: block;
             }
 
         }
-
 
         @media(max-width:700px) {
 
@@ -1724,7 +1774,8 @@ $adminTranslations['id'];
 
 
         </aside>
-
+        <div class="admin-sidebar-overlay"
+            id="adminSidebarOverlay"></div>
 
         {{-- =====================================================
          MAIN
@@ -1972,67 +2023,108 @@ $adminTranslations['id'];
             function() {
 
 
+
                 /* =====================================================
-                   SIDEBAR COLLAPSE
+                   SIDEBAR COLLAPSE & MOBILE RESPONSIVE
                 ===================================================== */
 
                 const sidebarToggle =
-                    document.getElementById(
-                        'adminSidebarToggle'
-                    );
+                    document.getElementById('adminSidebarToggle');
 
+                const sidebarOverlay =
+                    document.getElementById('adminSidebarOverlay');
 
                 const sidebarState =
-                    localStorage.getItem(
-                        'ruangkitaAdminSidebarCollapsed'
-                    );
+                    localStorage.getItem('ruangkitaAdminSidebarCollapsed');
 
+                const mobileBreakpoint = 850;
 
-                if (sidebarState === '1') {
-
-                    document.body
-                        .classList
-                        .add(
-                            'admin-sidebar-collapsed'
-                        );
-
+                // Cek ukuran layar
+                function isMobile() {
+                    return window.innerWidth <= mobileBreakpoint;
                 }
 
+                // Menyimpan kondisi sidebar desktop
+                if (sidebarState === '1') {
+                    document.body.classList.add(
+                        'admin-sidebar-collapsed'
+                    );
+                }
 
+                // Fungsi menutup sidebar mobile
+                function closeMobileSidebar() {
+                    document.body.classList.remove(
+                        'admin-mobile-sidebar-open'
+                    );
+                }
+
+                // Tombol hamburger
                 if (sidebarToggle) {
 
-                    sidebarToggle
-                        .addEventListener(
-                            'click',
-                            function() {
+                    sidebarToggle.addEventListener('click', function() {
 
-                                document.body
-                                    .classList
-                                    .toggle(
-                                        'admin-sidebar-collapsed'
-                                    );
+                        if (isMobile()) {
 
+                            // Sidebar untuk HP
+                            document.body.classList.toggle(
+                                'admin-mobile-sidebar-open'
+                            );
 
-                                const collapsed =
-                                    document.body
-                                    .classList
-                                    .contains(
-                                        'admin-sidebar-collapsed'
-                                    );
+                        } else {
 
+                            // Sidebar untuk desktop
+                            document.body.classList.toggle(
+                                'admin-sidebar-collapsed'
+                            );
 
-                                localStorage
-                                    .setItem(
-                                        'ruangkitaAdminSidebarCollapsed',
-                                        collapsed ?
-                                        '1' :
-                                        '0'
-                                    );
+                            const collapsed =
+                                document.body.classList.contains(
+                                    'admin-sidebar-collapsed'
+                                );
 
-                            }
-                        );
+                            localStorage.setItem(
+                                'ruangkitaAdminSidebarCollapsed',
+                                collapsed ? '1' : '0'
+                            );
+
+                        }
+
+                    });
 
                 }
+
+                // Tutup sidebar ketika overlay diklik
+                if (sidebarOverlay) {
+                    sidebarOverlay.addEventListener(
+                        'click',
+                        closeMobileSidebar
+                    );
+                }
+
+                // Tutup sidebar ketika menu dipilih
+                document.querySelectorAll('.admin-sidebar a').forEach(
+                    function(link) {
+                        link.addEventListener('click', function() {
+                            if (isMobile()) {
+                                closeMobileSidebar();
+                            }
+                        });
+                    }
+                );
+
+                // Menyesuaikan perubahan ukuran layar
+                window.addEventListener('resize', function() {
+                    if (!isMobile()) {
+                        closeMobileSidebar();
+                    }
+                });
+
+                // Tutup sidebar dengan tombol Escape
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        closeMobileSidebar();
+                    }
+                });
 
 
 
