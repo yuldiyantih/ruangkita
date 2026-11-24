@@ -2024,6 +2024,7 @@ $adminTranslations['id'];
 
 
 
+
                 /* =====================================================
                    SIDEBAR COLLAPSE & MOBILE RESPONSIVE
                 ===================================================== */
@@ -2034,24 +2035,9 @@ $adminTranslations['id'];
                 const sidebarOverlay =
                     document.getElementById('adminSidebarOverlay');
 
-                const sidebarState =
-                    localStorage.getItem('ruangkitaAdminSidebarCollapsed');
+                const mobileScreen =
+                    window.matchMedia('(max-width: 850px)');
 
-                const mobileBreakpoint = 850;
-
-                // Cek ukuran layar
-                function isMobile() {
-                    return window.innerWidth <= mobileBreakpoint;
-                }
-
-                // Menyimpan kondisi sidebar desktop
-                if (sidebarState === '1') {
-                    document.body.classList.add(
-                        'admin-sidebar-collapsed'
-                    );
-                }
-
-                // Fungsi menutup sidebar mobile
                 function closeMobileSidebar() {
                     document.body.classList.remove(
                         'admin-mobile-sidebar-open'
@@ -2060,40 +2046,35 @@ $adminTranslations['id'];
 
                 // Tombol hamburger
                 if (sidebarToggle) {
-
                     sidebarToggle.addEventListener('click', function() {
 
-                        if (isMobile()) {
+                        if (mobileScreen.matches) {
 
-                            // Sidebar untuk HP
                             document.body.classList.toggle(
                                 'admin-mobile-sidebar-open'
                             );
 
                         } else {
 
-                            // Sidebar untuk desktop
-                            document.body.classList.toggle(
-                                'admin-sidebar-collapsed'
-                            );
-
                             const collapsed =
-                                document.body.classList.contains(
+                                document.body.classList.toggle(
                                     'admin-sidebar-collapsed'
                                 );
 
-                            localStorage.setItem(
-                                'ruangkitaAdminSidebarCollapsed',
-                                collapsed ? '1' : '0'
-                            );
+                            try {
+                                localStorage.setItem(
+                                    'ruangkitaAdminSidebarCollapsed',
+                                    collapsed ? '1' : '0'
+                                );
+                            } catch (error) {
+                                console.warn(error);
+                            }
 
                         }
-
                     });
-
                 }
 
-                // Tutup sidebar ketika overlay diklik
+                // Overlay
                 if (sidebarOverlay) {
                     sidebarOverlay.addEventListener(
                         'click',
@@ -2101,30 +2082,36 @@ $adminTranslations['id'];
                     );
                 }
 
-                // Tutup sidebar ketika menu dipilih
-                document.querySelectorAll('.admin-sidebar a').forEach(
-                    function(link) {
-                        link.addEventListener('click', function() {
-                            if (isMobile()) {
-                                closeMobileSidebar();
-                            }
-                        });
-                    }
-                );
+                // Tutup sidebar saat memilih menu
+                document.querySelectorAll('.admin-sidebar a')
+                    .forEach(function(link) {
+                        link.addEventListener(
+                            'click',
+                            closeMobileSidebar
+                        );
+                    });
 
-                // Menyesuaikan perubahan ukuran layar
+                // Perubahan ukuran layar
                 window.addEventListener('resize', function() {
-                    if (!isMobile()) {
+                    if (!mobileScreen.matches) {
                         closeMobileSidebar();
                     }
                 });
 
-                // Tutup sidebar dengan tombol Escape
-                document.addEventListener('keydown', function(event) {
-                    if (event.key === 'Escape') {
-                        closeMobileSidebar();
+                // Memulihkan sidebar desktop
+                try {
+                    if (
+                        localStorage.getItem(
+                            'ruangkitaAdminSidebarCollapsed'
+                        ) === '1'
+                    ) {
+                        document.body.classList.add(
+                            'admin-sidebar-collapsed'
+                        );
                     }
-                });
+                } catch (error) {
+                    console.warn(error);
+                }
 
 
 
